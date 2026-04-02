@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 数据加载性能测试脚本
-比较原始和优化版本的数据加载性能
+比较同一数据集在不同缓存配置下的数据加载性能
 """
 
 import argparse
@@ -12,9 +12,7 @@ from pathlib import Path
 import psutil
 from torch.utils.data import DataLoader
 
-# 导入两个版本的数据集
-from tacact.data import TacActDataset as OriginalDataset
-from tacact.data_optimized import OptimizedTacActDataset
+from tacact.data import TacActDataset
 
 
 def get_memory_usage():
@@ -23,7 +21,7 @@ def get_memory_usage():
     return process.memory_info().rss / 1024 / 1024
 
 
-def benchmark_dataset(dataset_class, dataset_name, data_root, batch_size=32, num_workers=0):
+def benchmark_dataset(dataset_name, data_root, batch_size=32, num_workers=0, preload_cache=False):
     """测试数据集性能"""
     print(f"\n{'='*50}")
     print(f"测试 {dataset_name}")
@@ -35,13 +33,13 @@ def benchmark_dataset(dataset_class, dataset_name, data_root, batch_size=32, num
     
     # 创建数据集
     start_time = time.time()
-    dataset = dataset_class(
+    dataset = TacActDataset(
         data_root, 
         n_frames=80, 
         threshold=20.0, 
         clip_mode="center",
         cache_dir=Path(f".cache_{dataset_name.lower()}"),
-        preload_cache=(dataset_class == OptimizedTacActDataset)
+        preload_cache=preload_cache,
     )
     dataset_creation_time = time.time() - start_time
     print(f"数据集创建时间: {dataset_creation_time:.2f} 秒")
@@ -126,14 +124,14 @@ def main():
     print(f"批次大小: {args.batch_size}")
     print(f"工作进程数: {args.num_workers}")
     
-    # 测试原始版本
+    # 测试基础配置（不预加载内存缓存）
     original_results = benchmark_dataset(
-        OriginalDataset, "原始数据集", args.data_root, args.batch_size, args.num_workers
+        "基础配置", args.data_root, args.batch_size, args.num_workers, preload_cache=False
     )
     
-    # 测试优化版本
+    # 测试优化配置（预加载内存缓存）
     optimized_results = benchmark_dataset(
-        OptimizedTacActDataset, "优化数据集", args.data_root, args.batch_size, args.num_workers
+        "优化配置", args.data_root, args.batch_size, args.num_workers, preload_cache=True
     )
     
     # 性能对比

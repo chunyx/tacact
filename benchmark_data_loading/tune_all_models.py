@@ -88,7 +88,7 @@ DEEP_SPACE: Dict[str, Dict[str, List[Any]]] = {
         "dim": [192, 256, 384],
         "depth": [3, 4, 5],
         "heads": [4, 6, 8],
-        "patch_size": [8, 16, 32],
+        "patch_size": [8, 16],
         "dropout": [0.1, 0.15, 0.2, 0.25],
         "lr": [3e-5, 5e-5, 1e-4, 2e-4],
         "weight_decay": [0.01, 0.05, 0.1],

@@ -38,6 +38,14 @@ def _replace_classifier_with_dropout(model: nn.Module, dropout: float) -> nn.Mod
     return model
 
 
+def _make_resnet18_32(in_channels: int) -> nn.Module:
+    """Build a ResNet18 adapted for 32x32 inputs."""
+    m = models.resnet18(weights=None)
+    m.conv1 = nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
+    m.maxpool = nn.Identity()
+    return m
+
+
 # --- 1. LeNet 适配版 (基于超参搜索优化) ---
 class LeNet(nn.Module):
     def __init__(self, in_channels=80, num_classes=12):
@@ -144,10 +152,7 @@ class CNNLSTM(nn.Module):
     def __init__(self, num_classes: int = 12, lstm_hidden: int = 128) -> None:
         super().__init__()
         # 🏆 最佳参数: backbone=resnet18, lstm_hidden=128, lstm_layers=1, lstm_dropout=0.4, dropout=0.5, use_last_only=False (val_acc=81.90%)
-        backbone = models.resnet18(weights=None)
-        # 关键修复：针对32x32输入，改用3x3卷积，stride=1不降维
-        backbone.conv1 = nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False)
-        backbone.maxpool = nn.Identity()
+        backbone = _make_resnet18_32(1)
         self.frame_extractor = nn.Sequential(*list(backbone.children())[:-1])  # 去掉fc层
 
         # LSTM层 - 最佳配置
@@ -227,7 +232,11 @@ class SmallViT(nn.Module):
                  patch_size: int = 16, dropout: float = 0.25) -> None:
         super().__init__()
         # 🏆 最佳参数: dim=256, depth=3, heads=8, patch_size=16, dropout=0.25
+        if patch_size not in {8, 16}:
+            raise ValueError(f"Unsupported patch_size={patch_size}. Only 8 or 16 are supported.")
         self.patch_size = patch_size
+        if 32 % self.patch_size != 0:
+            raise ValueError(f"patch_size must divide 32, got {self.patch_size}")
         self.patches_per_frame = (32 // patch_size) ** 2
         self.total_patches = 80 * self.patches_per_frame
 
@@ -286,10 +295,7 @@ class ModelFactory:
             return AlexNet(in_channels=in_channels, num_classes=num_classes), "cnn"
 
         if n == "resnet18":
-            m = models.resnet18(weights=None)
-            # 🔧 修复：防止 32x32 塌缩，改用 3x3 卷积，stride=1，并移除池化
-            m.conv1 = nn.Conv2d(in_channels, 64, kernel_size=3, stride=1, padding=1, bias=False)
-            m.maxpool = nn.Identity()
+            m = _make_resnet18_32(in_channels)
             
             # 🏆 最佳参数: lr=0.001, weight_decay=1e-05, optimizer=adam, scheduler=none, batch_size=16, dropout=0.2 (val_acc=82.44%)
             # 添加dropout到分类头

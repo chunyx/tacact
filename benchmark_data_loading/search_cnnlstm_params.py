@@ -141,6 +141,7 @@ def train_eval_cnnlstm(
         device: torch.device,
         epochs: int = 40,
         patience: int = 8,
+        gl_alpha: float = 2.0,
         show_progress: bool = True,
 ) -> tuple[float, float]:
     model = create_cnnlstm_from_config(config)
@@ -153,16 +154,18 @@ def train_eval_cnnlstm(
     )
 
     sched = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        opt, mode='max', factor=0.5, patience=3, verbose=False
+        opt, mode='min', factor=0.5, patience=3, verbose=False
     )
     criterion = torch.nn.CrossEntropyLoss()
 
     # 动态匹配设备类型，兼容 CPU/CUDA 测试
     scaler = torch.amp.GradScaler(device.type)
 
-    best_acc = 0.0
+    report_acc_at_best_val_loss = 0.0
     best_f1 = 0.0
-    early_stop = 0
+    best_val_loss = float("inf")
+    best_epoch = -1
+    best_weights = None
     pbar_epoch = tqdm(range(epochs), desc="Epoch", leave=False, disable=not show_progress)
 
     for ep in pbar_epoch:
@@ -183,23 +186,57 @@ def train_eval_cnnlstm(
             scaler.step(opt)
             scaler.update()
 
+        model.eval()
+        val_loss_sum = 0.0
+        val_count = 0
+        with torch.no_grad():
+            for xv, yv in val_loader:
+                xv = xv.to(device, dtype=torch.float32)
+                yv = yv.to(device)
+                logits = model(xv)
+                bs = yv.size(0)
+                batch_loss = criterion(logits, yv)
+                val_loss_sum += float(batch_loss.item()) * bs
+                val_count += bs
+        val_loss = val_loss_sum / max(1, val_count)
         acc, f1 = evaluate_torch(model, val_loader, device)
-        sched.step(acc)
+        sched.step(val_loss)
 
-        if acc > best_acc + 1e-4:
-            best_acc = acc
+        current_best = min(best_val_loss, val_loss)
+        safe_best = max(current_best, 1e-12)
+        current_gl = 100.0 * (val_loss / safe_best - 1.0)
+        stop_triggered = current_gl > float(gl_alpha)
+
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            best_epoch = ep + 1
+            best_weights = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
+            report_acc_at_best_val_loss = acc
             best_f1 = f1
-            early_stop = 0
-        else:
-            early_stop += 1
 
-        pbar_epoch.set_postfix(acc=f"{acc * 100:.1f}%", best=f"{best_acc * 100:.1f}%", stop=early_stop)
+        pbar_epoch.set_postfix(
+            val_loss=f"{val_loss:.5f}",
+            best_val_loss=f"{best_val_loss:.5f}",
+            gl=f"{current_gl:.3f}",
+            stop=str(stop_triggered),
+        )
+        print(
+            f"Epoch {ep + 1}/{epochs} | "
+            f"ValLoss: {val_loss:.6f} | "
+            f"BestValLoss: {best_val_loss:.6f} (epoch={best_epoch}) | "
+            f"GL: {current_gl:.4f} | "
+            f"Alpha: {float(gl_alpha):.2f} | "
+            f"Stop: {stop_triggered}"
+        )
 
-        if early_stop >= patience:
-            pbar_epoch.set_description(f"Epoch (early stop @{ep + 1})")
+        if stop_triggered:
+            pbar_epoch.set_description(f"Epoch (GL_alpha stop @{ep + 1})")
             break
 
-    return best_acc, best_f1
+    if best_weights is not None:
+        model.load_state_dict(best_weights)
+
+    return report_acc_at_best_val_loss, best_f1
 
 
 # ==========================================

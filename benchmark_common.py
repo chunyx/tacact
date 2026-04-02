@@ -7,7 +7,8 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
 
-from tacact.data_optimized import OptimizedTacActDataset
+from tacact.data import OptimizedTacActDataset
+from tacact.utils import choose_device_or_exit
 
 
 DEFAULT_N_FRAMES = 80
@@ -15,7 +16,7 @@ DEFAULT_THRESHOLD = 20.0
 
 
 def get_device() -> torch.device:
-    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    return choose_device_or_exit()
 
 
 def create_optimized_dataset(
@@ -199,4 +200,3 @@ def make_three_loaders(
         persistent_workers=persistent_workers,
     )
     return train_loader, val_loader, test_loader
-

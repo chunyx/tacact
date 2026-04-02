@@ -53,7 +53,7 @@ python experiment_tacact.py --data_root "数据路径" --run_mode deep --deep_mo
 D:\compare\
 ├── tacact/                    # 核心模块
 │   ├── models.py             # 统一模型工厂
-│   ├── data_optimized.py    # 数据加载
+│   ├── data.py              # 数据加载（含优化能力）
 │   └── utils.py             # 工具函数
 ├── search_*_params.py         # 各模型调参脚本
 ├── experiment_tacact.py       # 主实验脚本
@@ -74,6 +74,7 @@ D:\compare\
 - 数据放在SSD，缓存放内存盘
 - 修改预处理参数需更新缓存目录
 - 支持GPU自动检测和混合精度训练
+- 进行大规模重构（如合并/删除/重命名 `*_improved.py`）后，建议清理 `__pycache__` 和 `.pyc`，避免旧字节码缓存导致导入异常或行为混淆
 
 ## 📈 调参进度
 
