@@ -12,7 +12,9 @@ from tacact.utils import choose_device_or_exit
 
 
 DEFAULT_N_FRAMES = 80
-DEFAULT_THRESHOLD = 20.0
+DEFAULT_THRESHOLD_METHOD = "mean_std"
+DEFAULT_THRESHOLD_K = 3.0
+DEFAULT_BACKGROUND_FRAMES = 5
 
 
 def get_device() -> torch.device:
@@ -23,18 +25,30 @@ def create_optimized_dataset(
     data_root: Path,
     *,
     n_frames: int = DEFAULT_N_FRAMES,
-    threshold: float = DEFAULT_THRESHOLD,
-    clip_mode: str = "front",
+    threshold: Optional[float] = None,
+    threshold_method: str = DEFAULT_THRESHOLD_METHOD,
+    threshold_k: float = DEFAULT_THRESHOLD_K,
+    background_frames: int = DEFAULT_BACKGROUND_FRAMES,
+    center_weight_sigma: Optional[float] = None,
+    clip_mode: str = "weighted_center",
     cache_dir: Optional[Path] = None,
     preload_cache: bool = True,
+    segmentation_log: bool = False,
+    cache_trace: bool = False,
 ) -> OptimizedTacActDataset:
     return OptimizedTacActDataset(
         data_root,
         n_frames=n_frames,
         threshold=threshold,
+        threshold_method=threshold_method,
+        threshold_k=threshold_k,
+        background_frames=background_frames,
+        center_weight_sigma=center_weight_sigma,
         clip_mode=clip_mode,
         cache_dir=cache_dir,
         preload_cache=preload_cache,
+        segmentation_log=segmentation_log,
+        cache_trace=cache_trace,
     )
 
 

@@ -6,6 +6,7 @@
 
 import argparse
 import os
+import re
 import time
 from pathlib import Path
 
@@ -13,6 +14,24 @@ import psutil
 from torch.utils.data import DataLoader
 
 from tacact.data import TacActDataset
+
+BASE_CACHE_NAME = ".cache_tacact_n80_weighted"
+
+
+def _cache_suffix(dataset_name: str) -> str:
+    """Map benchmark config name to a safe lowercase ASCII cache suffix."""
+    named_map = {
+        "基础配置": "basic",
+        "优化配置": "preload",
+    }
+    if dataset_name in named_map:
+        return named_map[dataset_name]
+
+    # General fallback: keep only lowercase ASCII alnum, collapse separators.
+    raw = dataset_name.strip().lower()
+    raw = re.sub(r"[^a-z0-9]+", "_", raw)
+    raw = raw.strip("_")
+    return raw or "custom"
 
 
 def get_memory_usage():
@@ -31,14 +50,17 @@ def benchmark_dataset(dataset_name, data_root, batch_size=32, num_workers=0, pre
     initial_memory = get_memory_usage()
     print(f"初始内存使用: {initial_memory:.1f} MB")
     
+    suffix = _cache_suffix(dataset_name)
+    cache_dir = Path(f"{BASE_CACHE_NAME}_{suffix}")
+    print(f"Cache directory: {cache_dir}")
+
     # 创建数据集
     start_time = time.time()
     dataset = TacActDataset(
         data_root, 
         n_frames=80, 
-        threshold=20.0, 
-        clip_mode="center",
-        cache_dir=Path(f".cache_{dataset_name.lower()}"),
+        clip_mode="weighted_center",
+        cache_dir=cache_dir,
         preload_cache=preload_cache,
     )
     dataset_creation_time = time.time() - start_time

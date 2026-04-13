@@ -3,3 +3,53 @@ __pycache__/
 .cache/
 .cursor-server/
 .ipynb_checkpoints/
+
+# ML data
+data/
+dataset/
+datasets/
+raw_data/
+
+# Checkpoints / model artifacts
+checkpoints/
+weights/
+models/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.h5
+*.joblib
+*.pkl
+
+# Experiment outputs
+outputs/
+outputs_*/
+results/
+logs/
+runs/
+mlruns/
+wandb/
+tensorboard/
+events.out.tfevents.*
+
+# Local benchmark cache / exports
+.cache_tacact_n80_weighted/
+tacact_results/
+
+# Python tooling cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

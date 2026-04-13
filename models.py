@@ -148,6 +148,42 @@ class LSTMClassifier(nn.Module):
         return self.head(self.dropout(_pool_temporal_features(lstm_out, self.use_last_only)))
 
 
+class GRUClassifier(nn.Module):
+    def __init__(
+        self,
+        num_classes: int = 12,
+        input_proj_dim: int = 512,
+        hidden_size: int = 128,
+        num_layers: int = 1,
+        dropout: float = 0.5,
+        use_last_only: bool = False,
+    ) -> None:
+        super().__init__()
+        input_dim = 32 * 32
+        self.frame_proj = nn.Sequential(
+            nn.LayerNorm(input_dim),
+            nn.Linear(input_dim, input_proj_dim),
+            nn.ReLU(inplace=True),
+        )
+        self.gru = nn.GRU(
+            input_size=input_proj_dim,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout if num_layers > 1 else 0.0,
+            batch_first=True,
+        )
+        self.dropout = nn.Dropout(dropout)
+        self.head = nn.Linear(hidden_size, num_classes)
+        self.use_last_only = use_last_only
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        b, t, h, w = x.shape
+        x = x.view(b, t, h * w)
+        x = self.frame_proj(x)
+        gru_out, _ = self.gru(x)
+        return self.head(self.dropout(_pool_temporal_features(gru_out, self.use_last_only)))
+
+
 class CNNLSTM(nn.Module):
     def __init__(self, num_classes: int = 12, lstm_hidden: int = 128) -> None:
         super().__init__()
@@ -330,6 +366,21 @@ class ModelFactory:
             dropout = float(kwargs.get("dropout", 0.5))
             use_last_only = bool(kwargs.get("use_last_only", False))
             return LSTMClassifier(
+                num_classes=num_classes,
+                input_proj_dim=input_proj_dim,
+                hidden_size=hidden_size,
+                num_layers=num_layers,
+                dropout=dropout,
+                use_last_only=use_last_only,
+            ), "temporal"
+
+        if n in {"gru", "raw_gru"}:
+            input_proj_dim = int(kwargs.get("input_proj_dim", 512))
+            hidden_size = int(kwargs.get("hidden_size", 128))
+            num_layers = int(kwargs.get("num_layers", 1))
+            dropout = float(kwargs.get("dropout", 0.5))
+            use_last_only = bool(kwargs.get("use_last_only", False))
+            return GRUClassifier(
                 num_classes=num_classes,
                 input_proj_dim=input_proj_dim,
                 hidden_size=hidden_size,
