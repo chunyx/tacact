@@ -4,8 +4,11 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import platform
+import subprocess
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -21,9 +24,11 @@ if str(ROOT) not in sys.path:
 
 from tacact.models import ModelFactory
 from tacact.benchmark_common import (
+    build_split_audit,
     create_optimized_dataset,
     get_device,
     make_three_loaders,
+    save_split_audit,
     split_indices_3way,
     warmup_cache,
 )
@@ -58,15 +63,19 @@ from tacact.utils import (
     save_dl_family_tradeoff,
     save_dl_macrof1_vs_training_time,
     save_dl_params_vs_inference,
+    save_params_inference_all_seeds_from_df,
+    save_pareto_all_seeds_from_df,
     save_dl_performance_vs_sequence_length,
     save_scatter,
     save_summary_bar_with_error,
     save_training_curves,
     save_training_curves_with_std,
+    save_per_model_accuracy_loss_curves,
     save_all_models_loss_overlay,
     save_all_models_loss_overlay_with_std,
     save_convergence_diagnostics,
     save_convergence_diagnostics_with_std,
+    model_display_name,
 )
 
 
@@ -129,24 +138,697 @@ def _save_traditional_baseline_table_and_plot(
     plt.close()
 
 
+def _scheduler_name_for_model(model_name: str) -> str:
+    return "CosineAnnealingWarmRestarts" if "transformer" in str(model_name).lower() else "ReduceLROnPlateau"
+
+
+def _class_names(n_classes: int = 12) -> List[str]:
+    return [f"class_{i}" for i in range(n_classes)]
+
+
+def _runtime_info() -> Dict[str, Any]:
+    git_commit = ""
+    try:
+        git_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    except Exception:
+        git_commit = ""
+    return {
+        "created_at": datetime.now().isoformat(timespec="seconds"),
+        "python_version": sys.version.replace("\n", " "),
+        "torch_version": torch.__version__,
+        "platform": platform.platform(),
+        "hostname": platform.node(),
+        "git_commit": git_commit,
+    }
+
+
+def _save_loss_curves_per_model_seed(
+    training_df: pd.DataFrame,
+    selection_df: pd.DataFrame,
+    save_dir: Path,
+) -> None:
+    if training_df.empty:
+        return
+    save_dir.mkdir(parents=True, exist_ok=True)
+    has_multi_seed = training_df["seed"].nunique() > 1 if "seed" in training_df.columns else False
+
+    for (model, seed), g in training_df.groupby(["model", "seed"], sort=False):
+        gg = g.sort_values("epoch")
+        epochs = gg["epoch"].to_numpy(dtype=np.int32)
+        train_loss = gg["train_loss"].to_numpy(dtype=np.float64)
+        val_loss = gg["val_loss"].to_numpy(dtype=np.float64)
+        selected_epoch = None
+        if not selection_df.empty:
+            s = selection_df[(selection_df["model"] == model) & (selection_df["seed"] == seed)]
+            if not s.empty and pd.notna(s.iloc[0].get("selected_epoch", np.nan)):
+                try:
+                    selected_epoch = int(s.iloc[0]["selected_epoch"])
+                except Exception:
+                    selected_epoch = None
+
+        fig, ax = plt.subplots(figsize=(8.5, 5.2))
+        ax.plot(epochs, train_loss, label="train_loss", color="#2a9d8f", linewidth=2.0)
+        ax.plot(epochs, val_loss, label="val_loss", color="#e76f51", linewidth=2.0)
+        if selected_epoch is not None and selected_epoch > 0:
+            ax.axvline(selected_epoch, linestyle="--", color="#444444", linewidth=1.3, label=f"selected_epoch={selected_epoch}")
+        ax.set_xlabel("Epoch")
+        ax.set_ylabel("Loss")
+        ax.set_title(f"{model_display_name(str(model))} | model={model} | seed={int(seed)}")
+        ax.grid(True, alpha=0.25)
+        ax.legend(frameon=False)
+        plt.tight_layout()
+        plt.savefig(save_dir / f"loss_curve_{model}_seed{int(seed)}.png", dpi=220, bbox_inches="tight")
+        if not has_multi_seed:
+            plt.savefig(save_dir / f"loss_curve_{model}.png", dpi=220, bbox_inches="tight")
+        plt.close(fig)
+
+
+def _save_val_loss_all_models(training_df: pd.DataFrame, save_path: Path) -> None:
+    if training_df.empty:
+        return
+    fig, ax = plt.subplots(figsize=(10.5, 6.0))
+    for model, g in training_df.groupby("model", sort=False):
+        gg = g.sort_values("epoch")
+        ax.plot(
+            gg["epoch"].to_numpy(dtype=np.int32),
+            gg["val_loss"].to_numpy(dtype=np.float64),
+            linewidth=2.0,
+            label=model_display_name(str(model)),
+        )
+    ax.set_xlabel("Epoch")
+    ax.set_ylabel("Validation Loss")
+    ax.set_title("Validation Loss Across Models")
+    ax.grid(True, alpha=0.25)
+    ax.legend(frameon=False, ncol=2)
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=220, bbox_inches="tight")
+    plt.close(fig)
+
+
+def _save_loss_curves_grid(training_df: pd.DataFrame, save_path: Path) -> None:
+    if training_df.empty:
+        return
+    groups = list(training_df.groupby("model", sort=False))
+    n = len(groups)
+    ncols = 2 if n > 1 else 1
+    nrows = int(np.ceil(n / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=(7.5 * ncols, 3.9 * nrows), squeeze=False)
+    axes_flat = axes.flatten()
+
+    for idx, (model, g) in enumerate(groups):
+        ax = axes_flat[idx]
+        gg = g.sort_values("epoch")
+        ax.plot(gg["epoch"].to_numpy(dtype=np.int32), gg["train_loss"].to_numpy(dtype=np.float64), label="train_loss", linewidth=1.8, color="#2a9d8f")
+        ax.plot(gg["epoch"].to_numpy(dtype=np.int32), gg["val_loss"].to_numpy(dtype=np.float64), label="val_loss", linewidth=1.8, color="#e76f51")
+        ax.set_title(model_display_name(str(model)))
+        ax.set_xlabel("Epoch")
+        ax.set_ylabel("Loss")
+        ax.grid(True, alpha=0.25)
+        ax.legend(frameon=False, fontsize=8)
+
+    for idx in range(n, len(axes_flat)):
+        axes_flat[idx].axis("off")
+
+    fig.suptitle("Loss Curves Grid (Train vs Validation)", fontsize=13, y=0.995)
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=220, bbox_inches="tight")
+    plt.close(fig)
+
+
+def _save_loss_mean_std_across_seeds(training_df: pd.DataFrame, save_path: Path) -> None:
+    if training_df.empty or "seed" not in training_df.columns or training_df["seed"].nunique() <= 1:
+        return
+    fig, axes = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+    for model, g in training_df.groupby("model", sort=False):
+        pivot_train = g.pivot_table(index="epoch", columns="seed", values="train_loss", aggfunc="mean").sort_index()
+        pivot_val = g.pivot_table(index="epoch", columns="seed", values="val_loss", aggfunc="mean").sort_index()
+        epochs_t = pivot_train.index.to_numpy(dtype=np.int32)
+        epochs_v = pivot_val.index.to_numpy(dtype=np.int32)
+        train_mean = pivot_train.mean(axis=1).to_numpy(dtype=np.float64)
+        train_std = pivot_train.std(axis=1, ddof=0).to_numpy(dtype=np.float64)
+        val_mean = pivot_val.mean(axis=1).to_numpy(dtype=np.float64)
+        val_std = pivot_val.std(axis=1, ddof=0).to_numpy(dtype=np.float64)
+        label = model_display_name(str(model))
+        axes[0].plot(epochs_t, train_mean, linewidth=2.0, label=label)
+        axes[0].fill_between(epochs_t, train_mean - train_std, train_mean + train_std, alpha=0.16)
+        axes[1].plot(epochs_v, val_mean, linewidth=2.0, label=label)
+        axes[1].fill_between(epochs_v, val_mean - val_std, val_mean + val_std, alpha=0.16)
+
+    axes[0].set_title("Train Loss Mean ± Std Across Seeds")
+    axes[1].set_title("Validation Loss Mean ± Std Across Seeds")
+    axes[0].set_ylabel("Loss")
+    axes[1].set_ylabel("Loss")
+    axes[1].set_xlabel("Epoch")
+    axes[0].grid(True, alpha=0.25)
+    axes[1].grid(True, alpha=0.25)
+    axes[0].legend(frameon=False, ncol=2)
+    axes[1].legend(frameon=False, ncol=2)
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=220, bbox_inches="tight")
+    plt.close(fig)
+
+
+def _safe_concat_csv(paths: List[Path]) -> pd.DataFrame:
+    frames: List[pd.DataFrame] = []
+    for path in paths:
+        if path.exists():
+            try:
+                frames.append(pd.read_csv(path))
+            except Exception as e:
+                print(f"[WARN] Could not read CSV {path}: {e}")
+    return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
+
+
+def _history_mean_std_df(training_df: pd.DataFrame) -> pd.DataFrame:
+    if training_df.empty:
+        return pd.DataFrame()
+    metric_cols = [
+        "train_loss", "val_loss", "test_loss",
+        "train_acc", "val_acc", "test_acc",
+        "train_f1", "val_f1", "test_f1",
+        "lr", "epoch_time_sec",
+    ]
+    agg_spec: Dict[str, Tuple[str, str]] = {}
+    for col in metric_cols:
+        if col in training_df.columns:
+            agg_spec[f"{col}_mean"] = (col, "mean")
+            agg_spec[f"{col}_std"] = (col, "std")
+    return (
+        training_df
+        .groupby(["model", "epoch"], as_index=False)
+        .agg(**agg_spec)
+        .sort_values(["model", "epoch"])
+        .reset_index(drop=True)
+    )
+
+
+def _save_metric_overlay_with_std_from_training_df(
+    training_df: pd.DataFrame,
+    save_path: Path,
+    metric_col: str,
+    title: str,
+    ylabel: str,
+) -> None:
+    if training_df.empty or metric_col not in training_df.columns:
+        return
+    fig, ax = plt.subplots(figsize=(11.0, 6.5))
+    cmap = plt.get_cmap("tab10")
+    for idx, (model, g) in enumerate(training_df.groupby("model", sort=False)):
+        pivot = g.pivot_table(index="epoch", columns="seed", values=metric_col, aggfunc="mean").sort_index()
+        if pivot.empty:
+            continue
+        epochs = pivot.index.to_numpy(dtype=np.int32)
+        mean_vals = pivot.mean(axis=1).to_numpy(dtype=np.float64)
+        std_vals = pivot.std(axis=1, ddof=0).fillna(0.0).to_numpy(dtype=np.float64)
+        color = cmap(idx % 10)
+        ax.plot(epochs, mean_vals, linewidth=2.0, label=model_display_name(str(model)), color=color)
+        if pivot.shape[1] > 1:
+            ax.fill_between(epochs, mean_vals - std_vals, mean_vals + std_vals, color=color, alpha=0.16)
+    ax.set_title(title)
+    ax.set_xlabel("Epoch")
+    ax.set_ylabel(ylabel)
+    ax.grid(True, alpha=0.25)
+    ax.legend(frameon=False, ncol=2)
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=220, bbox_inches="tight")
+    plt.close(fig)
+
+
+def _save_all_seed_points_plot(
+    metrics_df: pd.DataFrame,
+    save_path: Path,
+    x_col: str,
+    y_col: str,
+    x_label: str,
+    y_label: str,
+    title: str,
+    x_transform: str = "",
+    y_limits: Tuple[float, float] | None = None,
+) -> None:
+    if metrics_df.empty or x_col not in metrics_df.columns or y_col not in metrics_df.columns:
+        return
+    df = metrics_df.copy()
+    df = df[df["category"].astype(str).str.lower() != "traditional"].copy() if "category" in df.columns else df
+    if df.empty:
+        return
+    if x_transform == "minutes":
+        df["_x_plot"] = df[x_col].astype(float) / 60.0
+    else:
+        df["_x_plot"] = df[x_col].astype(float)
+
+    fig, ax = plt.subplots(figsize=(10.8, 6.4))
+    cmap = plt.get_cmap("tab10")
+    for idx, (model, g) in enumerate(df.groupby("model", sort=False)):
+        color = cmap(idx % 10)
+        jitter = np.linspace(-0.06, 0.06, num=len(g)) if len(g) > 1 else np.array([0.0])
+        x_vals = g["_x_plot"].to_numpy(dtype=np.float64) + jitter
+        y_vals = g[y_col].to_numpy(dtype=np.float64)
+        if float(np.nanmax(y_vals)) <= 1.5:
+            y_vals = y_vals * 100.0
+        ax.scatter(
+            x_vals,
+            y_vals,
+            s=58,
+            alpha=0.72,
+            color=color,
+            edgecolors="none",
+            label=model_display_name(str(model)),
+        )
+    ax.set_title(title)
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+    if y_limits is not None:
+        ax.set_ylim(*y_limits)
+    ax.grid(True, alpha=0.22)
+    ax.legend(frameon=False, ncol=2)
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=220, bbox_inches="tight")
+    plt.close(fig)
+
+
+def _build_parallel_merged_outputs(
+    output_dir: Path,
+    deep_models: List[str],
+    seed_list: List[int],
+) -> None:
+    worker_root = output_dir / "parallel_workers"
+    if not worker_root.exists():
+        print(f"[WARN] parallel_workers not found under {output_dir}, skip auto-merge.")
+        return
+
+    metrics_paths: List[Path] = []
+    training_paths: List[Path] = []
+    selection_paths: List[Path] = []
+    final_split_paths: List[Path] = []
+    model_cfg_paths: List[Path] = []
+    predictions_paths: List[Path] = []
+    confusion_paths: List[Path] = []
+    per_class_paths: List[Path] = []
+    hpo_trace_paths: List[Path] = []
+    runtime_paths: List[Path] = []
+
+    for seed in seed_list:
+        run_dir_name = f"subject_seed{int(seed)}"
+        for model_name in deep_models:
+            base = worker_root / f"{model_name}_seed{int(seed)}" / run_dir_name
+            metrics_paths.append(base / "metrics.csv")
+            training_paths.append(base / "training_history.csv")
+            selection_paths.append(base / "selection_summary.csv")
+            final_split_paths.append(base / "final_split_metrics.csv")
+            model_cfg_paths.append(base / "model_config_summary.csv")
+            predictions_paths.append(base / "predictions.csv")
+            confusion_paths.append(base / "confusion_matrix.csv")
+            per_class_paths.append(base / "per_class_metrics.csv")
+            hpo_trace_paths.append(base / "hpo_to_main_trace.csv")
+            runtime_paths.append(base / "runtime_summary.csv")
+
+    metrics_df = _safe_concat_csv(metrics_paths)
+    training_df = _safe_concat_csv(training_paths)
+    selection_df = _safe_concat_csv(selection_paths)
+    final_split_df = _safe_concat_csv(final_split_paths)
+    model_cfg_df = _safe_concat_csv(model_cfg_paths)
+    predictions_df = _safe_concat_csv(predictions_paths)
+    confusion_df = _safe_concat_csv(confusion_paths)
+    per_class_df = _safe_concat_csv(per_class_paths)
+    hpo_trace_df = _safe_concat_csv(hpo_trace_paths)
+    runtime_df = _safe_concat_csv(runtime_paths)
+
+    if not metrics_df.empty:
+        metrics_df.to_csv(output_dir / "metrics_merged.csv", index=False)
+        metrics_summary_df = (
+            metrics_df
+            .groupby(["model", "category"], as_index=False)
+            .agg(
+                accuracy_mean=("accuracy", "mean"),
+                accuracy_std=("accuracy", "std"),
+                macro_f1_mean=("macro_f1", "mean"),
+                macro_f1_std=("macro_f1", "std"),
+                macro_precision_mean=("macro_precision", "mean"),
+                macro_precision_std=("macro_precision", "std"),
+                macro_recall_mean=("macro_recall", "mean"),
+                macro_recall_std=("macro_recall", "std"),
+                training_seconds_mean=("training_seconds", "mean"),
+                training_seconds_std=("training_seconds", "std"),
+                inference_ms_mean=("inference_ms", "mean"),
+                inference_ms_std=("inference_ms", "std"),
+                params_m=("params_m", "first"),
+            )
+            .sort_values(["category", "macro_f1_mean", "accuracy_mean"], ascending=[True, False, False])
+            .reset_index(drop=True)
+        )
+        metrics_summary_df.to_csv(output_dir / "metrics_summary.csv", index=False)
+    if not training_df.empty:
+        training_df.to_csv(output_dir / "training_history_merged.csv", index=False)
+    if not selection_df.empty:
+        selection_df.to_csv(output_dir / "selection_summary_merged.csv", index=False)
+    if not final_split_df.empty:
+        final_split_df.to_csv(output_dir / "final_split_metrics_merged.csv", index=False)
+        final_split_summary_df = (
+            final_split_df
+            .groupby(["model", "display_name"], as_index=False)
+            .agg(
+                train_loss_mean=("train_loss_at_selected", "mean"),
+                train_loss_std=("train_loss_at_selected", "std"),
+                train_acc_mean=("train_acc_at_selected", "mean"),
+                train_acc_std=("train_acc_at_selected", "std"),
+                train_f1_mean=("train_f1_at_selected", "mean"),
+                train_f1_std=("train_f1_at_selected", "std"),
+                val_loss_mean=("val_loss_at_selected", "mean"),
+                val_loss_std=("val_loss_at_selected", "std"),
+                val_acc_mean=("val_acc_at_selected", "mean"),
+                val_acc_std=("val_acc_at_selected", "std"),
+                val_f1_mean=("val_f1_at_selected", "mean"),
+                val_f1_std=("val_f1_at_selected", "std"),
+                test_acc_mean=("test_accuracy", "mean"),
+                test_acc_std=("test_accuracy", "std"),
+                test_macro_f1_mean=("test_macro_f1", "mean"),
+                test_macro_f1_std=("test_macro_f1", "std"),
+                test_macro_precision_mean=("test_macro_precision", "mean"),
+                test_macro_precision_std=("test_macro_precision", "std"),
+                test_macro_recall_mean=("test_macro_recall", "mean"),
+                test_macro_recall_std=("test_macro_recall", "std"),
+                params_m=("params_m", "first"),
+                train_time_sec_mean=("train_time_sec", "mean"),
+                train_time_sec_std=("train_time_sec", "std"),
+                inference_ms_mean=("inference_ms", "mean"),
+                inference_ms_std=("inference_ms", "std"),
+            )
+            .sort_values(["test_macro_f1_mean", "test_acc_mean"], ascending=[False, False])
+            .reset_index(drop=True)
+        )
+        final_split_summary_df.to_csv(output_dir / "final_split_metrics_summary.csv", index=False)
+    if not model_cfg_df.empty:
+        model_cfg_df.to_csv(output_dir / "model_config_summary_merged.csv", index=False)
+    if not predictions_df.empty:
+        predictions_df.to_csv(output_dir / "predictions_merged.csv", index=False)
+    if not confusion_df.empty:
+        confusion_df.to_csv(output_dir / "confusion_matrix_merged.csv", index=False)
+    if not per_class_df.empty:
+        per_class_df.to_csv(output_dir / "per_class_metrics_merged.csv", index=False)
+    if not hpo_trace_df.empty:
+        hpo_trace_df.to_csv(output_dir / "hpo_to_main_trace_merged.csv", index=False)
+    if not runtime_df.empty:
+        runtime_df.to_csv(output_dir / "runtime_summary_merged.csv", index=False)
+
+    if not training_df.empty:
+        hist_mean_std_df = _history_mean_std_df(training_df)
+        hist_mean_std_df.to_csv(output_dir / "training_history_mean_std_merged.csv", index=False)
+        training_df[
+            ["model", "seed", "epoch", "train_acc", "val_acc", "test_acc"]
+        ].to_csv(output_dir / "accuracy_vs_epoch_all_seeds.csv", index=False)
+        training_df.to_csv(output_dir / "epoch_history_all_splits_all_seeds.csv", index=False)
+
+        _save_metric_overlay_with_std_from_training_df(
+            training_df, output_dir / "all_models_train_loss_vs_epoch_mean_std.png",
+            "train_loss", "All Models: Training Loss vs Epoch", "Training Loss"
+        )
+        _save_metric_overlay_with_std_from_training_df(
+            training_df, output_dir / "all_models_val_loss_vs_epoch_mean_std.png",
+            "val_loss", "All Models: Validation Loss vs Epoch", "Validation Loss"
+        )
+        _save_metric_overlay_with_std_from_training_df(
+            training_df, output_dir / "all_models_test_loss_vs_epoch_mean_std.png",
+            "test_loss", "All Models: Test Loss vs Epoch", "Test Loss"
+        )
+        _save_metric_overlay_with_std_from_training_df(
+            training_df, output_dir / "all_models_train_accuracy_vs_epoch_mean_std.png",
+            "train_acc", "All Models: Training Accuracy vs Epoch", "Training Accuracy"
+        )
+        _save_metric_overlay_with_std_from_training_df(
+            training_df, output_dir / "all_models_val_accuracy_vs_epoch_mean_std.png",
+            "val_acc", "All Models: Validation Accuracy vs Epoch", "Validation Accuracy"
+        )
+        _save_metric_overlay_with_std_from_training_df(
+            training_df, output_dir / "all_models_test_accuracy_vs_epoch_mean_std.png",
+            "test_acc", "All Models: Test Accuracy vs Epoch", "Test Accuracy"
+        )
+        _save_metric_overlay_with_std_from_training_df(
+            training_df, output_dir / "all_models_train_f1_vs_epoch_mean_std.png",
+            "train_f1", "All Models: Training Macro-F1 vs Epoch", "Training Macro-F1"
+        )
+        _save_metric_overlay_with_std_from_training_df(
+            training_df, output_dir / "all_models_val_f1_vs_epoch_mean_std.png",
+            "val_f1", "All Models: Validation Macro-F1 vs Epoch", "Validation Macro-F1"
+        )
+        _save_metric_overlay_with_std_from_training_df(
+            training_df, output_dir / "all_models_test_f1_vs_epoch_mean_std.png",
+            "test_f1", "All Models: Test Macro-F1 vs Epoch", "Test Macro-F1"
+        )
+
+    if not metrics_df.empty:
+        metrics_df[
+            ["model", "seed", "accuracy", "inference_ms", "training_seconds", "macro_f1", "params_m"]
+        ].to_csv(output_dir / "accuracy_vs_inference_time_all_seeds.csv", index=False)
+        _save_all_seed_points_plot(
+            metrics_df=metrics_df,
+            save_path=output_dir / "accuracy_training_time_all_seeds_points_only_linear_minutes.png",
+            x_col="training_seconds",
+            y_col="accuracy",
+            x_label="Training Time (minutes)",
+            y_label="Test Accuracy (%)",
+            title="Test Accuracy vs Training Time (All Seeds, Points Only)",
+            x_transform="minutes",
+            y_limits=(70.0, 95.0),
+        )
+        _save_all_seed_points_plot(
+            metrics_df=metrics_df,
+            save_path=output_dir / "accuracy_inference_time_all_seeds_points_only_linear.png",
+            x_col="inference_ms",
+            y_col="accuracy",
+            x_label="Inference Time (ms)",
+            y_label="Test Accuracy (%)",
+            title="Test Accuracy vs Inference Time (All Seeds, Points Only)",
+            y_limits=(70.0, 95.0),
+        )
+
+    workbook_path = output_dir / "main_experiment_all_seeds_summary.xlsx"
+    try:
+        with pd.ExcelWriter(workbook_path) as writer:
+            if not training_df.empty:
+                training_df.to_excel(writer, sheet_name="epoch_history_all_seeds", index=False)
+                training_df[["model", "seed", "epoch", "train_acc", "val_acc", "test_acc"]].to_excel(
+                    writer, sheet_name="accuracy_vs_epoch", index=False
+                )
+            if not metrics_df.empty:
+                metrics_df.to_excel(writer, sheet_name="metrics_all_seeds", index=False)
+                metrics_df[["model", "seed", "accuracy", "inference_ms", "training_seconds", "macro_f1", "params_m"]].to_excel(
+                    writer, sheet_name="accuracy_vs_inference", index=False
+                )
+                if 'metrics_summary_df' in locals():
+                    metrics_summary_df.to_excel(writer, sheet_name="metrics_summary", index=False)
+            if not final_split_df.empty:
+                final_split_df.to_excel(writer, sheet_name="final_split_metrics", index=False)
+                if 'final_split_summary_df' in locals():
+                    final_split_summary_df.to_excel(writer, sheet_name="final_split_summary", index=False)
+            if not selection_df.empty:
+                selection_df.to_excel(writer, sheet_name="selection_summary", index=False)
+            if not model_cfg_df.empty:
+                model_cfg_df.to_excel(writer, sheet_name="model_config_summary", index=False)
+        print(f"[Main Parallel] Saved merged workbook: {workbook_path}")
+    except Exception as e:
+        print(f"[WARN] Could not export merged workbook {workbook_path}: {e}")
+
+
+def _parse_int_list_csv(text: str) -> List[int]:
+    return [int(x.strip()) for x in str(text).split(",") if x.strip()]
+
+
+def _run_parallel_main_experiment(args: argparse.Namespace, deep_models: List[str], seed_list: List[int]) -> None:
+    if args.run_mode != "deep":
+        raise ValueError("Parallel main scheduler currently supports --run_mode deep only.")
+    gpu_ids = _parse_int_list_csv(args.gpu_ids)
+    if not gpu_ids:
+        raise ValueError("No gpu_ids parsed.")
+    max_workers = min(int(args.max_workers), len(gpu_ids))
+    if max_workers <= 0:
+        raise ValueError("--max_workers must be >=1 and <= number of gpu_ids.")
+
+    tasks: List[Dict[str, Any]] = []
+    for seed in seed_list:
+        for model_name in deep_models:
+            task_name = f"{model_name}_seed{seed}"
+            task_out = args.output_dir / "parallel_workers" / task_name
+            status_path = args.output_dir / "parallel_status" / f"{task_name}.json"
+            tasks.append(
+                {
+                    "model": model_name,
+                    "seed": int(seed),
+                    "name": task_name,
+                    "out": task_out,
+                    "status_path": status_path,
+                }
+            )
+
+    py_exec = sys.executable
+    script_path = Path(__file__).resolve()
+    pending: List[Dict[str, Any]] = list(tasks)
+
+    running: List[Dict[str, Any]] = []
+    free_gpus = list(gpu_ids[:max_workers])
+    done = 0
+    total = len(tasks)
+
+    def _render_dashboard() -> None:
+        lines: List[str] = []
+        lines.append(f"[Main Parallel Dashboard] done={done}/{total} pending={len(pending)} running={len(running)}")
+        gpu_rows: Dict[int, str] = {g: f"GPU {g}: idle" for g in gpu_ids[:max_workers]}
+        for item in running:
+            gpu_id = int(item["gpu_id"])
+            st_path: Path = item["task"]["status_path"]
+            if st_path.exists():
+                try:
+                    prog = json.loads(st_path.read_text(encoding="utf-8"))
+                    ep = int(prog.get("current_epoch", 0))
+                    te = int(prog.get("total_epochs", 0))
+                    model = str(prog.get("current_model") or item["task"]["model"])
+                    status = str(prog.get("status", "running"))
+                    f1 = prog.get("latest_val_f1", None)
+                    acc = prog.get("latest_val_acc", None)
+                    f1_txt = "NA" if f1 is None else f"{float(f1):.4f}"
+                    acc_txt = "NA" if acc is None else f"{float(acc):.4f}"
+                    gpu_rows[gpu_id] = (
+                        f"GPU {gpu_id}: {status:8s} {model:18s} epoch {ep:>2}/{te:<2} "
+                        f"| val_f1={f1_txt} val_acc={acc_txt}"
+                    )
+                except Exception:
+                    gpu_rows[gpu_id] = f"GPU {gpu_id}: running  {item['task']['name']}"
+            else:
+                gpu_rows[gpu_id] = f"GPU {gpu_id}: running  {item['task']['name']}"
+        lines.extend([gpu_rows[g] for g in sorted(gpu_rows.keys())])
+        if pending:
+            wait_preview = [f"{t['model']}_s{t['seed']}" for t in pending[:12]]
+            lines.append("Waiting: " + ", ".join(wait_preview) + (" ..." if len(pending) > 12 else ""))
+        print("\033[2J\033[H" + "\n".join(lines), flush=True)
+
+    while done < total:
+        while free_gpus and pending:
+            task = pending.pop(0)
+            gpu_id = free_gpus.pop(0)
+            task["out"].mkdir(parents=True, exist_ok=True)
+            task["status_path"].parent.mkdir(parents=True, exist_ok=True)
+            cmd = [
+                py_exec,
+                str(script_path),
+                "--worker_mode",
+                "--worker_model",
+                str(task["model"]),
+                "--worker_seed",
+                str(task["seed"]),
+                "--data_root",
+                str(args.data_root),
+                "--output_dir",
+                str(task["out"]),
+                "--run_mode",
+                "deep",
+                "--deep_models",
+                str(task["model"]),
+                "--epochs",
+                str(args.epochs),
+                "--num_workers",
+                str(args.num_workers),
+                "--prefetch_factor",
+                str(args.prefetch_factor),
+                "--split_mode",
+                str(args.split_mode),
+                "--clip_mode",
+                str(args.clip_mode),
+                "--train_ratio",
+                str(args.train_ratio),
+                "--val_ratio",
+                str(args.val_ratio),
+                "--batch_size",
+                str(args.batch_size),
+                "--cache_dir",
+                str(args.cache_dir),
+            ]
+            if args.disable_persistent_workers:
+                cmd.append("--disable_persistent_workers")
+            if args.best_config_path is not None:
+                cmd.extend(["--best_config_path", str(args.best_config_path)])
+            if args.skip_cache_warmup:
+                cmd.append("--skip_cache_warmup")
+            if args.overfit_single_batch_debug:
+                cmd.append("--overfit_single_batch_debug")
+                cmd.extend(["--overfit_debug_epochs", str(args.overfit_debug_epochs)])
+                cmd.extend(["--overfit_debug_lr", str(args.overfit_debug_lr)])
+            # Match HPO parallel data loading behavior: avoid huge preload per worker.
+            cmd.append("--no_preload")
+
+            env = os.environ.copy()
+            env["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+            env["TACACT_STATUS_FILE"] = str(task["status_path"])
+            env["TACACT_GPU_ID"] = str(gpu_id)
+            proc = subprocess.Popen(cmd, env=env, cwd=str(Path(__file__).resolve().parents[2]))
+            running.append({"proc": proc, "gpu_id": gpu_id, "task": task})
+
+        still_running: List[Dict[str, Any]] = []
+        for item in running:
+            ret = item["proc"].poll()
+            if ret is None:
+                still_running.append(item)
+            else:
+                free_gpus.append(int(item["gpu_id"]))
+                done += 1
+                if ret != 0:
+                    print(f"[WARN] Task failed: {item['task']['name']} (code={ret})", flush=True)
+                    st_path = Path(item["task"]["status_path"])
+                    try:
+                        st_path.write_text(
+                            json.dumps(
+                                {
+                                    "status": "failed",
+                                    "gpu_id": str(item["gpu_id"]),
+                                    "task": item["task"]["name"],
+                                    "return_code": int(ret),
+                                    "last_update_ts": time.time(),
+                                },
+                                ensure_ascii=False,
+                                indent=2,
+                            ),
+                            encoding="utf-8",
+                        )
+                    except Exception:
+                        pass
+        running = still_running
+        _render_dashboard()
+        if done < total:
+            time.sleep(max(0.5, float(args.dashboard_interval)))
+
+    print("[Main Parallel] All tasks completed. Building merged outputs...", flush=True)
+    _build_parallel_merged_outputs(
+        output_dir=args.output_dir,
+        deep_models=deep_models,
+        seed_list=seed_list,
+    )
+    print("[Main Parallel] Merged outputs completed.", flush=True)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_root", type=Path, required=True)
     parser.add_argument("--epochs", type=int, default=50)
     parser.add_argument("--batch_size", type=int, default=32)
     parser.add_argument("--train_ratio", type=float, default=0.7)
-    parser.add_argument("--val_ratio", type=float, default=0.1)
+    parser.add_argument("--val_ratio", type=float, default=0.15)
     parser.add_argument("--clip_mode", choices=["weighted_center"], default="weighted_center")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--repeat_seeds", type=str, default="",
                         help="留空则单次运行(更快); 如 42,43,44 则多种子重复")
     parser.add_argument("--split_mode", choices=["subject", "random"], default="subject")
     parser.add_argument("--num_workers", type=int, default=8)
+    parser.add_argument("--prefetch_factor", type=int, default=2,
+                        help="DataLoader prefetch_factor when num_workers>0")
+    parser.add_argument("--disable_persistent_workers", action="store_true",
+                        help="Disable DataLoader persistent_workers even when num_workers>0")
     parser.add_argument("--output_dir", type=Path, default=Path("outputs"))
     parser.add_argument("--cache_dir", type=Path, default=Path(".cache_tacact_n80_weighted"))
     parser.add_argument("--run_mode", choices=["all", "traditional", "deep"], default="all")
     parser.add_argument("--traditional_models", type=str, default="SVM,RandomForest,XGBoost")
-    parser.add_argument("--deep_models", type=str, default="LeNet,ResNet18,EfficientNet_B0,LSTM,GRU,CNN_LSTM,TCN,ViT")
+    parser.add_argument(
+        "--deep_models",
+        type=str,
+        default="LeNet,ResNet18,EfficientNet_B0,LSTM,GRU,CNN_LSTM,LeNet_LSTM,TCN,Transformer",
+    )
     parser.add_argument("--amp_infer", action="store_true")
     parser.add_argument("--bench_batch_sizes", type=str, default="1,32")
     parser.add_argument("--bench_iters", type=int, default=100)
@@ -157,6 +839,19 @@ def main() -> None:
                         help="跳过缓存预热(确信 .npy 已存在时使用)")
     parser.add_argument("--no_preload", action="store_true",
                         help="不预加载 24k 样本到内存，按需从磁盘读 .npy(省内存、省启动时间)")
+    parser.add_argument("--parallel", action="store_true", help="Enable multi-process multi-GPU scheduler for main deep experiment.")
+    parser.add_argument("--gpu_ids", type=str, default="0,1,2,3,4", help="Comma-separated GPU ids for --parallel.")
+    parser.add_argument("--max_workers", type=int, default=5, help="Max concurrent workers for --parallel.")
+    parser.add_argument("--dashboard_interval", type=float, default=1.0, help="Dashboard refresh interval (sec).")
+    parser.add_argument("--overfit_single_batch_debug", action="store_true",
+                        help="Run single-batch overfit debugging for one deep model only.")
+    parser.add_argument("--overfit_debug_lr", type=float, default=1e-3,
+                        help="Learning rate used by single-batch overfit debug mode.")
+    parser.add_argument("--overfit_debug_epochs", type=int, default=300,
+                        help="Epoch override used by single-batch overfit debug mode.")
+    parser.add_argument("--worker_mode", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--worker_model", type=str, default="", help=argparse.SUPPRESS)
+    parser.add_argument("--worker_seed", type=int, default=42, help=argparse.SUPPRESS)
     args = parser.parse_args()
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -206,6 +901,27 @@ def main() -> None:
             save_dl_params_vs_inference(
                 deep_results, args.output_dir / "dl_params_vs_inference_merged.png"
             )
+            save_pareto_all_seeds_from_df(
+                merged_df[merged_df["category"].astype(str).str.lower() != "traditional"].copy()
+                if "category" in merged_df.columns else merged_df.copy(),
+                args.output_dir / "pareto_accuracy_all_seeds.png",
+                y_col="accuracy",
+                y_label="Test Accuracy (%)" if float(merged_df["accuracy"].max()) > 1.5 else "Test Accuracy",
+                title_prefix="Pareto Frontier: Test Accuracy vs Inference Time",
+            )
+            save_pareto_all_seeds_from_df(
+                merged_df[merged_df["category"].astype(str).str.lower() != "traditional"].copy()
+                if "category" in merged_df.columns else merged_df.copy(),
+                args.output_dir / "pareto_macroF1_all_seeds.png",
+                y_col="macro_f1",
+                y_label="Macro-F1 (%)" if float(merged_df["macro_f1"].max()) > 1.5 else "Macro-F1",
+                title_prefix="Pareto Frontier: Macro-F1 vs Inference Time",
+            )
+            save_params_inference_all_seeds_from_df(
+                merged_df[merged_df["category"].astype(str).str.lower() != "traditional"].copy()
+                if "category" in merged_df.columns else merged_df.copy(),
+                args.output_dir / "params_inference_all_seeds.png",
+            )
             merged_seq_ok = save_dl_performance_vs_sequence_length(
                 merged_df,
                 args.output_dir / "dl_performance_vs_sequence_length_merged.png",
@@ -242,6 +958,7 @@ def main() -> None:
             dataset,
             batch_size=128,
             num_workers=args.num_workers,
+            prefetch_factor=args.prefetch_factor,
             shuffle=False,
             pin_memory=False,
             use_tqdm=True,
@@ -253,14 +970,66 @@ def main() -> None:
     traditional_models = parse_model_list(args.traditional_models, ["SVM", "RandomForest", "XGBoost"])
     deep_models = parse_model_list(
         args.deep_models,
-        ["LeNet", "AlexNet", "ResNet18", "MobileNet_V2", "EfficientNet_B0", "LSTM", "GRU", "CNN_LSTM", "TCN", "ViT"],
+        [
+            "LeNet",
+            "ResNet18",
+            "MobileNet_V2",
+            "EfficientNet_B0",
+            "LSTM",
+            "GRU",
+            "CNN_LSTM",
+            "LeNet_LSTM",
+            "TCN",
+            "Transformer",
+        ],
     )
+    if args.overfit_single_batch_debug:
+        if args.run_mode != "deep":
+            raise ValueError("--overfit_single_batch_debug requires --run_mode deep.")
+        if len(deep_models) != 1:
+            raise ValueError("--overfit_single_batch_debug requires exactly one deep model in --deep_models.")
+        args.epochs = int(args.overfit_debug_epochs)
     print(f"Run mode: {args.run_mode} | traditional={traditional_models} | deep={deep_models}")
+
+    if args.worker_mode:
+        args.run_mode = "deep"
+        args.deep_models = args.worker_model
+        args.seed = int(args.worker_seed)
+        args.repeat_seeds = ""
 
     if args.repeat_seeds.strip():
         seed_list = [int(x.strip()) for x in args.repeat_seeds.split(",") if x.strip()]
     else:
         seed_list = [args.seed]
+
+    if args.parallel and not args.worker_mode:
+        parallel_run_cfg = {
+            "mode": "parallel_main_experiment",
+            "model_list": {"traditional": traditional_models, "deep": deep_models},
+            "seed_list": [int(s) for s in seed_list],
+            "data_root": str(args.data_root),
+            "output_dir": str(args.output_dir),
+            "split_mode": str(args.split_mode),
+            "n_frames": 80,
+            "clip_mode": str(args.clip_mode),
+            "epochs": int(args.epochs),
+            "batch_size": int(args.batch_size),
+            "num_workers": int(args.num_workers),
+            "prefetch_factor": int(args.prefetch_factor),
+            "gpu_ids": str(args.gpu_ids),
+            "max_workers": int(args.max_workers),
+            "best_config_path": str(args.best_config_path) if args.best_config_path is not None else "",
+            "overfit_single_batch_debug": bool(args.overfit_single_batch_debug),
+            "overfit_debug_lr": float(args.overfit_debug_lr),
+            "overfit_debug_epochs": int(args.overfit_debug_epochs),
+            "runtime": _runtime_info(),
+        }
+        (args.output_dir / "run_config.json").write_text(
+            json.dumps(parallel_run_cfg, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        _run_parallel_main_experiment(args, deep_models, seed_list)
+        return
 
     # Optional per-process status reporting for external live dashboard.
     status_file_env = os.environ.get("TACACT_STATUS_FILE", "").strip()
@@ -285,6 +1054,7 @@ def main() -> None:
             "current_epoch": 0,
             "total_epochs": int(args.epochs),
             "latest_val_f1": None,
+            "latest_val_acc": None,
             "seed": int(args.seed),
             "run_mode": str(args.run_mode),
             "last_update_ts": time.time(),
@@ -295,6 +1065,7 @@ def main() -> None:
 
     aggregated_rows: List[Dict[str, float]] = []
     aggregated_runtime_rows: List[Dict[str, float]] = []
+    aggregated_final_split_rows: List[Dict[str, float | int | str]] = []
     aggregated_histories: Dict[str, List[Dict[str, List[float]]]] = {}
 
     for run_seed in seed_list:
@@ -309,9 +1080,71 @@ def main() -> None:
             train_ratio=args.train_ratio,
             val_ratio=args.val_ratio,
         )
+        split_audit = build_split_audit(
+            dataset,
+            split_mode=args.split_mode,
+            seed=run_seed,
+            train_ratio=args.train_ratio,
+            val_ratio=args.val_ratio,
+            train_idx=train_indices,
+            val_idx=val_indices,
+            test_idx=test_indices,
+        )
+        save_split_audit(run_out / "split_audit.json", split_audit)
+        print(f"Saved split audit: {run_out / 'split_audit.json'}")
         train_set = Subset(dataset, train_indices)
         val_set = Subset(dataset, val_indices)
         test_set = Subset(dataset, test_indices)
+        class_names = _class_names(12)
+        run_cfg = {
+            "model_list": {"traditional": traditional_models, "deep": deep_models},
+            "seed": int(run_seed),
+            "data_root": str(args.data_root),
+            "output_dir": str(run_out),
+            "split_mode": str(args.split_mode),
+            "split_seed": int(run_seed),
+            "n_frames": 80,
+            "threshold_method": "mean_std",
+            "threshold_k": 3.0,
+            "background_frames": 5,
+            "clip_mode": str(args.clip_mode),
+            "batch_size": int(args.batch_size),
+            "epochs": int(args.epochs),
+            "optimizer": "AdamW",
+            "scheduler_default": "ReduceLROnPlateau",
+            "scheduler_transformer": "CosineAnnealingWarmRestarts",
+            "best_config_path": str(args.best_config_path) if args.best_config_path is not None else "",
+            "model_kwargs": best_config_map.get("deep", {}),
+            "runtime": _runtime_info(),
+        }
+        (run_out / "run_config.json").write_text(json.dumps(run_cfg, ensure_ascii=False, indent=2), encoding="utf-8")
+
+        data_protocol = {
+            "dataset_name": "TacAct",
+            "num_samples_total": int(len(dataset)),
+            "num_classes": 12,
+            "class_names": class_names,
+            "input_shape": [80, 32, 32],
+            "train_count": int(len(train_indices)),
+            "val_count": int(len(val_indices)),
+            "test_count": int(len(test_indices)),
+            "train_subjects": split_audit["splits"]["train"]["subjects"],
+            "val_subjects": split_audit["splits"]["val"]["subjects"],
+            "test_subjects": split_audit["splits"]["test"]["subjects"],
+            "split_seed": int(run_seed),
+            "preprocessing": {
+                "n_frames": 80,
+                "threshold_method": "mean_std",
+                "threshold_k": 3.0,
+                "background_frames": 5,
+                "clip_mode": str(args.clip_mode),
+            },
+            "cache_dir": str(args.cache_dir),
+        }
+        (run_out / "data_protocol.json").write_text(
+            json.dumps(data_protocol, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        test_meta_ordered = [dataset.samples[i] for i in test_indices]
 
         device = get_device()
 
@@ -319,7 +1152,14 @@ def main() -> None:
         confusion_mats: Dict[str, np.ndarray] = {}
         histories: Dict[str, Dict[str, List[float]]] = {}
         per_class_f1: Dict[str, np.ndarray] = {}
-        detail_rows: List[Dict[str, float]] = []
+        detail_rows: List[Dict[str, float | int | str]] = []
+        training_history_rows: List[Dict[str, float | int | str]] = []
+        selection_rows: List[Dict[str, float | int | str]] = []
+        confusion_rows: List[Dict[str, float | int | str]] = []
+        model_cfg_rows: List[Dict[str, float | int | str]] = []
+        pred_rows: List[Dict[str, float | int | str]] = []
+        hpo_trace_rows: List[Dict[str, float | int | str]] = []
+        final_split_rows: List[Dict[str, float | int | str]] = []
         traditional_runtime_s, deep_runtime_s = 0.0, 0.0
 
         if args.run_mode in ("all", "traditional"):
@@ -339,6 +1179,9 @@ def main() -> None:
                 traditional_cfg = best_config_map["traditional"].get(model_name, {}).get("params", {})
                 if not traditional_cfg:
                     traditional_cfg = best_config_map["traditional"].get(model_name.lower(), {}).get("params", {})
+                traditional_entry = best_config_map["traditional"].get(model_name, {})
+                if not traditional_entry:
+                    traditional_entry = best_config_map["traditional"].get(model_name.lower(), {})
                 clf = ModelFactory.build_traditional(model_name, **traditional_cfg)
                 fit_st = time.perf_counter()
                 clf.fit(x_train_full, y_train_full)
@@ -346,6 +1189,7 @@ def main() -> None:
                 pred = clf.predict(x_test)
                 acc = float((pred == y_test).mean())
                 p_cls, r_cls, f1_cls = per_class_prf(y_test, pred, n_classes=12)
+                support = np.bincount(y_test.astype(np.int64), minlength=12)
                 inf_ms = benchmark_sklearn(clf, x_test)
                 params = float(count_sklearn_params(clf))
                 results[model_name] = {
@@ -358,14 +1202,119 @@ def main() -> None:
                     "inference_ms": inf_ms,
                     "params": params,
                     "params_m": params / 1e6,
+                    "best_epoch": np.nan,
+                    "best_val_loss": np.nan,
+                    "best_val_acc": np.nan,
+                    "best_val_f1": np.nan,
                 }
                 cm = confusion_matrix_np(y_test, pred, n_classes=12)
                 confusion_mats[model_name] = cm
                 per_class_f1[model_name] = f1_cls
+                for i, (yt, yp) in enumerate(zip(y_test, pred)):
+                    sample_meta = test_meta_ordered[i]
+                    pred_rows.append(
+                        {
+                            "model": model_name,
+                            "seed": int(run_seed),
+                            "sample_id": int(test_indices[i]),
+                            "subject_id": int(sample_meta.subject),
+                            "true_label": int(yt),
+                            "true_class": class_names[int(yt)],
+                            "pred_label": int(yp),
+                            "pred_class": class_names[int(yp)],
+                            "correct": int(int(yt) == int(yp)),
+                            "top1_confidence": np.nan,
+                            **{f"prob_{k}": np.nan for k in range(12)},
+                        }
+                    )
                 for c in range(12):
                     detail_rows.append(
-                        {"model": model_name, "class": c, "precision": p_cls[c], "recall": r_cls[c],
-                         "f1": f1_cls[c]})
+                        {
+                            "model": model_name,
+                            "seed": int(run_seed),
+                            "class_id": int(c),
+                            "class_name": f"class_{c}",
+                            "precision": float(p_cls[c]),
+                            "recall": float(r_cls[c]),
+                            "f1": float(f1_cls[c]),
+                            "support": int(support[c]),
+                        }
+                    )
+                for t in range(12):
+                    for p in range(12):
+                        confusion_rows.append(
+                            {
+                                "model": model_name,
+                                "seed": int(run_seed),
+                                "true_label": int(t),
+                                "pred_label": int(p),
+                                "count": int(cm[t, p]),
+                            }
+                        )
+                selection_rows.append(
+                    {
+                        "model": model_name,
+                        "seed": int(run_seed),
+                        "selected_epoch": np.nan,
+                        "selection_metric": "n/a_traditional",
+                        "best_val_f1": np.nan,
+                        "best_val_acc": np.nan,
+                        "best_val_loss": np.nan,
+                        "test_accuracy": float(acc),
+                        "test_macro_f1": float(np.nanmean(f1_cls)),
+                        "checkpoint_path": "",
+                    }
+                )
+                final_split_rows.append(
+                    {
+                        "model": model_name,
+                        "display_name": model_display_name(model_name),
+                        "seed": int(run_seed),
+                        "selected_epoch": np.nan,
+                        "train_loss_at_selected": np.nan,
+                        "train_acc_at_selected": np.nan,
+                        "train_f1_at_selected": np.nan,
+                        "val_loss_at_selected": np.nan,
+                        "val_acc_at_selected": np.nan,
+                        "val_f1_at_selected": np.nan,
+                        "test_accuracy": float(acc),
+                        "test_macro_f1": float(np.nanmean(f1_cls)),
+                        "test_macro_precision": float(np.nanmean(p_cls)),
+                        "test_macro_recall": float(np.nanmean(r_cls)),
+                        "params_m": float(params / 1e6),
+                        "train_time_sec": float(train_seconds),
+                        "inference_ms": float(inf_ms),
+                    }
+                )
+                model_cfg_rows.append(
+                    {
+                        "model": model_name,
+                        "display_name": model_name,
+                        "seed": int(run_seed),
+                        "lr": np.nan,
+                        "weight_decay": np.nan,
+                        "batch_size": np.nan,
+                        "epochs": int(args.epochs),
+                        "optimizer": "n/a_traditional",
+                        "scheduler": "n/a_traditional",
+                        "model_kwargs_json": json.dumps(traditional_cfg, ensure_ascii=False),
+                        "param_count": float(params),
+                        "best_config_source": "best_config_path" if args.best_config_path is not None else "default",
+                    }
+                )
+                hpo_trace_rows.append(
+                    {
+                        "model": model_name,
+                        "seed": int(run_seed),
+                        "best_config_path": str(args.best_config_path) if args.best_config_path is not None else "",
+                        "hpo_trial_id": traditional_entry.get("trial_id", np.nan),
+                        "hpo_best_val_f1": traditional_entry.get("best_val_f1", np.nan),
+                        "hpo_best_val_acc": traditional_entry.get("best_val_acc", np.nan),
+                        "main_best_val_f1": np.nan,
+                        "main_test_macro_f1": float(np.nanmean(f1_cls)),
+                        "config_json": json.dumps(traditional_cfg, ensure_ascii=False),
+                    }
+                )
                 print(f"{model_name}: acc={acc * 100:.2f}%")
             except Exception as e:
                 print(f"[WARN] Skip {model_name}: {e}")
@@ -392,12 +1341,16 @@ def main() -> None:
                     "current_epoch": 1,
                     "total_epochs": int(args.epochs),
                     "latest_val_f1": None,
+                    "latest_val_acc": None,
                     "last_update_ts": time.time(),
                 },
             )
             deep_cfg = best_config_map["deep"].get(model_name, {}).get("params", {})
             if not deep_cfg:
                 deep_cfg = best_config_map["deep"].get(model_name.lower(), {}).get("params", {})
+            deep_entry = best_config_map["deep"].get(model_name, {})
+            if not deep_entry:
+                deep_entry = best_config_map["deep"].get(model_name.lower(), {})
             if "batch_size" in deep_cfg and deep_cfg.get("batch_size") is not None:
                 try:
                     model_batch_size = int(deep_cfg.get("batch_size"))
@@ -417,17 +1370,28 @@ def main() -> None:
                 batch_size=model_batch_size,
                 num_workers=args.num_workers,
                 pin_memory=True,
+                prefetch_factor=args.prefetch_factor,
+                persistent_workers=(False if args.disable_persistent_workers else None),
             )
             model_kwargs = {
                 k: v for k, v in deep_cfg.items()
-                if k in {"dim", "depth", "heads", "patch_size", "dropout", "num_channels", "lstm_hidden",
-                         "hidden_size", "num_layers", "input_proj_dim", "use_last_only"}
+                if k in {"d_model", "nhead", "dim_feedforward", "pooling", "norm_first",
+                         "dropout", "num_channels", "lstm_hidden", "hidden_size", "num_layers",
+                         "input_proj_dim", "use_last_only", "feature_dim", "encoder_hidden_dim", "bidirectional"}
             }
             train_kwargs = {
                 "lr_override": deep_cfg.get("lr"),
                 "weight_decay_override": deep_cfg.get("weight_decay"),
             }
             model, cat = ModelFactory.build_torch(model_name, **model_kwargs)
+            if args.overfit_single_batch_debug:
+                print(f"[Single-Batch Debug] Running single-batch overfit test for {model_name}")
+                train_kwargs["overfit_single_batch_debug"] = True
+                train_kwargs["overfit_debug_lr"] = float(args.overfit_debug_lr)
+                train_kwargs["weight_decay_override"] = 0.0
+                test_loader_for_training = None
+            else:
+                test_loader_for_training = test_loader
             def _epoch_progress_cb(p: Dict[str, float], _model_name: str = str(model_name), _model_idx: int = int(model_idx)) -> None:
                 _write_status(
                     status_path,
@@ -443,23 +1407,82 @@ def main() -> None:
                         "current_epoch": int(p.get("epoch", 0.0)),
                         "total_epochs": int(p.get("total_epochs", float(args.epochs))),
                         "latest_val_f1": float(p.get("val_f1", float("nan"))),
+                        "latest_val_acc": float(p.get("val_acc", float("nan"))),
                         "last_update_ts": time.time(),
                     },
                 )
-            histories[model_name] = train_torch_model(model, train_loader, val_loader, epochs=args.epochs,
+            histories[model_name] = train_torch_model(model, train_loader, val_loader, test_loader_for_training, epochs=args.epochs,
                                                      device=device, progress_callback=_epoch_progress_cb, **train_kwargs)
             aggregated_histories.setdefault(model_name, []).append(histories[model_name])
             train_seconds = float(histories[model_name].get("cum_time_s", [0.0])[-1]) if histories[model_name].get("cum_time_s") else 0.0
+            hist = histories[model_name]
+            n_ep = int(len(hist.get("train_loss", [])))
+            for ep_idx in range(n_ep):
+                training_history_rows.append(
+                    {
+                        "model": model_name,
+                        "seed": int(run_seed),
+                        "epoch": int(ep_idx + 1),
+                        "train_loss": float(hist["train_loss"][ep_idx]) if ep_idx < len(hist.get("train_loss", [])) else np.nan,
+                        "train_acc": float(hist["train_acc"][ep_idx]) if ep_idx < len(hist.get("train_acc", [])) else np.nan,
+                        "train_f1": float(hist["train_f1"][ep_idx]) if ep_idx < len(hist.get("train_f1", [])) else np.nan,
+                        "val_loss": float(hist["val_loss"][ep_idx]) if ep_idx < len(hist.get("val_loss", [])) else np.nan,
+                        "val_acc": float(hist["val_acc"][ep_idx]) if ep_idx < len(hist.get("val_acc", [])) else np.nan,
+                        "val_f1": float(hist["val_f1"][ep_idx]) if ep_idx < len(hist.get("val_f1", [])) else np.nan,
+                        "test_loss": float(hist["test_loss"][ep_idx]) if ep_idx < len(hist.get("test_loss", [])) else np.nan,
+                        "test_acc": float(hist["test_acc"][ep_idx]) if ep_idx < len(hist.get("test_acc", [])) else np.nan,
+                        "test_f1": float(hist["test_f1"][ep_idx]) if ep_idx < len(hist.get("test_f1", [])) else np.nan,
+                        "lr": float(hist["lr"][ep_idx]) if ep_idx < len(hist.get("lr", [])) else np.nan,
+                        "epoch_time_sec": float(hist["epoch_time_s"][ep_idx]) if ep_idx < len(hist.get("epoch_time_s", [])) else np.nan,
+                    }
+                )
+
+            best_epoch = int(hist.get("best_epoch", [0])[-1]) if hist.get("best_epoch") else -1
+            best_idx = max(0, best_epoch - 1)
+            best_val_loss = (
+                float(hist.get("val_loss", [np.nan])[best_idx]) if 0 <= best_idx < len(hist.get("val_loss", [])) else float("nan")
+            )
+            best_val_acc = (
+                float(hist.get("val_acc", [np.nan])[best_idx]) if 0 <= best_idx < len(hist.get("val_acc", [])) else float("nan")
+            )
+            best_val_f1 = (
+                float(hist.get("val_f1", [np.nan])[best_idx]) if 0 <= best_idx < len(hist.get("val_f1", [])) else float("nan")
+            )
+            best_train_loss = (
+                float(hist.get("train_loss", [np.nan])[best_idx]) if 0 <= best_idx < len(hist.get("train_loss", [])) else float("nan")
+            )
+            best_train_acc = (
+                float(hist.get("train_acc", [np.nan])[best_idx]) if 0 <= best_idx < len(hist.get("train_acc", [])) else float("nan")
+            )
+            best_train_f1 = (
+                float(hist.get("train_f1", [np.nan])[best_idx]) if 0 <= best_idx < len(hist.get("train_f1", [])) else float("nan")
+            )
+
+            ckpt_dir = run_out / "checkpoints"
+            ckpt_dir.mkdir(parents=True, exist_ok=True)
+            ckpt_path = ckpt_dir / f"{model_name}_seed{run_seed}_best.pt"
+            torch.save(model.state_dict(), ckpt_path)
+
             model.eval()
             ys = []
             ps = []
+            confs = []
+            probs_rows: List[np.ndarray] = []
             with torch.no_grad():
                 for x, y in test_loader:
-                    pred = model(x.to(device)).argmax(dim=1).cpu().numpy()
+                    logits = model(x.to(device))
+                    prob = torch.softmax(logits, dim=1).cpu().numpy()
+                    pred = prob.argmax(axis=1)
+                    conf = prob.max(axis=1)
                     ys.append(y.numpy())
                     ps.append(pred)
+                    confs.append(conf)
+                    probs_rows.append(prob)
             y_true, y_pred = np.concatenate(ys), np.concatenate(ps)
+            y_conf = np.concatenate(confs) if confs else np.array([], dtype=np.float64)
+            y_prob = np.concatenate(probs_rows, axis=0) if probs_rows else np.empty((0, 12), dtype=np.float64)
             p_cls, r_cls, f1_cls = per_class_prf(y_true, y_pred, n_classes=12)
+            support = np.bincount(y_true.astype(np.int64), minlength=12)
             params = float(count_parameters(model))
             deploy_bench: Dict[str, float] = {}
             try:
@@ -485,14 +1508,121 @@ def main() -> None:
                 "inference_ms": benchmark_torch_model_only(model, test_loader, device),
                 "params": params,
                 "params_m": params / 1e6,
+                "best_epoch": float(best_epoch),
+                "best_val_loss": float(best_val_loss),
+                "best_val_acc": float(best_val_acc),
+                "best_val_f1": float(best_val_f1),
                 **deploy_bench,
             }
             cm = confusion_matrix_np(y_true, y_pred, n_classes=12)
             confusion_mats[model_name] = cm
             per_class_f1[model_name] = f1_cls
+            for i, (yt, yp) in enumerate(zip(y_true, y_pred)):
+                sample_meta = test_meta_ordered[i]
+                prob_vec = y_prob[i] if i < len(y_prob) else np.full((12,), np.nan, dtype=np.float64)
+                pred_rows.append(
+                    {
+                        "model": model_name,
+                        "seed": int(run_seed),
+                        "sample_id": int(test_indices[i]),
+                        "subject_id": int(sample_meta.subject),
+                        "true_label": int(yt),
+                        "true_class": class_names[int(yt)],
+                        "pred_label": int(yp),
+                        "pred_class": class_names[int(yp)],
+                        "correct": int(int(yt) == int(yp)),
+                        "top1_confidence": float(y_conf[i]) if i < len(y_conf) else np.nan,
+                        **{f"prob_{k}": float(prob_vec[k]) for k in range(12)},
+                    }
+                )
             for c in range(12):
                 detail_rows.append(
-                    {"model": model_name, "class": c, "precision": p_cls[c], "recall": r_cls[c], "f1": f1_cls[c]})
+                    {
+                        "model": model_name,
+                        "seed": int(run_seed),
+                        "class_id": int(c),
+                        "class_name": f"class_{c}",
+                        "precision": float(p_cls[c]),
+                        "recall": float(r_cls[c]),
+                        "f1": float(f1_cls[c]),
+                        "support": int(support[c]),
+                    }
+                )
+            for t in range(12):
+                for p in range(12):
+                    confusion_rows.append(
+                        {
+                            "model": model_name,
+                            "seed": int(run_seed),
+                            "true_label": int(t),
+                            "pred_label": int(p),
+                            "count": int(cm[t, p]),
+                        }
+                    )
+            selection_rows.append(
+                {
+                    "model": model_name,
+                    "seed": int(run_seed),
+                    "selected_epoch": int(best_epoch),
+                    "selection_metric": "best_val_f1_max",
+                    "best_val_f1": float(best_val_f1),
+                    "best_val_acc": float(best_val_acc),
+                    "best_val_loss": float(best_val_loss),
+                    "test_accuracy": float((y_true == y_pred).mean()),
+                    "test_macro_f1": float(np.nanmean(f1_cls)),
+                    "checkpoint_path": str(ckpt_path),
+                }
+            )
+            final_split_rows.append(
+                {
+                    "model": model_name,
+                    "display_name": model_display_name(model_name),
+                    "seed": int(run_seed),
+                    "selected_epoch": int(best_epoch),
+                    "train_loss_at_selected": float(best_train_loss),
+                    "train_acc_at_selected": float(best_train_acc),
+                    "train_f1_at_selected": float(best_train_f1),
+                    "val_loss_at_selected": float(best_val_loss),
+                    "val_acc_at_selected": float(best_val_acc),
+                    "val_f1_at_selected": float(best_val_f1),
+                    "test_accuracy": float((y_true == y_pred).mean()),
+                    "test_macro_f1": float(np.nanmean(f1_cls)),
+                    "test_macro_precision": float(np.nanmean(p_cls)),
+                    "test_macro_recall": float(np.nanmean(r_cls)),
+                    "params_m": float(params / 1e6),
+                    "train_time_sec": float(train_seconds),
+                    "inference_ms": float(results[model_name]["inference_ms"]),
+                }
+            )
+            model_cfg_rows.append(
+                {
+                    "model": model_name,
+                    "display_name": model_name,
+                    "seed": int(run_seed),
+                    "lr": float(deep_cfg.get("lr", np.nan)) if deep_cfg else np.nan,
+                    "weight_decay": float(deep_cfg.get("weight_decay", np.nan)) if deep_cfg else np.nan,
+                    "batch_size": int(model_batch_size),
+                    "epochs": int(args.epochs),
+                    "optimizer": "AdamW",
+                    "scheduler": _scheduler_name_for_model(model_name),
+                    "model_kwargs_json": json.dumps(model_kwargs, ensure_ascii=False),
+                    "param_count": float(params),
+                    "best_config_source": "best_config_path" if args.best_config_path is not None else "default",
+                }
+            )
+            hpo_trace_rows.append(
+                {
+                    "model": model_name,
+                    "seed": int(run_seed),
+                    "best_config_path": str(args.best_config_path) if args.best_config_path is not None else "",
+                    "hpo_trial_id": deep_entry.get("trial_id", np.nan),
+                    "hpo_best_val_f1": deep_entry.get("best_val_f1", np.nan),
+                    "hpo_best_val_acc": deep_entry.get("best_val_acc", np.nan),
+                    "main_best_val_f1": float(best_val_f1),
+                    "main_test_macro_f1": float(np.nanmean(f1_cls)),
+                    "config_json": json.dumps(deep_cfg, ensure_ascii=False),
+                }
+            )
             print(f"{model_name}: acc={results[model_name]['accuracy'] * 100:.2f}%")
             deep_completed += 1
             _write_status(
@@ -509,6 +1639,7 @@ def main() -> None:
                     "current_epoch": int(len(histories[model_name].get("train_loss", []))),
                     "total_epochs": int(args.epochs),
                     "latest_val_f1": float(np.nanmean(f1_cls)),
+                    "latest_val_acc": float(results[model_name]["accuracy"]),
                     "last_update_ts": time.time(),
                 },
             )
@@ -533,6 +1664,18 @@ def main() -> None:
             detail_df.to_excel(run_out / "per_class_metrics.xlsx", index=False)
         except Exception as e:
             print(f"[WARN] Could not export Excel metrics: {e}")
+        pd.DataFrame(confusion_rows).to_csv(run_out / "confusion_matrix.csv", index=False)
+        pd.DataFrame(training_history_rows).to_csv(run_out / "training_history.csv", index=False)
+        pd.DataFrame(selection_rows).to_csv(run_out / "selection_summary.csv", index=False)
+        pd.DataFrame(model_cfg_rows).to_csv(run_out / "model_config_summary.csv", index=False)
+        pd.DataFrame(pred_rows).to_csv(run_out / "predictions.csv", index=False)
+        pd.DataFrame(hpo_trace_rows).to_csv(run_out / "hpo_to_main_trace.csv", index=False)
+        pd.DataFrame(final_split_rows).to_csv(run_out / "final_split_metrics.csv", index=False)
+        training_df = pd.DataFrame(training_history_rows)
+        selection_df = pd.DataFrame(selection_rows)
+        _save_loss_curves_per_model_seed(training_df, selection_df, run_out)
+        _save_val_loss_all_models(training_df, run_out / "val_loss_all_models.png")
+        _save_loss_curves_grid(training_df, run_out / "loss_curves_grid.png")
 
         deep_results, traditional_results = _split_results_for_paper(results)
         if deep_results:
@@ -542,6 +1685,7 @@ def main() -> None:
             save_confusion_matrix(cm, name, run_out / f"confusion_{name}.png")
         save_confusion_comparison(confusion_mats, run_out / "confusion_comparative.png")
         save_training_curves(histories, run_out / "training_history_overlay.png")
+        save_per_model_accuracy_loss_curves(histories, run_out, expected_models=deep_models)
         save_all_models_loss_overlay(
             histories,
             run_out / "all_models_train_loss_vs_epoch.png",
@@ -606,6 +1750,7 @@ def main() -> None:
                 "params": float(m["params"]),
                 "params_m": float(m["params_m"]),
             })
+        aggregated_final_split_rows.extend(final_split_rows)
         aggregated_runtime_rows.append({
             "split_mode": args.split_mode,
             "seed": float(run_seed),
@@ -690,6 +1835,24 @@ def main() -> None:
         save_dl_params_vs_inference(
             deep_tradeoff_results, args.output_dir / "dl_params_vs_inference.png"
         )
+        save_pareto_all_seeds_from_df(
+            agg_df[agg_df["category"].astype(str).str.lower() != "traditional"].copy(),
+            args.output_dir / "pareto_accuracy_all_seeds.png",
+            y_col="accuracy",
+            y_label="Test Accuracy",
+            title_prefix="Pareto Frontier: Test Accuracy vs Inference Time",
+        )
+        save_pareto_all_seeds_from_df(
+            agg_df[agg_df["category"].astype(str).str.lower() != "traditional"].copy(),
+            args.output_dir / "pareto_macroF1_all_seeds.png",
+            y_col="macro_f1",
+            y_label="Macro-F1",
+            title_prefix="Pareto Frontier: Macro-F1 vs Inference Time",
+        )
+        save_params_inference_all_seeds_from_df(
+            agg_df[agg_df["category"].astype(str).str.lower() != "traditional"].copy(),
+            args.output_dir / "params_inference_all_seeds.png",
+        )
         summary_seq_ok = save_dl_performance_vs_sequence_length(
             deep_summary,
             args.output_dir / "dl_performance_vs_sequence_length.png",
@@ -738,6 +1901,49 @@ def main() -> None:
 
     rt_df = pd.DataFrame(aggregated_runtime_rows)
     rt_df.to_csv(args.output_dir / "runtime_repeated.csv", index=False)
+    if aggregated_final_split_rows:
+        final_df = pd.DataFrame(aggregated_final_split_rows)
+        final_df.to_csv(args.output_dir / "final_split_metrics_repeated.csv", index=False)
+        summary_final = final_df.groupby(["model", "display_name"], as_index=False).agg(
+            train_acc_mean=("train_acc_at_selected", "mean"),
+            train_acc_std=("train_acc_at_selected", "std"),
+            train_f1_mean=("train_f1_at_selected", "mean"),
+            train_f1_std=("train_f1_at_selected", "std"),
+            val_acc_mean=("val_acc_at_selected", "mean"),
+            val_acc_std=("val_acc_at_selected", "std"),
+            val_f1_mean=("val_f1_at_selected", "mean"),
+            val_f1_std=("val_f1_at_selected", "std"),
+            test_acc_mean=("test_accuracy", "mean"),
+            test_acc_std=("test_accuracy", "std"),
+            test_macro_f1_mean=("test_macro_f1", "mean"),
+            test_macro_f1_std=("test_macro_f1", "std"),
+            params_m=("params_m", "first"),
+            train_time_sec_mean=("train_time_sec", "mean"),
+            train_time_sec_std=("train_time_sec", "std"),
+            inference_ms_mean=("inference_ms", "mean"),
+            inference_ms_std=("inference_ms", "std"),
+        )
+        summary_final.to_csv(args.output_dir / "final_split_metrics_summary.csv", index=False)
+    if aggregated_histories:
+        agg_training_rows: List[Dict[str, float | int | str]] = []
+        for model_name, runs in aggregated_histories.items():
+            for run_idx, hist in enumerate(runs):
+                seed_val = int(seed_list[run_idx]) if run_idx < len(seed_list) else int(seed_list[0])
+                n_ep = int(len(hist.get("train_loss", [])))
+                for ep_idx in range(n_ep):
+                    agg_training_rows.append(
+                        {
+                            "model": str(model_name),
+                            "seed": int(seed_val),
+                            "epoch": int(ep_idx + 1),
+                            "train_loss": float(hist["train_loss"][ep_idx]) if ep_idx < len(hist.get("train_loss", [])) else np.nan,
+                            "val_loss": float(hist["val_loss"][ep_idx]) if ep_idx < len(hist.get("val_loss", [])) else np.nan,
+                        }
+                    )
+        _save_loss_mean_std_across_seeds(
+            pd.DataFrame(agg_training_rows),
+            args.output_dir / "loss_mean_std_across_seeds.png",
+        )
     _write_status(
         status_path,
         {
@@ -752,6 +1958,7 @@ def main() -> None:
             "current_epoch": int(args.epochs),
             "total_epochs": int(args.epochs),
             "latest_val_f1": None,
+            "latest_val_acc": None,
             "last_update_ts": time.time(),
         },
     )

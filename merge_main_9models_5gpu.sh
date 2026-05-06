@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Usage:
 # 1) Default: pass a RUN_ROOT that contains gpu0..gpu4 directories
-#    ./merge_main_9models_5gpu.sh outputs_main_9models_5gpu/run_20260408_123000 /home/yaxin/datasets/TacAct-original
+#    ./merge_main_9models_5gpu.sh outputs_main_experiment_20260408_123000 /home/yaxin/datasets/TacAct-original
 # 2) Or pass explicit metrics CSV list via METRICS_CSVS env var
 #    METRICS_CSVS="a.csv,b.csv,c.csv,d.csv,e.csv" ./merge_main_9models_5gpu.sh <RUN_ROOT> <DATA_ROOT>
 

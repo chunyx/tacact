@@ -16,6 +16,20 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, Subset
 from tqdm import tqdm
 
+MODEL_DISPLAY_NAME = {
+    "LeNet": "LeNet-style CNN",
+    "LSTM": "LSTM baseline",
+    "GRU": "GRU baseline",
+    "CNN_LSTM": "CNN-LSTM baseline",
+    "LeNet_LSTM": "LeNet-LSTM baseline",
+    "TCN": "TCN baseline",
+    "Transformer": "Transformer baseline",
+}
+
+
+def model_display_name(model_name: str) -> str:
+    return MODEL_DISPLAY_NAME.get(model_name, model_name)
+
 
 # ===========================
 # Hardware Setup
@@ -177,7 +191,7 @@ def _resolve_training_hyperparams(
     lr_override,
     weight_decay_override,
 ) -> Tuple[float, float]:
-    if "ViT" in model_name:
+    if "TransformerClassifier" in model_name:
         default_lr = 1e-4
         default_weight_decay = 1e-4
     else:
@@ -210,10 +224,39 @@ def evaluate_torch_val_loss(
     return total_loss / max(1, total_samples)
 
 
+def _build_single_batch_debug_loader(loader: DataLoader) -> DataLoader:
+    """Rebuild a loader over the same dataset but with shuffle disabled."""
+    return DataLoader(
+        loader.dataset,
+        batch_size=loader.batch_size,
+        shuffle=False,
+        num_workers=0,
+        drop_last=False,
+        pin_memory=getattr(loader, "pin_memory", False),
+        collate_fn=getattr(loader, "collate_fn", None),
+    )
+
+
+def _set_dropout_p(module: nn.Module, p: float) -> Dict[nn.Module, float]:
+    """Temporarily override dropout probabilities and return original values."""
+    original: Dict[nn.Module, float] = {}
+    for submodule in module.modules():
+        if isinstance(submodule, (nn.Dropout, nn.Dropout1d, nn.Dropout2d, nn.Dropout3d)):
+            original[submodule] = float(submodule.p)
+            submodule.p = float(p)
+    return original
+
+
+def _restore_dropout_p(original: Dict[nn.Module, float]) -> None:
+    for submodule, p in original.items():
+        submodule.p = float(p)
+
+
 def train_torch_model(
     model: nn.Module,
     train_loader: DataLoader,
     val_loader: DataLoader,
+    test_loader: Optional[DataLoader],
     epochs: int,
     device: torch.device,
     patience: int = 7,
@@ -221,6 +264,8 @@ def train_torch_model(
     weight_decay_override=None,
     gl_alpha: float = 2.0,
     progress_callback: Optional[Callable[[Dict[str, float]], None]] = None,
+    overfit_single_batch_debug: bool = False,
+    overfit_debug_lr: Optional[float] = None,
 ) -> Dict[str, List[float]]:
     """Train a torch model for fixed epochs (early stopping disabled)."""
     _ = patience  # kept for backward-compatible signature; not used in stopping logic
@@ -228,8 +273,23 @@ def train_torch_model(
     model_name = model.__class__.__name__
     lr, weight_decay = _resolve_training_hyperparams(model_name, lr_override, weight_decay_override)
 
+    fixed_debug_batch: Optional[Tuple[torch.Tensor, torch.Tensor]] = None
+    dropout_backup: Dict[nn.Module, float] = {}
+    if overfit_single_batch_debug:
+        debug_loader = _build_single_batch_debug_loader(train_loader)
+        fixed_debug_batch = next(iter(debug_loader))
+        lr = float(1e-3 if overfit_debug_lr is None else overfit_debug_lr)
+        weight_decay = 0.0
+        dropout_backup = _set_dropout_p(model, p=0.0)
+        print(
+            "[Single-Batch Debug] Enabled | "
+            f"batch_size={int(fixed_debug_batch[1].shape[0])} | "
+            f"lr={lr:.6f} | weight_decay={weight_decay:.6f} | "
+            "dropout=0.0 | shuffle=False"
+        )
+
     opt = optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
-    if "ViT" in model_name:
+    if "TransformerClassifier" in model_name:
         sched = optim.lr_scheduler.CosineAnnealingWarmRestarts(opt, T_0=10, T_mult=2, eta_min=lr * 0.1)
     else:
         sched = optim.lr_scheduler.ReduceLROnPlateau(opt, mode="min", factor=0.5, patience=2)
@@ -239,9 +299,15 @@ def train_torch_model(
     amp_enabled = _is_cuda_device(device)
     history = {
         "train_loss": [],
+        "train_acc": [],
+        "train_f1": [],
         "val_loss": [],
         "val_acc": [],
         "val_f1": [],
+        "test_loss": [],
+        "test_acc": [],
+        "test_f1": [],
+        "lr": [],
         "epoch_time_s": [],
         "cum_time_s": [],
         "best_val_loss": [],
@@ -253,108 +319,186 @@ def train_torch_model(
     best_val_loss = float("inf")
     best_epoch = -1
     best_weights = copy.deepcopy(model.state_dict())
+    # Checkpoint selection for deep models:
+    # primary: max val_f1, tie-break 1: max val_acc, tie-break 2: min val_loss.
+    best_key = (float("-inf"), float("-inf"), float("inf"))
 
-    for epoch in range(epochs):
-        epoch_start = time.perf_counter()
-        model.train()
-        loss_sum = 0.0
-        n_batches = 0
+    try:
+        for epoch in range(epochs):
+            epoch_start = time.perf_counter()
+            model.train()
+            loss_sum = 0.0
+            n_batches = 0
+            train_correct = 0
+            train_samples = 0
 
-        pbar = tqdm(train_loader, desc=f"Epoch {epoch + 1}/{epochs}", leave=False)
-        for x, y in pbar:
-            try:
-                x, y = x.to(device), y.to(device)
-                opt.zero_grad()
-                with torch.amp.autocast(device.type, enabled=amp_enabled):
-                    loss = criterion(model(x), y)
-                scaler.scale(loss).backward()
-                if "ViT" in model_name:
-                    scaler.unscale_(opt)
-                    torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-                scaler.step(opt)
-                scaler.update()
-            except RuntimeError as exc:
-                if "out of memory" in str(exc).lower():
-                    print("[WARN] CUDA OOM detected during training step; skipping current batch.")
-                    if _is_cuda_device(device):
-                        torch.cuda.empty_cache()
-                    continue
-                raise
+            if overfit_single_batch_debug:
+                assert fixed_debug_batch is not None
+                x, y = fixed_debug_batch
+                try:
+                    x, y = x.to(device), y.to(device)
+                    opt.zero_grad()
+                    with torch.amp.autocast(device.type, enabled=False):
+                        logits = model(x)
+                        loss = criterion(logits, y)
+                    loss.backward()
+                    opt.step()
+                except RuntimeError as exc:
+                    if "out of memory" in str(exc).lower():
+                        print("[WARN] CUDA OOM detected during single-batch debug step.")
+                        if _is_cuda_device(device):
+                            torch.cuda.empty_cache()
+                        raise
+                    raise
 
-            current_loss = float(loss.item())
-            loss_sum += current_loss
-            n_batches += 1
-            pbar.set_postfix({"loss": f"{current_loss:.4f}"})
+                current_loss = float(loss.item())
+                loss_sum = current_loss
+                n_batches = 1
+                pred = logits.argmax(dim=1)
+                train_correct = int((pred == y).sum().item())
+                train_samples = int(y.size(0))
+                train_f1 = float(np.nanmean(per_class_prf(y.detach().cpu().numpy(), pred.detach().cpu().numpy())[2]))
+                val_loss = current_loss
+                val_acc = float(train_correct / max(1, train_samples))
+                val_f1 = float(train_f1)
+                test_loss, test_acc, test_f1 = current_loss, val_acc, val_f1
+                sched.step()
+            else:
+                pbar = tqdm(train_loader, desc=f"Epoch {epoch + 1}/{epochs}", leave=False)
+                for x, y in pbar:
+                    try:
+                        x, y = x.to(device), y.to(device)
+                        opt.zero_grad()
+                        with torch.amp.autocast(device.type, enabled=amp_enabled):
+                            logits = model(x)
+                            loss = criterion(logits, y)
+                        scaler.scale(loss).backward()
+                        if "TransformerClassifier" in model_name:
+                            scaler.unscale_(opt)
+                            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+                        scaler.step(opt)
+                        scaler.update()
+                    except RuntimeError as exc:
+                        if "out of memory" in str(exc).lower():
+                            print("[WARN] CUDA OOM detected during training step; skipping current batch.")
+                            if _is_cuda_device(device):
+                                torch.cuda.empty_cache()
+                            continue
+                        raise
 
-        val_loss = evaluate_torch_val_loss(model, val_loader, device, criterion)
-        val_acc, val_f1 = evaluate_torch(model, val_loader, device)
-        if "ViT" in model_name:
-            sched.step()
-        else:
-            sched.step(val_loss)
+                    current_loss = float(loss.item())
+                    loss_sum += current_loss
+                    n_batches += 1
+                    pred = logits.argmax(dim=1)
+                    train_correct += int((pred == y).sum().item())
+                    train_samples += int(y.size(0))
+                    pbar.set_postfix({"loss": f"{current_loss:.4f}"})
 
-        if val_loss < best_val_loss:
-            best_val_loss = float(val_loss)
-            best_epoch = epoch + 1
-            best_weights = copy.deepcopy(model.state_dict())
+                val_loss = evaluate_torch_val_loss(model, val_loader, device, criterion)
+                val_acc, val_f1 = evaluate_torch(model, val_loader, device)
+                _, train_f1 = evaluate_torch(model, train_loader, device)
+                if test_loader is not None:
+                    test_loss = evaluate_torch_val_loss(model, test_loader, device, criterion)
+                    test_acc, test_f1 = evaluate_torch(model, test_loader, device)
+                else:
+                    test_loss, test_acc, test_f1 = float("nan"), float("nan"), float("nan")
+                if "TransformerClassifier" in model_name:
+                    sched.step()
+                else:
+                    sched.step(val_loss)
 
-        best_reference = max(best_val_loss, 1e-12)  # epsilon only prevents division-by-zero
-        current_gl = 100.0 * (float(val_loss) / best_reference - 1.0)
-        # Early stopping is intentionally disabled: always run the full epoch budget.
-        stop_triggered = False
+            if val_loss < best_val_loss:
+                best_val_loss = float(val_loss)
 
-        epoch_loss = loss_sum / max(1, n_batches)
-        epoch_time_s = time.perf_counter() - epoch_start
-        cum_time_s = (history["cum_time_s"][-1] if history["cum_time_s"] else 0.0) + epoch_time_s
-        history["train_loss"].append(epoch_loss)
-        history["val_loss"].append(float(val_loss))
-        history["val_acc"].append(val_acc)
-        history["val_f1"].append(val_f1)
-        history["epoch_time_s"].append(float(epoch_time_s))
-        history["cum_time_s"].append(float(cum_time_s))
-        history["best_val_loss"].append(float(best_val_loss))
-        history["best_epoch"].append(int(best_epoch))
-        history["current_GL"].append(float(current_gl))
-        history["stop_triggered"].append(bool(stop_triggered))
-        history["alpha"].append(float(gl_alpha))
+            current_key = (float(val_f1), float(val_acc), float(-val_loss))
+            if current_key > best_key:
+                best_key = current_key
+                best_epoch = epoch + 1
+                best_weights = copy.deepcopy(model.state_dict())
 
-        current_lr = opt.param_groups[0]["lr"]
-        if progress_callback is not None:
-            try:
-                progress_callback(
-                    {
-                        "epoch": float(epoch + 1),
-                        "total_epochs": float(epochs),
-                        "train_loss": float(epoch_loss),
-                        "val_loss": float(val_loss),
-                        "val_acc": float(val_acc),
-                        "val_f1": float(val_f1),
-                        "best_val_loss": float(best_val_loss),
-                        "best_epoch": float(best_epoch),
-                        "gl": float(current_gl),
-                        "lr": float(current_lr),
-                        "stop_triggered": float(1.0 if stop_triggered else 0.0),
-                    }
-                )
-            except Exception:
-                # Progress reporting should never break training.
-                pass
-        print(
-            f"Epoch {epoch + 1}/{epochs} | "
-            f"TrainLoss: {epoch_loss:.4f} | "
-            f"ValLoss: {float(val_loss):.6f} | "
-            f"BestValLoss: {float(best_val_loss):.6f} | "
-            f"ValAcc: {val_acc * 100:.2f}% | "
-            f"ValF1: {val_f1 * 100:.2f}% | "
-            f"GL: {float(current_gl):.4f} | "
-            f"Alpha: {float(gl_alpha):.2f} | "
-            f"Stop: {stop_triggered} | "
-            f"LR: {current_lr:.6f}"
-        )
+            best_reference = max(best_val_loss, 1e-12)  # epsilon only prevents division-by-zero
+            current_gl = 100.0 * (float(val_loss) / best_reference - 1.0)
+            # Early stopping is intentionally disabled: always run the full epoch budget.
+            stop_triggered = False
 
-        # No early-stop break here by design.
+            epoch_loss = loss_sum / max(1, n_batches)
+            epoch_train_acc = float(train_correct / max(1, train_samples))
+            epoch_time_s = time.perf_counter() - epoch_start
+            cum_time_s = (history["cum_time_s"][-1] if history["cum_time_s"] else 0.0) + epoch_time_s
+            current_lr = float(opt.param_groups[0]["lr"])
+
+            history["train_loss"].append(epoch_loss)
+            history["train_acc"].append(epoch_train_acc)
+            history["train_f1"].append(float(train_f1))
+            history["val_loss"].append(float(val_loss))
+            history["val_acc"].append(val_acc)
+            history["val_f1"].append(val_f1)
+            history["test_loss"].append(float(test_loss))
+            history["test_acc"].append(float(test_acc))
+            history["test_f1"].append(float(test_f1))
+            history["lr"].append(float(current_lr))
+            history["epoch_time_s"].append(float(epoch_time_s))
+            history["cum_time_s"].append(float(cum_time_s))
+            history["best_val_loss"].append(float(best_val_loss))
+            history["best_epoch"].append(int(best_epoch))
+            history["current_GL"].append(float(current_gl))
+            history["stop_triggered"].append(bool(stop_triggered))
+            history["alpha"].append(float(gl_alpha))
+
+            if progress_callback is not None:
+                try:
+                    progress_callback(
+                        {
+                            "epoch": float(epoch + 1),
+                            "total_epochs": float(epochs),
+                            "train_loss": float(epoch_loss),
+                            "train_acc": float(epoch_train_acc),
+                            "train_f1": float(train_f1),
+                            "val_loss": float(val_loss),
+                            "val_acc": float(val_acc),
+                            "val_f1": float(val_f1),
+                            "test_loss": float(test_loss),
+                            "test_acc": float(test_acc),
+                            "test_f1": float(test_f1),
+                            "best_val_loss": float(best_val_loss),
+                            "best_epoch": float(best_epoch),
+                            "gl": float(current_gl),
+                            "lr": float(current_lr),
+                            "stop_triggered": float(1.0 if stop_triggered else 0.0),
+                        }
+                    )
+                except Exception:
+                    # Progress reporting should never break training.
+                    pass
+            print(
+                f"Epoch {epoch + 1}/{epochs} | "
+                f"TrainLoss: {epoch_loss:.4f} | "
+                f"TrainAcc: {epoch_train_acc * 100:.2f}% | "
+                f"ValLoss: {float(val_loss):.6f} | "
+                f"BestValLoss: {float(best_val_loss):.6f} | "
+                f"ValAcc: {val_acc * 100:.2f}% | "
+                f"ValF1: {val_f1 * 100:.2f}% | "
+                f"GL: {float(current_gl):.4f} | "
+                f"Alpha: {float(gl_alpha):.2f} | "
+                f"Stop: {stop_triggered} | "
+                f"LR: {current_lr:.6f}"
+            )
+
+            # No early-stop break here by design.
+    finally:
+        if dropout_backup:
+            _restore_dropout_p(dropout_backup)
 
     model.load_state_dict(best_weights)
+    if overfit_single_batch_debug:
+        final_train_loss = float(history["train_loss"][-1]) if history["train_loss"] else float("nan")
+        final_train_acc = float(history["train_acc"][-1]) if history["train_acc"] else float("nan")
+        if final_train_loss > 1e-2 or final_train_acc < 0.99:
+            print("[Single-Batch Debug] Model did not fully overfit the fixed batch.")
+            print("[Single-Batch Debug] Please inspect:")
+            print("  1. forward pass output shape / logits values")
+            print("  2. label alignment for the fixed batch")
+            print("  3. loss computation with raw logits + CrossEntropyLoss")
     return history
 
 
@@ -590,23 +734,115 @@ def save_training_curves(histories: Dict[str, Dict[str, List[float]]], save_path
     plt.close()
 
 
+def save_per_model_accuracy_loss_curves(
+    histories: Dict[str, Dict[str, List[float]]],
+    save_dir: Path,
+    expected_models: Optional[List[str]] = None,
+) -> None:
+    save_dir.mkdir(parents=True, exist_ok=True)
+    model_names: List[str]
+    if expected_models is not None and len(expected_models) > 0:
+        model_names = list(expected_models)
+    else:
+        model_names = list(histories.keys())
+
+    for model_name in model_names:
+        history = histories.get(model_name, {})
+        train_loss = np.asarray(history.get("train_loss", []), dtype=np.float64)
+        val_loss = np.asarray(history.get("val_loss", []), dtype=np.float64)
+        train_acc = np.asarray(history.get("train_acc", []), dtype=np.float64)
+        val_acc = np.asarray(history.get("val_acc", []), dtype=np.float64)
+
+        max_len = max(len(train_loss), len(val_loss), len(train_acc), len(val_acc))
+        if max_len == 0:
+            fig, ax = plt.subplots(figsize=(10, 6.5))
+            ax.set_title(f"{model_display_name(model_name)}: Accuracy and Loss vs Epoch")
+            ax.text(0.5, 0.5, "No training history available", ha="center", va="center", fontsize=12)
+            ax.set_axis_off()
+            plt.tight_layout()
+            plt.savefig(save_dir / f"accuracy_loss_{model_name}.png", dpi=300, bbox_inches="tight")
+            plt.close(fig)
+            continue
+
+        epochs = np.arange(1, max_len + 1, dtype=np.int32)
+        fig, ax1 = plt.subplots(figsize=(10, 6.5))
+        ax2 = ax1.twinx()
+
+        handles = []
+        labels = []
+
+        if len(train_acc) > 0:
+            h1, = ax1.plot(
+                np.arange(1, len(train_acc) + 1),
+                train_acc,
+                color="black",
+                linewidth=2.0,
+                label="Training accuracy",
+            )
+            handles.append(h1)
+            labels.append("Training accuracy")
+        if len(val_acc) > 0:
+            h2, = ax1.plot(
+                np.arange(1, len(val_acc) + 1),
+                val_acc,
+                color="red",
+                linewidth=2.0,
+                label="Validation accuracy",
+            )
+            handles.append(h2)
+            labels.append("Validation accuracy")
+        if len(train_loss) > 0:
+            h3, = ax2.plot(
+                np.arange(1, len(train_loss) + 1),
+                train_loss,
+                color="limegreen",
+                linewidth=1.8,
+                label="Training loss value",
+            )
+            handles.append(h3)
+            labels.append("Training loss value")
+        if len(val_loss) > 0:
+            h4, = ax2.plot(
+                np.arange(1, len(val_loss) + 1),
+                val_loss,
+                color="blue",
+                linewidth=1.8,
+                label="Validation loss value",
+            )
+            handles.append(h4)
+            labels.append("Validation loss value")
+
+        ax1.set_title(f"{model_display_name(model_name)}: Accuracy and Loss vs Epoch")
+        ax1.set_xlabel("Epochs")
+        ax1.set_ylabel("Accuracy")
+        ax2.set_ylabel("Loss value")
+        ax1.set_xlim(1, max_len)
+        ax1.set_ylim(0.0, 1.02)
+        ax1.grid(True, alpha=0.25)
+        ax1.legend(handles, labels, loc="upper right", frameon=True)
+
+        plt.tight_layout()
+        plt.savefig(save_dir / f"accuracy_loss_{model_name}.png", dpi=300, bbox_inches="tight")
+        plt.close(fig)
+
+
 _DEEP_FAMILY_BY_MODEL = {
     "LeNet": "CNN",
-    "AlexNet": "CNN",
     "ResNet18": "CNN",
     "MobileNet_V2": "CNN",
     "EfficientNet_B0": "CNN",
     "LSTM": "Temporal",
     "GRU": "Temporal",
     "CNN_LSTM": "Temporal",
+    "LeNet_LSTM": "Temporal",
     "TCN": "Temporal",
-    "ViT": "Transformer",
+    "Transformer": "Transformer",
 }
 
 _DEEP_FAMILY_ORDER = {
-    "CNN": ["LeNet", "AlexNet", "ResNet18", "MobileNet_V2", "EfficientNet_B0"],
-    "Temporal": ["LSTM", "GRU", "CNN_LSTM", "TCN"],
-    "Transformer": ["ViT"],
+    "CNN": ["LeNet", "ResNet18", "MobileNet_V2", "EfficientNet_B0"],
+    "Temporal": ["LSTM", "GRU", "CNN_LSTM", "LeNet_LSTM", "TCN"],
+    "Transformer": ["Transformer"],
 }
 
 _DEEP_FAMILY_CMAP = {
@@ -658,7 +894,7 @@ def _loss_overlay_base(
             continue
         epochs = np.arange(1, len(curve) + 1, dtype=np.int32)
         color = _deep_model_color(model_name)
-        plt.plot(epochs, curve, label=model_name, color=color, linewidth=2.2, alpha=0.95)
+        plt.plot(epochs, curve, label=model_display_name(model_name), color=color, linewidth=2.2, alpha=0.95)
         if with_std is not None and model_name in with_std:
             std_curve = np.asarray(with_std[model_name], dtype=np.float64)
             if std_curve.size == curve.size:
@@ -733,9 +969,9 @@ def save_training_curves_with_std(
         x_loss = np.arange(1, len(loss_mean) + 1)
         x_val = np.arange(1, len(val_mean) + 1)
 
-        axes[0].plot(x_loss, loss_mean, label=model_name, color=color, linewidth=2.0)
+        axes[0].plot(x_loss, loss_mean, label=model_display_name(model_name), color=color, linewidth=2.0)
         axes[0].fill_between(x_loss, loss_mean - loss_std, loss_mean + loss_std, color=color, alpha=0.18)
-        axes[1].plot(x_val, val_mean, label=model_name, color=color, linewidth=2.0)
+        axes[1].plot(x_val, val_mean, label=model_display_name(model_name), color=color, linewidth=2.0)
         axes[1].fill_between(
             x_val,
             val_mean - val_std,
@@ -805,7 +1041,7 @@ def save_convergence_diagnostics(
         ax = axes_flat[idx]
         epochs = np.arange(1, len(history.get("val_f1", [])) + 1, dtype=np.int32)
         if len(epochs) == 0:
-            ax.set_title(f"{model_name} (no history)")
+            ax.set_title(f"{model_display_name(model_name)} (no history)")
             ax.axis("off")
             continue
 
@@ -827,7 +1063,7 @@ def save_convergence_diagnostics(
                 label="Val Acc",
             )
         ax.axvline(best_epoch, color="#444444", linestyle=":", linewidth=1.4, alpha=0.8, label="Best Epoch")
-        ax.set_title(f"{model_name} | best epoch={best_epoch}", fontsize=11)
+        ax.set_title(f"{model_display_name(model_name)} | best epoch={best_epoch}", fontsize=11)
         ax.set_xlabel("Epoch", fontsize=10)
         ax.set_ylabel("Score (%)", fontsize=10)
         ax.grid(True, alpha=0.25)
@@ -880,13 +1116,13 @@ def save_convergence_diagnostics_with_std(
         runs = histories_by_model[model_name]
         ax = axes_flat[idx]
         if not runs:
-            ax.set_title(f"{model_name} (no history)")
+            ax.set_title(f"{model_display_name(model_name)} (no history)")
             ax.axis("off")
             continue
 
         max_len = max(len(run.get("val_f1", [])) for run in runs)
         if max_len == 0:
-            ax.set_title(f"{model_name} (no val_f1)")
+            ax.set_title(f"{model_display_name(model_name)} (no val_f1)")
             ax.axis("off")
             continue
 
@@ -924,7 +1160,7 @@ def save_convergence_diagnostics_with_std(
                 label="Val Acc mean",
             )
         ax.axvline(best_epoch, color="#444444", linestyle=":", linewidth=1.4, alpha=0.8, label="Best Mean Epoch")
-        ax.set_title(f"{model_name} | best mean epoch={best_epoch}", fontsize=11)
+        ax.set_title(f"{model_display_name(model_name)} | best mean epoch={best_epoch}", fontsize=11)
         ax.set_xlabel("Epoch", fontsize=10)
         ax.set_ylabel("Score (%)", fontsize=10)
         ax.grid(True, alpha=0.25)
@@ -948,7 +1184,7 @@ def save_per_class_f1_bars(per_class_f1: Dict[str, np.ndarray], save_path: Path)
     width = 0.8 / max(1, len(models))
 
     for i, model in enumerate(models):
-        plt.bar(x + i * width, per_class_f1[model], width, label=model)
+        plt.bar(x + i * width, per_class_f1[model], width, label=model_display_name(model))
 
     plt.xlabel("Class")
     plt.ylabel("F1 Score")
@@ -986,7 +1222,7 @@ def save_summary_bar_with_error(
         linewidth=0.5,
         capsize=4,
     )
-    plt.xticks(x, plot_df["model"].tolist(), rotation=30, ha="right")
+    plt.xticks(x, [model_display_name(m) for m in plot_df["model"].tolist()], rotation=30, ha="right")
     plt.ylabel(ylabel)
     plt.title(title)
     if "accuracy" in metric_col or "f1" in metric_col or "precision" in metric_col or "recall" in metric_col:
@@ -1082,6 +1318,10 @@ def _category_color(cat: str) -> str:
         "traditional": "#ff7f0e",
     }
     return palette.get(cat, "#7f7f7f")
+
+
+def _category_marker(cat: str) -> str:
+    return {"cnn": "o", "temporal": "s", "attention": "^", "traditional": "D"}.get(str(cat).lower(), "o")
 
 
 def _bubble_sizes(params_m: np.ndarray) -> np.ndarray:
@@ -1246,6 +1486,202 @@ def _pareto_frontier_xy(xs: np.ndarray, ys: np.ndarray) -> Tuple[np.ndarray, np.
             fy.append(float(y))
             best_y = y
     return np.asarray(fx, dtype=np.float64), np.asarray(fy, dtype=np.float64)
+
+
+def save_pareto_all_seeds_from_df(
+    df: pd.DataFrame,
+    save_path: Path,
+    *,
+    y_col: str,
+    y_label: str,
+    title_prefix: str,
+    x_col: str = "inference_ms",
+    x_label: str = "Inference Time (ms/sample)",
+    model_col: str = "model",
+    category_col: str = "category",
+    seed_col: str = "seed",
+    alpha_small: float = 0.55,
+) -> None:
+    required = {model_col, x_col, y_col}
+    if not required.issubset(df.columns):
+        return
+    plot_df = df.copy()
+    plot_df = plot_df[[c for c in [model_col, category_col, seed_col, x_col, y_col] if c in plot_df.columns]].dropna(subset=[model_col, x_col, y_col])
+    if plot_df.empty:
+        return
+
+    plot_df[x_col] = plot_df[x_col].astype(float)
+    plot_df[y_col] = plot_df[y_col].astype(float)
+    plot_df[model_col] = plot_df[model_col].astype(str)
+    if category_col in plot_df.columns:
+        plot_df[category_col] = plot_df[category_col].astype(str)
+    else:
+        plot_df[category_col] = "unknown"
+
+    x_span = float(max(plot_df[x_col].max() - plot_df[x_col].min(), 1e-9))
+    y_span = float(max(plot_df[y_col].max() - plot_df[y_col].min(), 1e-9))
+    x_jitter = 0.004 * x_span
+    y_jitter = 0.004 * y_span
+
+    fig, ax = plt.subplots(figsize=(10, 7))
+    mean_rows = []
+
+    for model_name, g in plot_df.groupby(model_col, sort=True):
+        g = g.sort_values(seed_col) if seed_col in g.columns else g.copy()
+        cat = str(g[category_col].iloc[0]) if category_col in g.columns else "unknown"
+        color = _category_color(cat)
+        marker = _category_marker(cat)
+        n = len(g)
+        if n == 1:
+            offsets = np.array([0.0], dtype=np.float64)
+        else:
+            offsets = np.linspace(-1.0, 1.0, n, dtype=np.float64)
+        xs = g[x_col].to_numpy(dtype=np.float64) + offsets * x_jitter
+        ys = g[y_col].to_numpy(dtype=np.float64) + offsets * y_jitter
+        ax.scatter(
+            xs,
+            ys,
+            color=color,
+            marker=marker,
+            s=58,
+            alpha=alpha_small,
+            edgecolors="none",
+            zorder=2,
+        )
+
+        x_mean = float(g[x_col].mean())
+        y_mean = float(g[y_col].mean())
+        x_std = float(g[x_col].std(ddof=0)) if len(g) > 1 else 0.0
+        y_std = float(g[y_col].std(ddof=0)) if len(g) > 1 else 0.0
+        mean_rows.append((model_name, cat, x_mean, y_mean, x_std, y_std))
+
+        ax.errorbar(
+            x_mean,
+            y_mean,
+            xerr=x_std if x_std > 0 else None,
+            yerr=y_std if y_std > 0 else None,
+            fmt="none",
+            ecolor=color,
+            elinewidth=1.3,
+            alpha=0.7,
+            capsize=3,
+            zorder=3,
+        )
+        ax.scatter(
+            [x_mean],
+            [y_mean],
+            color=color,
+            marker=marker,
+            s=180,
+            alpha=0.95,
+            edgecolors="black",
+            linewidths=1.0,
+            zorder=4,
+        )
+        ax.text(x_mean, y_mean, model_name, fontsize=8, ha="left", va="bottom")
+
+    if mean_rows:
+        frontier_x, frontier_y = _pareto_frontier_xy(
+            xs=np.asarray([r[2] for r in mean_rows], dtype=np.float64),
+            ys=np.asarray([r[3] for r in mean_rows], dtype=np.float64),
+        )
+        if len(frontier_x) > 0:
+            ax.plot(frontier_x, frontier_y, color="black", linestyle="--", linewidth=2.0, label="Pareto frontier (mean)")
+            ax.legend(frameon=False)
+
+    x_vals = plot_df[x_col].to_numpy(dtype=np.float64)
+    positive_x = x_vals[x_vals > 0]
+    if len(positive_x) > 0 and float(np.nanmax(positive_x) / max(1e-9, np.nanmin(positive_x))) > 8.0:
+        ax.set_xscale("log")
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+    ax.set_title(
+        f"{title_prefix}\nEach small point represents one seed; large marker represents the mean across seeds."
+    )
+    ax.grid(True, alpha=0.25)
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+
+def save_params_inference_all_seeds_from_df(
+    df: pd.DataFrame,
+    save_path: Path,
+    *,
+    x_col: str = "params_m",
+    y_col: str = "inference_ms",
+    model_col: str = "model",
+    category_col: str = "category",
+    seed_col: str = "seed",
+    alpha_small: float = 0.55,
+) -> None:
+    required = {model_col, x_col, y_col}
+    if not required.issubset(df.columns):
+        return
+    plot_df = df.copy()
+    plot_df = plot_df[[c for c in [model_col, category_col, seed_col, x_col, y_col] if c in plot_df.columns]].dropna(subset=[model_col, x_col, y_col])
+    if plot_df.empty:
+        return
+
+    plot_df[x_col] = plot_df[x_col].astype(float)
+    plot_df[y_col] = plot_df[y_col].astype(float)
+    plot_df[model_col] = plot_df[model_col].astype(str)
+    if category_col in plot_df.columns:
+        plot_df[category_col] = plot_df[category_col].astype(str)
+    else:
+        plot_df[category_col] = "unknown"
+
+    x_span = float(max(plot_df[x_col].max() - plot_df[x_col].min(), 1e-9))
+    y_span = float(max(plot_df[y_col].max() - plot_df[y_col].min(), 1e-9))
+    x_jitter = 0.004 * x_span
+    y_jitter = 0.004 * y_span
+
+    fig, ax = plt.subplots(figsize=(10, 7))
+    for model_name, g in plot_df.groupby(model_col, sort=True):
+        g = g.sort_values(seed_col) if seed_col in g.columns else g.copy()
+        cat = str(g[category_col].iloc[0]) if category_col in g.columns else "unknown"
+        color = _category_color(cat)
+        marker = _category_marker(cat)
+        n = len(g)
+        offsets = np.array([0.0], dtype=np.float64) if n == 1 else np.linspace(-1.0, 1.0, n, dtype=np.float64)
+        xs = g[x_col].to_numpy(dtype=np.float64) + offsets * x_jitter
+        ys = g[y_col].to_numpy(dtype=np.float64) + offsets * y_jitter
+        ax.scatter(xs, ys, color=color, marker=marker, s=58, alpha=alpha_small, edgecolors="none", zorder=2)
+
+        x_mean = float(g[x_col].mean())
+        y_mean = float(g[y_col].mean())
+        x_std = float(g[x_col].std(ddof=0)) if len(g) > 1 else 0.0
+        y_std = float(g[y_col].std(ddof=0)) if len(g) > 1 else 0.0
+        ax.errorbar(
+            x_mean,
+            y_mean,
+            xerr=x_std if x_std > 0 else None,
+            yerr=y_std if y_std > 0 else None,
+            fmt="none",
+            ecolor=color,
+            elinewidth=1.3,
+            alpha=0.7,
+            capsize=3,
+            zorder=3,
+        )
+        ax.scatter([x_mean], [y_mean], color=color, marker=marker, s=180, alpha=0.95, edgecolors="black", linewidths=1.0, zorder=4)
+        ax.text(x_mean, y_mean, model_name, fontsize=8, ha="left", va="bottom")
+
+    positive_x = plot_df[x_col].to_numpy(dtype=np.float64)
+    positive_x = positive_x[positive_x > 0]
+    positive_y = plot_df[y_col].to_numpy(dtype=np.float64)
+    positive_y = positive_y[positive_y > 0]
+    if len(positive_x) > 0 and float(np.nanmax(positive_x) / max(1e-9, np.nanmin(positive_x))) > 8.0:
+        ax.set_xscale("log")
+    if len(positive_y) > 0 and float(np.nanmax(positive_y) / max(1e-9, np.nanmin(positive_y))) > 8.0:
+        ax.set_yscale("log")
+    ax.set_xlabel("Parameters (M)")
+    ax.set_ylabel("Inference Time (ms/sample)")
+    ax.set_title("DL Runtime vs Parameter Count\nEach small point represents one seed; large marker represents the mean across seeds.")
+    ax.grid(True, alpha=0.25)
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
 
 
 def _plot_tradeoff_base(

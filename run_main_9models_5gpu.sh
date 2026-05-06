@@ -5,12 +5,13 @@ set -euo pipefail
 # Config (edit if needed)
 # ===============================
 DATA_ROOT="${DATA_ROOT:-/home/yaxin/datasets/TacAct-original}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-outputs_main_9models_5gpu}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-outputs_main_experiment_$(date +%Y%m%d_%H%M%S)}"
 SEED="${SEED:-42}"
 SPLIT_MODE="${SPLIT_MODE:-subject}"
 EPOCHS="${EPOCHS:-50}"
 BATCH_SIZE="${BATCH_SIZE:-32}"
-NUM_WORKERS="${NUM_WORKERS:-8}"
+NUM_WORKERS="${NUM_WORKERS:-4}"
+PREFETCH_FACTOR="${PREFETCH_FACTOR:-2}"
 AMP_INFER="${AMP_INFER:-1}"            # 1 -> add --amp_infer
 SKIP_CACHE_WARMUP="${SKIP_CACHE_WARMUP:-1}"  # 1 -> add --skip_cache_warmup
 NO_PRELOAD="${NO_PRELOAD:-1}"          # 1 -> add --no_preload
@@ -56,10 +57,10 @@ fi
 # - All jobs run deep-only via --run_mode deep.
 
 GPU0_MODELS="CNN_LSTM"
-GPU1_MODELS="ViT"
+GPU1_MODELS="Transformer"
 GPU2_MODELS="TCN,LeNet"
 GPU3_MODELS="ResNet18,LSTM"
-GPU4_MODELS="AlexNet,MobileNet_V2,EfficientNet_B0"
+GPU4_MODELS="MobileNet_V2,EfficientNet_B0"
 
 # Per-job output dirs
 GPU0_OUT="${RUN_ROOT}/gpu0"
@@ -119,6 +120,7 @@ JSON
     --epochs "${EPOCHS}"
     --batch_size "${BATCH_SIZE}"
     --num_workers "${NUM_WORKERS}"
+    --prefetch_factor "${PREFETCH_FACTOR}"
   )
   if [[ -n "${BEST_CONFIG_PATH}" ]]; then
     cmd+=(--best_config_path "${BEST_CONFIG_PATH}")
@@ -170,6 +172,7 @@ echo "[Data Root] ${DATA_ROOT}"
 echo "[Seed] ${SEED}"
 echo "[Split Mode] ${SPLIT_MODE}"
 echo "[Epochs] ${EPOCHS}"
+echo "[Loader] NUM_WORKERS=${NUM_WORKERS}, PREFETCH_FACTOR=${PREFETCH_FACTOR}"
 echo "[Deep-Only] enabled via --run_mode deep"
 echo "[Warmup Policy] SKIP_CACHE_WARMUP=${SKIP_CACHE_WARMUP}, NO_PRELOAD=${NO_PRELOAD}"
 if [[ -n "${BEST_CONFIG_PATH}" ]]; then

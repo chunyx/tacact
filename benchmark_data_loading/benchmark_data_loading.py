@@ -9,6 +9,7 @@ import os
 import re
 import time
 from pathlib import Path
+from typing import Tuple
 
 import psutil
 from torch.utils.data import DataLoader
@@ -40,7 +41,49 @@ def get_memory_usage():
     return process.memory_info().rss / 1024 / 1024
 
 
-def benchmark_dataset(dataset_name, data_root, batch_size=32, num_workers=0, preload_cache=False):
+def _scan_cache_hit_ratio(data_root: Path, cache_dir: Path) -> Tuple[int, int, float]:
+    """Estimate cache completeness with a simple file-count heuristic."""
+    xlsx_count = sum(1 for _ in data_root.rglob("*.xlsx"))
+    cache_count = sum(1 for _ in cache_dir.glob("*.npy")) if cache_dir.exists() else 0
+    ratio = cache_count / max(1, xlsx_count)
+    return xlsx_count, cache_count, ratio
+
+
+def _should_enable_preload(
+    requested_preload: bool,
+    preload_mode: str,
+    data_root: Path,
+    cache_dir: Path,
+    min_hit_ratio: float,
+) -> bool:
+    if not requested_preload:
+        return False
+    if preload_mode == "on":
+        return True
+    if preload_mode == "off":
+        return False
+
+    xlsx_count, cache_count, hit_ratio = _scan_cache_hit_ratio(data_root, cache_dir)
+    print(
+        f"[Preload Auto] xlsx={xlsx_count} cache_npy={cache_count} "
+        f"hit_ratio={hit_ratio:.3f} threshold={min_hit_ratio:.3f}"
+    )
+    if hit_ratio < min_hit_ratio:
+        print("[Preload Auto] Cache is incomplete; disable preload_cache for this run.")
+        return False
+    print("[Preload Auto] Cache is sufficiently warm; enable preload_cache.")
+    return True
+
+
+def benchmark_dataset(
+    dataset_name,
+    data_root,
+    batch_size=32,
+    num_workers=0,
+    preload_cache=False,
+    preload_mode="auto",
+    preload_min_hit_ratio=0.95,
+):
     """测试数据集性能"""
     print(f"\n{'='*50}")
     print(f"测试 {dataset_name}")
@@ -53,6 +96,17 @@ def benchmark_dataset(dataset_name, data_root, batch_size=32, num_workers=0, pre
     suffix = _cache_suffix(dataset_name)
     cache_dir = Path(f"{BASE_CACHE_NAME}_{suffix}")
     print(f"Cache directory: {cache_dir}")
+    effective_preload = _should_enable_preload(
+        requested_preload=preload_cache,
+        preload_mode=preload_mode,
+        data_root=Path(data_root),
+        cache_dir=cache_dir,
+        min_hit_ratio=preload_min_hit_ratio,
+    )
+    print(
+        f"Preload setting: requested={preload_cache} "
+        f"mode={preload_mode} effective={effective_preload}"
+    )
 
     # 创建数据集
     start_time = time.time()
@@ -61,7 +115,7 @@ def benchmark_dataset(dataset_name, data_root, batch_size=32, num_workers=0, pre
         n_frames=80, 
         clip_mode="weighted_center",
         cache_dir=cache_dir,
-        preload_cache=preload_cache,
+        preload_cache=effective_preload,
     )
     dataset_creation_time = time.time() - start_time
     print(f"数据集创建时间: {dataset_creation_time:.2f} 秒")
@@ -139,21 +193,48 @@ def main():
     parser.add_argument("--data_root", type=Path, required=True, help="数据根目录")
     parser.add_argument("--batch_size", type=int, default=32, help="批次大小")
     parser.add_argument("--num_workers", type=int, default=0, help="DataLoader工作进程数")
+    parser.add_argument(
+        "--preload_mode",
+        type=str,
+        choices=["auto", "on", "off"],
+        default="auto",
+        help="preload_cache启用策略: auto(按缓存完整度判断)/on/off",
+    )
+    parser.add_argument(
+        "--preload_min_hit_ratio",
+        type=float,
+        default=0.95,
+        help="auto模式下启用preload的最小缓存命中率阈值",
+    )
     args = parser.parse_args()
     
     print("数据加载性能对比测试")
     print(f"数据目录: {args.data_root}")
     print(f"批次大小: {args.batch_size}")
     print(f"工作进程数: {args.num_workers}")
+    print(f"preload模式: {args.preload_mode}")
+    print(f"preload阈值: {args.preload_min_hit_ratio:.3f}")
     
     # 测试基础配置（不预加载内存缓存）
     original_results = benchmark_dataset(
-        "基础配置", args.data_root, args.batch_size, args.num_workers, preload_cache=False
+        "基础配置",
+        args.data_root,
+        args.batch_size,
+        args.num_workers,
+        preload_cache=False,
+        preload_mode=args.preload_mode,
+        preload_min_hit_ratio=args.preload_min_hit_ratio,
     )
     
     # 测试优化配置（预加载内存缓存）
     optimized_results = benchmark_dataset(
-        "优化配置", args.data_root, args.batch_size, args.num_workers, preload_cache=True
+        "优化配置",
+        args.data_root,
+        args.batch_size,
+        args.num_workers,
+        preload_cache=True,
+        preload_mode=args.preload_mode,
+        preload_min_hit_ratio=args.preload_min_hit_ratio,
     )
     
     # 性能对比
@@ -175,18 +256,26 @@ def main():
         
         if key == 'samples_per_second':
             # 越大越好
-            improvement = (optimized_val - original_val) / original_val * 100
+            improvement = (optimized_val - original_val) / max(abs(original_val), 1e-12) * 100
             comparison = f"{original_val:.1f} -> {optimized_val:.1f} ({improvement:+.1f}%)"
         else:
             # 越小越好
-            improvement = (original_val - optimized_val) / original_val * 100
+            improvement = (original_val - optimized_val) / max(abs(original_val), 1e-12) * 100
             comparison = f"{original_val:.2f} -> {optimized_val:.2f} ({improvement:+.1f}%)"
         
         print(f"{name:12} ({unit}): {comparison}")
     
     print(f"\n优化效果总结:")
-    speed_improvement = (optimized_results['samples_per_second'] - original_results['samples_per_second']) / original_results['samples_per_second'] * 100
-    memory_reduction = (original_results['memory_increase_mb'] - optimized_results['memory_increase_mb']) / original_results['memory_increase_mb'] * 100
+    speed_improvement = (
+        (optimized_results['samples_per_second'] - original_results['samples_per_second'])
+        / max(abs(original_results['samples_per_second']), 1e-12)
+        * 100
+    )
+    memory_reduction = (
+        (original_results['memory_increase_mb'] - optimized_results['memory_increase_mb'])
+        / max(abs(original_results['memory_increase_mb']), 1e-12)
+        * 100
+    )
     
     print(f"  处理速度提升: {speed_improvement:+.1f}%")
     print(f"  内存使用减少: {memory_reduction:+.1f}%")

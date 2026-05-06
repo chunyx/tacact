@@ -8,8 +8,8 @@ set -euo pipefail
 # 4) auto-merge old+new metrics into one final merged output
 
 DATA_ROOT="${DATA_ROOT:-/home/yaxin/datasets/TacAct-original}"
-OLD_RUN_ROOT="${OLD_RUN_ROOT:-outputs_main_9models_5gpu}"
-RECOVERY_ROOT_BASE="${RECOVERY_ROOT_BASE:-outputs_main_9models_5gpu_recovery}"
+OLD_RUN_ROOT="${OLD_RUN_ROOT:-outputs_main_experiment}"
+RECOVERY_ROOT_BASE="${RECOVERY_ROOT_BASE:-outputs_main_recovery_$(date +%Y%m%d_%H%M%S)}"
 SEED="${SEED:-42}"
 SPLIT_MODE="${SPLIT_MODE:-subject}"
 EPOCHS="${EPOCHS:-50}"
@@ -85,11 +85,11 @@ verify_old_group \
   "${OLD_RUN_ROOT}/gpu0/${SPLIT_MODE}_seed${SEED}" \
   "${OLD_GPU0_METRICS}"
 verify_old_group \
-  "gpu1(ViT)" \
+  "gpu1(Transformer)" \
   "${OLD_RUN_ROOT}/gpu1/${SPLIT_MODE}_seed${SEED}" \
   "${OLD_GPU1_METRICS}"
 verify_old_group \
-  "gpu4(AlexNet,MobileNet_V2,EfficientNet_B0)" \
+  "gpu4(MobileNet_V2,EfficientNet_B0)" \
   "${OLD_RUN_ROOT}/gpu4/${SPLIT_MODE}_seed${SEED}" \
   "${OLD_GPU4_METRICS}"
 

@@ -19,11 +19,15 @@ HP_KEYS = {
     "dropout",
     "use_last_only",
     "lstm_hidden",
+    "feature_dim",
+    "encoder_hidden_dim",
+    "bidirectional",
     "num_channels",
-    "dim",
-    "depth",
-    "heads",
-    "patch_size",
+    "d_model",
+    "nhead",
+    "dim_feedforward",
+    "pooling",
+    "norm_first",
 }
 
 RUNTIME_KEYS = {
@@ -130,4 +134,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

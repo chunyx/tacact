@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DATA_ROOT="${DATA_ROOT:-/home/yaxin/datasets/TacAct-original}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-outputs_main_experiment_$(date +%Y%m%d_%H%M%S)}"
+OUTPUT_ROOT="${OUTPUT_ROOT:-outputs_main_experiment_fastio_$(date +%Y%m%d_%H%M%S)}"
 SEED="${SEED:-42}"
 SPLIT_MODE="${SPLIT_MODE:-subject}"
 EPOCHS="${EPOCHS:-50}"
@@ -58,25 +58,20 @@ if [[ -z "${BEST_CONFIG_PATH}" ]] && [[ -f "${DEFAULT_COMBINED_BEST_CONFIG}" ]];
   BEST_CONFIG_PATH="${DEFAULT_COMBINED_BEST_CONFIG}"
 fi
 
-# Balanced 8-GPU split (AlexNet removed).
+# 9-GPU split, AlexNet removed from final fair comparison.
 GPU0_MODELS="CNN_LSTM"
-GPU1_MODELS="Transformer"
-GPU2_MODELS="TCN"
-GPU3_MODELS="ResNet18"
-GPU4_MODELS="EfficientNet_B0"
-GPU5_MODELS="LeNet"
-GPU6_MODELS="LSTM"
-GPU7_MODELS="MobileNet_V2,GRU,LeNet_LSTM"
+GPU1_MODELS="TCN"
+GPU2_MODELS="ResNet18"
+GPU3_MODELS="EfficientNet_B0"
+GPU4_MODELS="LSTM"
+GPU5_MODELS="GRU"
+GPU6_MODELS="MobileNet_V2"
+GPU7_MODELS="LeNet"
+GPU8_MODELS=""
 
-GPU0_OUT="${RUN_ROOT}/gpu0"
-GPU1_OUT="${RUN_ROOT}/gpu1"
-GPU2_OUT="${RUN_ROOT}/gpu2"
-GPU3_OUT="${RUN_ROOT}/gpu3"
-GPU4_OUT="${RUN_ROOT}/gpu4"
-GPU5_OUT="${RUN_ROOT}/gpu5"
-GPU6_OUT="${RUN_ROOT}/gpu6"
-GPU7_OUT="${RUN_ROOT}/gpu7"
-mkdir -p "${GPU0_OUT}" "${GPU1_OUT}" "${GPU2_OUT}" "${GPU3_OUT}" "${GPU4_OUT}" "${GPU5_OUT}" "${GPU6_OUT}" "${GPU7_OUT}"
+for g in 0 1 2 3 4 5 6 7 8; do
+  mkdir -p "${RUN_ROOT}/gpu${g}"
+done
 
 EXTRA_FLAGS=()
 if [[ "${AMP_INFER}" == "1" ]]; then
@@ -92,13 +87,14 @@ fi
 run_job() {
   local gpu_id="$1"
   local model_list="$2"
-  local out_dir="$3"
-  local log_file="$4"
+  local out_dir="${RUN_ROOT}/gpu${gpu_id}"
+  local log_file="${LOG_DIR}/gpu${gpu_id}.log"
   local status_file="${STATUS_DIR}/gpu${gpu_id}.json"
   local queue_total=0
   if [[ -n "${model_list}" ]]; then
     queue_total=$(awk -F',' '{print NF}' <<< "${model_list}")
   fi
+
   cat > "${status_file}" <<JSON
 {
   "status": "queued",
@@ -195,8 +191,7 @@ PY
 terminate_all_children() {
   local signal_name="$1"
   local signal_num="$2"
-  local already_seen=()
-  for g in 0 1 2 3 4 5 6 7; do
+  for g in 0 1 2 3 4 5 6 7 8; do
     local pid_file="${LOG_DIR}/gpu${g}.pid"
     local status_file="${STATUS_DIR}/gpu${g}.json"
     if [[ -f "${pid_file}" ]]; then
@@ -246,92 +241,79 @@ log "[GPU Split] GPU4: ${GPU4_MODELS}"
 log "[GPU Split] GPU5: ${GPU5_MODELS}"
 log "[GPU Split] GPU6: ${GPU6_MODELS}"
 log "[GPU Split] GPU7: ${GPU7_MODELS}"
+log "[GPU Split] GPU8: ${GPU8_MODELS}"
 log "[Status Dir] ${STATUS_DIR}"
 log "[Watcher] python watch_main_9models_5gpu.py --run_root ${RUN_ROOT} --gpu_count 8"
 
-run_job 0 "${GPU0_MODELS}" "${GPU0_OUT}" "${LOG_DIR}/gpu0.log"
-run_job 1 "${GPU1_MODELS}" "${GPU1_OUT}" "${LOG_DIR}/gpu1.log"
-run_job 2 "${GPU2_MODELS}" "${GPU2_OUT}" "${LOG_DIR}/gpu2.log"
-run_job 3 "${GPU3_MODELS}" "${GPU3_OUT}" "${LOG_DIR}/gpu3.log"
-run_job 4 "${GPU4_MODELS}" "${GPU4_OUT}" "${LOG_DIR}/gpu4.log"
-run_job 5 "${GPU5_MODELS}" "${GPU5_OUT}" "${LOG_DIR}/gpu5.log"
-run_job 6 "${GPU6_MODELS}" "${GPU6_OUT}" "${LOG_DIR}/gpu6.log"
-run_job 7 "${GPU7_MODELS}" "${GPU7_OUT}" "${LOG_DIR}/gpu7.log"
+if [[ -n "${GPU0_MODELS}" ]]; then run_job 0 "${GPU0_MODELS}"; fi
+if [[ -n "${GPU1_MODELS}" ]]; then run_job 1 "${GPU1_MODELS}"; fi
+if [[ -n "${GPU2_MODELS}" ]]; then run_job 2 "${GPU2_MODELS}"; fi
+if [[ -n "${GPU3_MODELS}" ]]; then run_job 3 "${GPU3_MODELS}"; fi
+if [[ -n "${GPU4_MODELS}" ]]; then run_job 4 "${GPU4_MODELS}"; fi
+if [[ -n "${GPU5_MODELS}" ]]; then run_job 5 "${GPU5_MODELS}"; fi
+if [[ -n "${GPU6_MODELS}" ]]; then run_job 6 "${GPU6_MODELS}"; fi
+if [[ -n "${GPU7_MODELS}" ]]; then run_job 7 "${GPU7_MODELS}"; fi
+if [[ -n "${GPU8_MODELS}" ]]; then run_job 8 "${GPU8_MODELS}"; fi
 
 set +e
 FAIL_WAIT=0
-for g in 0 1 2 3 4 5 6 7; do
+for g in 0 1 2 3 4 5 6 7 8; do
   pid_file="${LOG_DIR}/gpu${g}.pid"
-  if [[ -f "${pid_file}" ]]; then
-    pid="$(cat "${pid_file}")"
-    wait "${pid}"
-    rc=$?
-    status_file="${STATUS_DIR}/gpu${g}.json"
-    if [[ ${rc} -ne 0 ]]; then
-      if [[ ${rc} -ge 128 ]]; then
-        sig_num=$((rc - 128))
-        sig_name="$(kill -l "${sig_num}" 2>/dev/null || echo "SIG${sig_num}")"
-        update_final_status "${status_file}" "terminated" "${rc}" "${sig_name}"
-        log "[EXIT][GPU${g}] pid=${pid} terminated by signal ${sig_name} (exit_code=${rc})"
-      else
-        update_final_status "${status_file}" "failed" "${rc}" ""
-        log "[EXIT][GPU${g}] pid=${pid} failed with exit_code=${rc}"
-      fi
-      FAIL_WAIT=1
-    else
-      update_final_status "${status_file}" "done" "${rc}" ""
-      log "[EXIT][GPU${g}] pid=${pid} finished successfully (exit_code=${rc})"
-    fi
+  status_file="${STATUS_DIR}/gpu${g}.json"
+  if [[ ! -f "${pid_file}" ]]; then
+    log "[ERROR] Missing pid file for GPU${g}: ${pid_file}"
+    FAIL_WAIT=1
+    update_final_status "${status_file}" "failed" "1" ""
+    continue
+  fi
+  pid="$(cat "${pid_file}")"
+  wait "${pid}"
+  rc=$?
+  if [[ ${rc} -eq 0 ]]; then
+    log "[Exit][GPU${g}] rc=0"
+    update_final_status "${status_file}" "done" "0" ""
+  elif [[ ${rc} -ge 128 ]]; then
+    sig_num=$((rc - 128))
+    case "${sig_num}" in
+      1) sig_name="SIGHUP" ;;
+      2) sig_name="SIGINT" ;;
+      15) sig_name="SIGTERM" ;;
+      *) sig_name="SIG${sig_num}" ;;
+    esac
+    log "[Exit][GPU${g}] rc=${rc} signal=${sig_name}"
+    update_final_status "${status_file}" "terminated" "${rc}" "${sig_name}"
+    FAIL_WAIT=1
   else
-    log "[ERROR] Missing PID file for GPU${g}"
+    log "[Exit][GPU${g}] rc=${rc}"
+    update_final_status "${status_file}" "failed" "${rc}" ""
     FAIL_WAIT=1
   fi
 done
 set -e
 
-METRICS=(
-  "${GPU0_OUT}/${SPLIT_MODE}_seed${SEED}/metrics.csv"
-  "${GPU1_OUT}/${SPLIT_MODE}_seed${SEED}/metrics.csv"
-  "${GPU2_OUT}/${SPLIT_MODE}_seed${SEED}/metrics.csv"
-  "${GPU3_OUT}/${SPLIT_MODE}_seed${SEED}/metrics.csv"
-  "${GPU4_OUT}/${SPLIT_MODE}_seed${SEED}/metrics.csv"
-  "${GPU5_OUT}/${SPLIT_MODE}_seed${SEED}/metrics.csv"
-  "${GPU6_OUT}/${SPLIT_MODE}_seed${SEED}/metrics.csv"
-  "${GPU7_OUT}/${SPLIT_MODE}_seed${SEED}/metrics.csv"
-)
+if [[ ${FAIL_WAIT} -ne 0 ]]; then
+  log "[Run Result] at least one GPU job failed/terminated"
+  exit 1
+fi
 
-MISSING=()
-for p in "${METRICS[@]}"; do
-  if [[ ! -f "${p}" ]]; then
-    MISSING+=("${p}")
+METRICS_CSVS=""
+for g in 0 1 2 3 4 5 6 7 8; do
+  metrics_path="${RUN_ROOT}/gpu${g}/${SPLIT_MODE}_seed${SEED}/metrics.csv"
+  if [[ ! -f "${metrics_path}" ]]; then
+    log "[ERROR] Missing metrics file: ${metrics_path}"
+    exit 1
+  fi
+  if [[ -z "${METRICS_CSVS}" ]]; then
+    METRICS_CSVS="${metrics_path}"
+  else
+    METRICS_CSVS="${METRICS_CSVS},${metrics_path}"
   fi
 done
 
-if [[ ${#MISSING[@]} -gt 0 ]]; then
-  log "[ERROR] Missing metrics.csv from the following jobs:"
-  for p in "${MISSING[@]}"; do
-    log "  - ${p}"
-  done
-  log "[Hint] Check logs under: ${LOG_DIR}"
-  exit 1
-fi
+log "[Merge] python benchmark_data_loading/experiment_tacact.py --data_root ${DATA_ROOT} --output_dir ${MERGED_DIR} --merge_metrics_csvs ${METRICS_CSVS}"
+python benchmark_data_loading/experiment_tacact.py \
+  --data_root "${DATA_ROOT}" \
+  --output_dir "${MERGED_DIR}" \
+  --merge_metrics_csvs "${METRICS_CSVS}"
 
-if [[ ${FAIL_WAIT} -ne 0 ]]; then
-  log "[ERROR] At least one job exited non-zero; abort merge."
-  exit 1
-fi
-
-MERGE_CSVS="$(IFS=,; echo "${METRICS[*]}")"
-MERGE_CMD=(
-  python benchmark_data_loading/experiment_tacact.py
-  --data_root "${DATA_ROOT}"
-  --output_dir "${MERGED_DIR}"
-  --merge_metrics_csvs "${MERGE_CSVS}"
-)
-
-log "[Merge] ${MERGE_CMD[*]}"
-"${MERGE_CMD[@]}"
-log "[Done] Merge completed successfully"
-
-echo "[DONE] Unified merged outputs: ${MERGED_DIR}"
-echo "[DONE] Run root: ${RUN_ROOT}"
+log "[Done] merged outputs at ${MERGED_DIR}"

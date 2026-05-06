@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import re
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
@@ -59,6 +61,10 @@ class TacActDataset(Dataset):
         self.preload_cache = preload_cache
         self.enable_memory_cache = bool(preload_cache)
         self.num_workers = num_workers
+        self.use_combined_cache = bool(
+            self.cache_dir is not None
+            and os.environ.get("TACACT_DISABLE_COMBINED_CACHE", "").strip().lower() not in {"1", "true", "yes", "y"}
+        )
         env_trace = os.environ.get("TACACT_CACHE_TRACE", "").strip().lower() in {"1", "true", "yes", "y"}
         self.cache_trace = bool(cache_trace or env_trace)
         self.cache_trace_limit = int(os.environ.get("TACACT_CACHE_TRACE_LIMIT", "200"))
@@ -83,23 +89,36 @@ class TacActDataset(Dataset):
         self._cache_lock = threading.Lock()
         self._cache_stats = {
             "total": 0,
+            "combined_hit": 0,
             "memory_hit": 0,
             "disk_hit": 0,
             "disk_miss_xlsx": 0,
             "raw_xlsx_read": 0,
         }
         self._trace_printed = 0
+        self._all_individual_cache_exist = False
+        self._combined_cache_path: Optional[Path] = None
+        self._combined_meta_path: Optional[Path] = None
+        self._combined_lock_path: Optional[Path] = None
+        self._combined_memmap: Optional[np.ndarray] = None
         if self.cache_dir is not None:
             existing = 0
             for meta in self.samples:
                 if self._cache_path_for(meta.path).exists():
                     existing += 1
             missing = len(self.samples) - existing
+            self._all_individual_cache_exist = missing == 0
             ratio = existing / max(1, len(self.samples))
             print(
                 f"[Dataset Cache Scan] dir={self.cache_dir} total={len(self.samples)} "
                 f"existing={existing} missing={missing} hit_ratio={ratio:.3f}"
             )
+            if self.use_combined_cache:
+                cache_tag = f"n{self.n_frames}_{self.clip_mode}_standardized_f32"
+                self._combined_cache_path = self.cache_dir / f"combined_{cache_tag}.npy"
+                self._combined_meta_path = self.cache_dir / f"combined_{cache_tag}.json"
+                self._combined_lock_path = self.cache_dir / f"combined_{cache_tag}.lock"
+                self._prepare_combined_cache()
 
         if self.preload_cache and self.cache_dir is not None:
             print("[Dataset] Preload ENABLED (single-process mode)")
@@ -168,6 +187,7 @@ class TacActDataset(Dataset):
         state = self.__dict__.copy()
         state["_cache_lock"] = None
         state["_memory_cache"] = {}
+        state["_combined_memmap"] = None
         return state
 
     def __setstate__(self, state):
@@ -175,6 +195,8 @@ class TacActDataset(Dataset):
         self._cache_lock = threading.Lock()
         if not hasattr(self, "_memory_cache") or self._memory_cache is None:
             self._memory_cache = {}
+        self._combined_memmap = None
+        self._open_combined_cache()
 
     @staticmethod
     def _read_excel_optimized(path: Path) -> np.ndarray:
@@ -295,6 +317,101 @@ class TacActDataset(Dataset):
         key = hashlib.sha1(str(path).encode("utf-8")).hexdigest()[:16]
         return self.cache_dir / f"{path.stem}_{key}.npy"
 
+    def _combined_cache_meta(self) -> Dict[str, object]:
+        return {
+            "version": 1,
+            "n_samples": int(len(self.samples)),
+            "n_frames": int(self.n_frames),
+            "shape": [int(len(self.samples)), int(self.n_frames), 32, 32],
+            "dtype": "float32",
+            "clip_mode": str(self.clip_mode),
+        }
+
+    def _is_combined_cache_ready(self) -> bool:
+        if self._combined_cache_path is None or self._combined_meta_path is None:
+            return False
+        if not self._combined_cache_path.exists() or not self._combined_meta_path.exists():
+            return False
+        try:
+            meta = json.loads(self._combined_meta_path.read_text(encoding="utf-8"))
+        except Exception:
+            return False
+        expected = self._combined_cache_meta()
+        return all(meta.get(k) == v for k, v in expected.items())
+
+    def _open_combined_cache(self) -> None:
+        if not self._is_combined_cache_ready() or self._combined_cache_path is None:
+            self._combined_memmap = None
+            return
+        try:
+            self._combined_memmap = np.load(self._combined_cache_path, mmap_mode="r")
+            print(f"[Dataset Combined Cache] ENABLED path={self._combined_cache_path}")
+        except Exception as exc:
+            self._combined_memmap = None
+            print(f"[WARN] Failed to open combined cache {self._combined_cache_path}: {exc}")
+
+    def _build_combined_cache(self) -> None:
+        if self._combined_cache_path is None or self._combined_meta_path is None:
+            return
+        shape = (len(self.samples), self.n_frames, 32, 32)
+        print(f"[Dataset Combined Cache] Building consolidated cache at {self._combined_cache_path} ...")
+        memmap = np.lib.format.open_memmap(
+            self._combined_cache_path,
+            mode="w+",
+            dtype=np.float32,
+            shape=shape,
+        )
+        for idx, meta in enumerate(self.samples):
+            cache_path = self._cache_path_for(meta.path)
+            if cache_path.exists():
+                frames = np.load(cache_path, allow_pickle=True)
+            else:
+                frames = self._preprocess(self._read_excel_optimized(meta.path), sample_path=meta.path)
+                tmp = cache_path.with_suffix(".tmp.npy")
+                np.save(tmp, frames)
+                tmp.replace(cache_path)
+            memmap[idx] = self._safe_standardize(frames)
+        memmap.flush()
+        self._combined_meta_path.write_text(
+            json.dumps(self._combined_cache_meta(), ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        print(f"[Dataset Combined Cache] Build complete: shape={shape}")
+
+    def _prepare_combined_cache(self) -> None:
+        if not self.use_combined_cache:
+            return
+        if self._is_combined_cache_ready():
+            self._open_combined_cache()
+            return
+        if not self._all_individual_cache_exist:
+            print("[Dataset Combined Cache] SKIPPED (individual cache incomplete).")
+            return
+        if self._combined_lock_path is None:
+            return
+        lock_acquired = False
+        try:
+            lock_fd = os.open(self._combined_lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            os.close(lock_fd)
+            lock_acquired = True
+            self._build_combined_cache()
+        except FileExistsError:
+            print("[Dataset Combined Cache] Waiting for another process to finish building...")
+            deadline = time.time() + 1800.0
+            while time.time() < deadline:
+                if self._is_combined_cache_ready():
+                    break
+                if not self._combined_lock_path.exists():
+                    break
+                time.sleep(2.0)
+        finally:
+            if lock_acquired and self._combined_lock_path.exists():
+                try:
+                    self._combined_lock_path.unlink()
+                except Exception:
+                    pass
+        self._open_combined_cache()
+
     def _preload_cache(self) -> None:
         print(f"Preloading cached samples into memory ({len(self.samples)} total)...")
 
@@ -347,8 +464,14 @@ class TacActDataset(Dataset):
         path_str = str(meta.path)
         use_memory_cache = self.enable_memory_cache and (get_worker_info() is None)
         source = "unknown"
+        standardized_in_cache = False
 
-        if use_memory_cache and path_str in self._memory_cache:
+        if self._combined_memmap is not None:
+            frames = np.asarray(self._combined_memmap[idx], dtype=np.float32)
+            source = "combined_cache_hit"
+            standardized_in_cache = True
+            self._cache_stats["combined_hit"] += 1
+        elif use_memory_cache and path_str in self._memory_cache:
             frames = self._memory_cache[path_str].copy()
             source = "memory_cache_hit"
             self._cache_stats["memory_hit"] += 1
@@ -387,15 +510,17 @@ class TacActDataset(Dataset):
                 print(
                     "[Dataset Trace Summary] "
                     f"total={self._cache_stats['total']} "
+                    f"combined_hit={self._cache_stats['combined_hit']} "
                     f"memory_hit={self._cache_stats['memory_hit']} "
                     f"disk_hit={self._cache_stats['disk_hit']} "
                     f"disk_miss_xlsx={self._cache_stats['disk_miss_xlsx']} "
                     f"raw_xlsx_read={self._cache_stats['raw_xlsx_read']}"
                 )
 
-        frames = self._safe_standardize(frames)
+        if not standardized_in_cache:
+            frames = self._safe_standardize(frames)
         label = LABEL_MAP[meta.gesture]
-        return torch.from_numpy(frames).float(), label
+        return torch.from_numpy(frames), label
 
 
 # Backward-compatible alias.

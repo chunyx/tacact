@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import json
+from collections import Counter
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -57,6 +59,7 @@ def warmup_cache(
     *,
     batch_size: int = 128,
     num_workers: int = 0,
+    prefetch_factor: int = 2,
     max_batches: Optional[int] = None,
     shuffle: bool = False,
     pin_memory: bool = False,
@@ -69,13 +72,17 @@ def warmup_cache(
     max_batches=None 表示遍历完整个 dataset；
     max_batches=1 表示只跑一个 batch（用于轻量预热）。
     """
-    loader = DataLoader(
-        dataset,
+    loader_kwargs = dict(
+        dataset=dataset,
         batch_size=batch_size,
         shuffle=shuffle,
         num_workers=num_workers,
         pin_memory=pin_memory,
     )
+    if num_workers > 0:
+        loader_kwargs["persistent_workers"] = True
+        loader_kwargs["prefetch_factor"] = max(1, int(prefetch_factor))
+    loader = DataLoader(**loader_kwargs)
 
     it: Optional[object] = None
     if use_tqdm:
@@ -179,6 +186,87 @@ def split_indices_train_val(
     return train_idx, val_idx
 
 
+def build_split_audit(
+    dataset: Dataset,
+    *,
+    split_mode: str,
+    seed: int,
+    train_ratio: float,
+    val_ratio: float,
+    train_idx: List[int],
+    val_idx: List[int],
+    test_idx: List[int],
+) -> Dict[str, Any]:
+    samples = getattr(dataset, "samples", None)
+    if samples is None:
+        raise ValueError("Dataset does not expose `samples`; cannot build split audit.")
+
+    def _stats(idxs: List[int]) -> Dict[str, Any]:
+        subjects = [int(samples[i].subject) for i in idxs]
+        gestures = [int(samples[i].gesture) for i in idxs]
+        unique_keys = {
+            (
+                int(samples[i].subject),
+                int(samples[i].gesture),
+                str(samples[i].variant),
+                int(samples[i].repeat),
+                str(samples[i].path),
+            )
+            for i in idxs
+        }
+        return {
+            "num_samples": int(len(idxs)),
+            "subjects": sorted(set(subjects)),
+            "num_subjects": int(len(set(subjects))),
+            "subject_counts": {str(k): int(v) for k, v in sorted(Counter(subjects).items())},
+            "class_counts": {str(k): int(v) for k, v in sorted(Counter(gestures).items())},
+            "missing_gestures": [int(g) for g in range(1, 13) if g not in set(gestures)],
+            "_index_set": set(idxs),
+            "_key_set": unique_keys,
+        }
+
+    train_stats = _stats(train_idx)
+    val_stats = _stats(val_idx)
+    test_stats = _stats(test_idx)
+
+    def _overlap(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
+        return {
+            "subject_overlap": sorted(set(a["subjects"]) & set(b["subjects"])),
+            "index_overlap_count": int(len(a["_index_set"] & b["_index_set"])),
+            "sample_key_overlap_count": int(len(a["_key_set"] & b["_key_set"])),
+        }
+
+    overlap = {
+        "train_val": _overlap(train_stats, val_stats),
+        "train_test": _overlap(train_stats, test_stats),
+        "val_test": _overlap(val_stats, test_stats),
+    }
+
+    # Internal helper sets are not JSON serializable.
+    for block in (train_stats, val_stats, test_stats):
+        block.pop("_index_set", None)
+        block.pop("_key_set", None)
+
+    return {
+        "split_mode": str(split_mode),
+        "seed": int(seed),
+        "train_ratio": float(train_ratio),
+        "val_ratio": float(val_ratio),
+        "dataset_size": int(len(dataset)),
+        "splits": {
+            "train": train_stats,
+            "val": val_stats,
+            "test": test_stats,
+        },
+        "overlap_check": overlap,
+    }
+
+
+def save_split_audit(save_path: Path, payload: Dict[str, Any]) -> None:
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    save_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def make_three_loaders(
     *,
     train_set: Dataset,
@@ -187,30 +275,34 @@ def make_three_loaders(
     batch_size: int,
     num_workers: int,
     pin_memory: bool = True,
+    prefetch_factor: int = 2,
+    persistent_workers: Optional[bool] = None,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
-    persistent_workers = num_workers > 0
-    train_loader = DataLoader(
-        train_set,
+    if persistent_workers is None:
+        persistent_workers = num_workers > 0
+
+    shared_kwargs = dict(
         batch_size=batch_size,
-        shuffle=True,
         num_workers=num_workers,
         pin_memory=pin_memory,
-        persistent_workers=persistent_workers,
+    )
+    if num_workers > 0:
+        shared_kwargs["persistent_workers"] = bool(persistent_workers)
+        shared_kwargs["prefetch_factor"] = max(1, int(prefetch_factor))
+
+    train_loader = DataLoader(
+        train_set,
+        shuffle=True,
+        **shared_kwargs,
     )
     val_loader = DataLoader(
         val_set,
-        batch_size=batch_size,
         shuffle=False,
-        num_workers=num_workers,
-        pin_memory=pin_memory,
-        persistent_workers=persistent_workers,
+        **shared_kwargs,
     )
     test_loader = DataLoader(
         test_set,
-        batch_size=batch_size,
         shuffle=False,
-        num_workers=num_workers,
-        pin_memory=pin_memory,
-        persistent_workers=persistent_workers,
+        **shared_kwargs,
     )
     return train_loader, val_loader, test_loader
