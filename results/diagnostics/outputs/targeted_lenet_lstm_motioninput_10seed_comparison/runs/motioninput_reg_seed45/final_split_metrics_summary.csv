@@ -1,0 +1,2 @@
+model,display_name,train_acc_mean,train_acc_std,train_f1_mean,train_f1_std,val_acc_mean,val_acc_std,val_f1_mean,val_f1_std,test_acc_mean,test_acc_std,test_macro_f1_mean,test_macro_f1_std,params_m,train_time_sec_mean,train_time_sec_std,inference_ms_mean,inference_ms_std
+LeNet_LSTM_MotionInput,LeNet_LSTM_MotionInput,0.9990476190476191,,0.9992856709861743,,0.9363095238095238,,0.9363545506876113,,0.9291666666666667,,0.9291446880968542,,0.803948,1704.6183638889343,,0.4756688605993986,

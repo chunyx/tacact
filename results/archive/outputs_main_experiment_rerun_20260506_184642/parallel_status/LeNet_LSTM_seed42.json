@@ -1,0 +1,15 @@
+{
+  "status": "running",
+  "gpu_id": "7",
+  "pid": 292610,
+  "queue_models": [],
+  "queue_total": 1,
+  "queue_completed": 0,
+  "current_model": "LeNet_LSTM",
+  "current_model_index": 1,
+  "current_epoch": 21,
+  "total_epochs": 30,
+  "latest_val_f1": 0.9058807003397935,
+  "latest_val_acc": 0.906547619047619,
+  "last_update_ts": 1778061349.4437456
+}

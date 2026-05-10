@@ -1,0 +1,12 @@
+{
+  "model_name": "TCN",
+  "status": "done",
+  "finished_at": "2026-04-30T13:10:19",
+  "phase": "phase2",
+  "paths": {
+    "phase1": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase1/TCN/phase1_results.csv",
+    "phase2": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase2/TCN/phase2_results.csv",
+    "phase3": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase3/TCN/final_results.csv",
+    "phase3_summary": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase3/TCN/final_results_summary.csv"
+  }
+}

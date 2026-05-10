@@ -1,0 +1,9 @@
+{
+  "model_name": "CNN_LSTM",
+  "total_combinations": 36,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.3333333333333333,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+}

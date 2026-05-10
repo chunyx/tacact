@@ -1,0 +1,12 @@
+{
+  "model_name": "MobileNet_V2",
+  "status": "done",
+  "finished_at": "2026-05-01T00:22:58",
+  "phase": "phase2",
+  "paths": {
+    "phase1": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/MobileNet_V2/phase1_results.csv",
+    "phase2": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase2/MobileNet_V2/phase2_results.csv",
+    "phase3": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase3/MobileNet_V2/final_results.csv",
+    "phase3_summary": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase3/MobileNet_V2/final_results_summary.csv"
+  }
+}

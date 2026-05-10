@@ -1,0 +1,2 @@
+model,seed,selected_epoch,selection_metric,best_val_f1,best_val_acc,best_val_loss,test_accuracy,test_macro_f1,checkpoint_path
+LeNet,44,14,best_val_f1_max,0.8738323498717923,0.8738095238095238,0.5562318963668422,0.8375,0.8357194541745473,/home/yaxin/tacact/outputs_main_parallel_5gpu_20260429_150413/parallel_workers/LeNet_seed44/subject_seed44/checkpoints/LeNet_seed44_best.pt

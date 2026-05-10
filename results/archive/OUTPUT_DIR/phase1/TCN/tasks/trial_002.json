@@ -1,0 +1,36 @@
+{
+  "task_id": "phase1_TCN_002",
+  "phase": 1,
+  "model_name": "TCN",
+  "trial_id": 2,
+  "seed": 44,
+  "config": {
+    "num_channels": 64,
+    "dropout": 0.5,
+    "lr": 0.0001,
+    "weight_decay": 0.001,
+    "batch_size": 16,
+    "trial_id": 2,
+    "epochs_budget": 10,
+    "use_early_stopping": false
+  },
+  "result_json_path": "OUTPUT_DIR/phase1/TCN/trial_results/trial_002.json",
+  "history_csv_path": "OUTPUT_DIR/phase1/TCN/histories/trial_002_history.csv",
+  "data_cfg": {
+    "data_root": "/home/yaxin/datasets/TacAct-original",
+    "cache_dir": ".cache_tacact_n80_weighted",
+    "split_mode": "subject",
+    "clip_mode": "weighted_center",
+    "split_seed": 42,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "no_preload": false,
+    "parallel_mode": true,
+    "cache_trace": false,
+    "num_workers": 4,
+    "prefetch_factor": 2,
+    "parallel_loader_workers_cap": 4
+  },
+  "best_ckpt_path": "OUTPUT_DIR/phase1/TCN/checkpoints/trial_002_best.pt",
+  "progress_json_path": "OUTPUT_DIR/phase1/TCN/progress/trial_002.json"
+}

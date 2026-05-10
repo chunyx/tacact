@@ -1,0 +1,6 @@
+# MotionInput Quick Comparison
+
+| variant_name | seed | label_smoothing | weight_decay_override | test_accuracy | test_macro_f1 | test_macro_precision | test_macro_recall | class_3_f1 | class_6_f1 | class_3_to_6_errors | class_6_to_3_errors | subject_26_accuracy | subject_26_macro_f1 | inference_ms | params_m | training_seconds | best_epoch | best_val_loss | best_val_f1 | run_dir |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| baseline | 43 | 0.0 |  | 0.9182291666666668 | 0.918365439263423 | 0.9194354085224434 | 0.9182291666666637 | 0.7283950617278928 | 0.7049689440988767 | 72 | 89 | 0.7875 | 0.758955259723512 | 0.4176887683570385 | 0.803548 | 1920.8995310608295 | 19.0 | 0.4546849240439358 | 0.9227681089583802 | /home/yaxin/tacact/outputs/targeted_lenet_lstm_motioninput_quick/runs/baseline/subject_seed43 |
+| motioninput | 43 | 0.0 |  | 0.92578125 | 0.925024506078715 | 0.92549155334114 | 0.925781249999997 | 0.7106918238988688 | 0.7316293929707437 | 68 | 89 | 0.80625 | 0.7606616130281242 | 0.4748074919916689 | 0.803948 | 1369.896793473512 | 10.0 | 0.2359022282020478 | 0.944858784725468 | /home/yaxin/tacact/outputs/targeted_lenet_lstm_motioninput_quick/runs/motioninput/subject_seed43 |

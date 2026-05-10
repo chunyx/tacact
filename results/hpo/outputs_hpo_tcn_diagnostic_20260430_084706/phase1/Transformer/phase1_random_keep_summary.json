@@ -1,0 +1,26 @@
+{
+  "model_name": "Transformer",
+  "random_keep_seed": 42,
+  "kept_trial_ids": [
+    1,
+    4,
+    6,
+    7,
+    9,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "removed_trial_ids": [
+    2,
+    3,
+    5,
+    8,
+    10
+  ],
+  "kept_count": 12
+}

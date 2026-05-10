@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+Transformer,1,10,9,0.5833609759282544,0.5907738095238095,"{""lr"": 5e-05, ""batch_size"": 16, ""weight_decay"": 0.0003, ""best_val_macro_f1"": 0.5833609759282544, ""d_model"": 128, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 256, ""dropout"": 0.3, ""pooling"": ""mean"", ""norm_first"": true}"
+Transformer,2,8,10,0.5809165451348753,0.5898809523809524,"{""lr"": 5e-05, ""batch_size"": 16, ""weight_decay"": 0.001, ""best_val_macro_f1"": 0.5809165451348753, ""d_model"": 128, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 256, ""dropout"": 0.3, ""pooling"": ""mean"", ""norm_first"": true}"
+Transformer,3,5,10,0.5802874819558911,0.5851190476190476,"{""lr"": 0.0002, ""batch_size"": 64, ""weight_decay"": 0.001, ""best_val_macro_f1"": 0.5802874819558911, ""d_model"": 64, ""nhead"": 4, ""num_layers"": 2, ""dim_feedforward"": 128, ""dropout"": 0.3, ""pooling"": ""mean"", ""norm_first"": true}"

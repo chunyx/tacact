@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+EfficientNet_B0,1,3,8,0.9235280832379428,0.9241071428571428,"{""lr"": 0.0003, ""batch_size"": 8, ""weight_decay"": 0.0005}"
+EfficientNet_B0,2,4,8,0.9234555427106166,0.9232142857142858,"{""lr"": 0.0007, ""batch_size"": 16, ""weight_decay"": 0.0001}"
+EfficientNet_B0,3,11,10,0.9200383202488842,0.919345238095238,"{""lr"": 0.0003, ""batch_size"": 16, ""weight_decay"": 1e-05}"

@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+MobileNet_V2,1,7,9,0.9206876483899844,0.9211309523809524,"{""lr"": 0.001, ""batch_size"": 16, ""weight_decay"": 1e-05}"
+MobileNet_V2,2,9,9,0.9183042297265644,0.9178571428571428,"{""lr"": 0.0006, ""batch_size"": 8, ""weight_decay"": 0.001}"
+MobileNet_V2,3,10,8,0.9180484571682916,0.918154761904762,"{""lr"": 0.001, ""batch_size"": 8, ""weight_decay"": 1e-05}"

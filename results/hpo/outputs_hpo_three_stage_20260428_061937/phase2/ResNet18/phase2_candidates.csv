@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+ResNet18,1,9,9,0.9242758008000546,0.9241071428571428,"{""lr"": 0.0007, ""batch_size"": 8, ""weight_decay"": 0.0003}"
+ResNet18,2,3,10,0.9202593438475634,0.919940476190476,"{""lr"": 0.0003, ""batch_size"": 8, ""weight_decay"": 0.0003}"
+ResNet18,3,11,6,0.9183124796781884,0.9184523809523808,"{""lr"": 0.0003, ""batch_size"": 16, ""weight_decay"": 1e-05}"

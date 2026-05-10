@@ -1,0 +1,12 @@
+{
+  "model_name": "Transformer",
+  "status": "done",
+  "finished_at": "2026-05-01T01:45:59",
+  "phase": "phase2",
+  "paths": {
+    "phase1": "/home/yaxin/tacact/outputs_transformer_only_6gpu_20260501_012648/phase1/Transformer/phase1_results.csv",
+    "phase2": "/home/yaxin/tacact/outputs_transformer_only_6gpu_20260501_012648/phase2/Transformer/phase2_results.csv",
+    "phase3": "/home/yaxin/tacact/outputs_transformer_only_6gpu_20260501_012648/phase3/Transformer/final_results.csv",
+    "phase3_summary": "/home/yaxin/tacact/outputs_transformer_only_6gpu_20260501_012648/phase3/Transformer/final_results_summary.csv"
+  }
+}

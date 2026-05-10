@@ -1,0 +1,2 @@
+model,seed,selected_epoch,selection_metric,best_val_f1,best_val_acc,best_val_loss,test_accuracy,test_macro_f1,checkpoint_path
+LeNet_LSTM,42,8,best_val_f1_max,0.9164409535129944,0.9169642857142857,0.5597595383013998,0.8963541666666667,0.8924378882237365,/home/yaxin/tacact/outputs/targeted_lenet_lstm_regularization_10seed_comparison/runs/reg_seed42/subject_seed42/checkpoints/LeNet_LSTM_seed42_best.pt

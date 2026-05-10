@@ -1,0 +1,2 @@
+model,seed,selected_epoch,selection_metric,best_val_f1,best_val_acc,best_val_loss,test_accuracy,test_macro_f1,checkpoint_path
+EfficientNet_B0,42,17,best_val_f1_max,0.9250871570809668,0.925,0.3697225163091562,0.9013020833333333,0.898152630312966,/home/yaxin/tacact/outputs_main_experiment_rerun_20260506_185627/parallel_workers/EfficientNet_B0_seed42/subject_seed42/checkpoints/EfficientNet_B0_seed42_best.pt

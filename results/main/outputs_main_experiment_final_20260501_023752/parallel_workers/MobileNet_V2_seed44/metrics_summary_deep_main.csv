@@ -1,0 +1,2 @@
+split_mode,model,category,accuracy_mean,accuracy_std,macro_f1_mean,macro_f1_std,macro_precision_mean,macro_precision_std,macro_recall_mean,macro_recall_std,training_seconds_mean,training_seconds_std,inference_ms_mean,inference_ms_std,params_m
+subject,MobileNet_V2,cnn,0.9236979166666667,,0.9230946630032816,,0.9247628728698123,,0.9236979166666637,,1904.2376174461097,,0.3651704697404057,,2.26142

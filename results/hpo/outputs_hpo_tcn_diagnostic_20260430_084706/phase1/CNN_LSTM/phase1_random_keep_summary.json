@@ -1,0 +1,25 @@
+{
+  "model_name": "CNN_LSTM",
+  "random_keep_seed": 42,
+  "kept_trial_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    9,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "removed_trial_ids": [
+    6,
+    7,
+    8,
+    10
+  ],
+  "kept_count": 12
+}

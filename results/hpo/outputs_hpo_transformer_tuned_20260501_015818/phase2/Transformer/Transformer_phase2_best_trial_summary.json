@@ -1,0 +1,29 @@
+{
+  "selected_trial_id": 1,
+  "selected_hyperparameters": {
+    "lr": 0.0001,
+    "batch_size": 16,
+    "weight_decay": 0.0003,
+    "d_model": 96,
+    "nhead": 2,
+    "num_layers": 2,
+    "dim_feedforward": 192,
+    "dropout": 0.2,
+    "pooling": "mean",
+    "norm_first": true
+  },
+  "best_epoch": 18,
+  "best_f1_epoch": 18,
+  "best_val_loss_epoch": 18,
+  "best_val_macro_f1": 0.7260721090914452,
+  "best_val_acc": 0.7273809523809524,
+  "best_val_loss": 1.2309114226273128,
+  "train_macro_f1_at_best_epoch": 0.9963096779386008,
+  "val_macro_f1_at_best_epoch": 0.7260721090914452,
+  "train_loss_at_best_epoch": 0.3443359973884764,
+  "val_loss_at_best_epoch": 1.2309114226273128,
+  "last_train_loss": 0.3443359973884764,
+  "last_val_loss": 1.2309114226273128,
+  "overfit_gap_loss": 0.0,
+  "macro_f1_gap_at_best_epoch": 0.27023756884715566
+}

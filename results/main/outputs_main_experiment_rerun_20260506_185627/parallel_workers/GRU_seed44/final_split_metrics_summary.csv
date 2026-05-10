@@ -1,0 +1,2 @@
+model,display_name,train_acc_mean,train_acc_std,train_f1_mean,train_f1_std,val_acc_mean,val_acc_std,val_f1_mean,val_f1_std,test_acc_mean,test_acc_std,test_macro_f1_mean,test_macro_f1_std,params_m,train_time_sec_mean,train_time_sec_std,inference_ms_mean,inference_ms_std
+GRU,GRU baseline,0.9996428571428572,,0.9999999999994992,,0.8767857142857143,,0.8774435052209365,,0.8434895833333333,,0.8423491665890817,,0.513292,580.0648963674903,,0.01676502579357475,

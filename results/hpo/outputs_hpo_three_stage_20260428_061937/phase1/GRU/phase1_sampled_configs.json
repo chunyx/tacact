@@ -1,0 +1,2261 @@
+{
+  "model": "GRU",
+  "sampling": "without_replacement",
+  "seed": 42,
+  "sampling_seed": 42,
+  "requested_trials": 12,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5",
+  "legal_combinations": 192,
+  "effective_trials": 12,
+  "sampled_trials": [
+    {
+      "model": "GRU",
+      "trial_id": 1,
+      "config": {
+        "input_proj_dim": 512,
+        "hidden_size": 256,
+        "num_layers": 2,
+        "dropout": 0.3,
+        "use_last_only": false,
+        "lr": 0.0003,
+        "weight_decay": 1e-05,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    },
+    {
+      "model": "GRU",
+      "trial_id": 2,
+      "config": {
+        "input_proj_dim": 256,
+        "hidden_size": 128,
+        "num_layers": 2,
+        "dropout": 0.5,
+        "use_last_only": false,
+        "lr": 0.0006,
+        "weight_decay": 0.0001,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    },
+    {
+      "model": "GRU",
+      "trial_id": 3,
+      "config": {
+        "input_proj_dim": 256,
+        "hidden_size": 128,
+        "num_layers": 1,
+        "dropout": 0.3,
+        "use_last_only": false,
+        "lr": 0.0003,
+        "weight_decay": 0.0001,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    },
+    {
+      "model": "GRU",
+      "trial_id": 4,
+      "config": {
+        "input_proj_dim": 512,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "dropout": 0.3,
+        "use_last_only": false,
+        "lr": 0.001,
+        "weight_decay": 1e-05,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    },
+    {
+      "model": "GRU",
+      "trial_id": 5,
+      "config": {
+        "input_proj_dim": 512,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "dropout": 0.5,
+        "use_last_only": false,
+        "lr": 0.001,
+        "weight_decay": 0.0001,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    },
+    {
+      "model": "GRU",
+      "trial_id": 6,
+      "config": {
+        "input_proj_dim": 256,
+        "hidden_size": 128,
+        "num_layers": 1,
+        "dropout": 0.5,
+        "use_last_only": false,
+        "lr": 0.0003,
+        "weight_decay": 1e-05,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    },
+    {
+      "model": "GRU",
+      "trial_id": 7,
+      "config": {
+        "input_proj_dim": 256,
+        "hidden_size": 256,
+        "num_layers": 2,
+        "dropout": 0.3,
+        "use_last_only": false,
+        "lr": 0.0006,
+        "weight_decay": 0.0001,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    },
+    {
+      "model": "GRU",
+      "trial_id": 8,
+      "config": {
+        "input_proj_dim": 256,
+        "hidden_size": 128,
+        "num_layers": 1,
+        "dropout": 0.5,
+        "use_last_only": false,
+        "lr": 0.0003,
+        "weight_decay": 1e-05,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    },
+    {
+      "model": "GRU",
+      "trial_id": 9,
+      "config": {
+        "input_proj_dim": 512,
+        "hidden_size": 128,
+        "num_layers": 2,
+        "dropout": 0.3,
+        "use_last_only": false,
+        "lr": 0.0003,
+        "weight_decay": 1e-05,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    },
+    {
+      "model": "GRU",
+      "trial_id": 10,
+      "config": {
+        "input_proj_dim": 256,
+        "hidden_size": 256,
+        "num_layers": 1,
+        "dropout": 0.5,
+        "use_last_only": false,
+        "lr": 0.001,
+        "weight_decay": 1e-05,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    },
+    {
+      "model": "GRU",
+      "trial_id": 11,
+      "config": {
+        "input_proj_dim": 256,
+        "hidden_size": 128,
+        "num_layers": 1,
+        "dropout": 0.3,
+        "use_last_only": false,
+        "lr": 0.0003,
+        "weight_decay": 0.0001,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    },
+    {
+      "model": "GRU",
+      "trial_id": 12,
+      "config": {
+        "input_proj_dim": 512,
+        "hidden_size": 256,
+        "num_layers": 2,
+        "dropout": 0.5,
+        "use_last_only": false,
+        "lr": 0.0003,
+        "weight_decay": 1e-05,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+    }
+  ],
+  "configs": [
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    }
+  ],
+  "config_order": [
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 1,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 256,
+      "hidden_size": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "input_proj_dim": 512,
+      "hidden_size": 256,
+      "num_layers": 1,
+      "dropout": 0.5,
+      "use_last_only": false,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    }
+  ]
+}

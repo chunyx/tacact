@@ -1,0 +1,356 @@
+{
+  "model": "MobileNet_V2",
+  "sampling": "without_replacement",
+  "seed": 42,
+  "sampling_seed": 42,
+  "requested_trials": 12,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d",
+  "legal_combinations": 27,
+  "effective_trials": 12,
+  "sampled_trials": [
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 1,
+      "config": {
+        "lr": 0.0003,
+        "weight_decay": 0.001,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    },
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 2,
+      "config": {
+        "lr": 0.0003,
+        "weight_decay": 0.0003,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    },
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 3,
+      "config": {
+        "lr": 0.0003,
+        "weight_decay": 0.0001,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    },
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 4,
+      "config": {
+        "lr": 0.0006,
+        "weight_decay": 0.001,
+        "batch_size": 32
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    },
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 5,
+      "config": {
+        "lr": 0.0006,
+        "weight_decay": 0.0001,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    },
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 6,
+      "config": {
+        "lr": 0.0001,
+        "weight_decay": 0.001,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    },
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 7,
+      "config": {
+        "lr": 0.0001,
+        "weight_decay": 0.0003,
+        "batch_size": 32
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    },
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 8,
+      "config": {
+        "lr": 0.0003,
+        "weight_decay": 0.0001,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    },
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 9,
+      "config": {
+        "lr": 0.0003,
+        "weight_decay": 0.001,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    },
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 10,
+      "config": {
+        "lr": 0.0006,
+        "weight_decay": 0.0003,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    },
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 11,
+      "config": {
+        "lr": 0.0003,
+        "weight_decay": 0.0001,
+        "batch_size": 32
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    },
+    {
+      "model": "MobileNet_V2",
+      "trial_id": 12,
+      "config": {
+        "lr": 0.0006,
+        "weight_decay": 0.0001,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+    }
+  ],
+  "configs": [
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.001,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.0003,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.001,
+      "batch_size": 32
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0001,
+      "weight_decay": 0.001,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0001,
+      "weight_decay": 0.0003,
+      "batch_size": 32
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.001,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.0003,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 32
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    }
+  ],
+  "config_order": [
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.001,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.0003,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.001,
+      "batch_size": 32
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0001,
+      "weight_decay": 0.001,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0001,
+      "weight_decay": 0.0003,
+      "batch_size": 32
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.001,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.0003,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 32
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.0003,
+      "batch_size": 32
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.001,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.0003,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 32
+    },
+    {
+      "lr": 0.0003,
+      "weight_decay": 0.001,
+      "batch_size": 32
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.001,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0001,
+      "weight_decay": 0.0003,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.0003,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0001,
+      "weight_decay": 0.001,
+      "batch_size": 16
+    },
+    {
+      "lr": 0.0001,
+      "weight_decay": 0.001,
+      "batch_size": 32
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.0003,
+      "batch_size": 32
+    },
+    {
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0001,
+      "weight_decay": 0.0003,
+      "batch_size": 8
+    },
+    {
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 32
+    }
+  ]
+}

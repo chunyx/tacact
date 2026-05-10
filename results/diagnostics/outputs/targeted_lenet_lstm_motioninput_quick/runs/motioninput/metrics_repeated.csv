@@ -1,0 +1,2 @@
+split_mode,seed,model,category,accuracy,macro_f1,macro_precision,macro_recall,training_seconds,inference_ms,params,params_m
+subject,43.0,LeNet_LSTM_MotionInput,temporal,0.92578125,0.925024506078715,0.92549155334114,0.925781249999997,1369.896793473512,0.47480749199166894,803948.0,0.803948

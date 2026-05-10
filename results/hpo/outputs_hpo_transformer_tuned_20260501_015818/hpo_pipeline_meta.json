@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "seed": 42,
+    "phase1_epochs": 10,
+    "phase2_epochs": 25,
+    "phase3_epochs": 30,
+    "phase1_trials": 12,
+    "phase2_topk": 3,
+    "phase3_seeds": 3,
+    "selection_rule": "primary=best_val_f1, tie_breaker=best_val_acc",
+    "primary_metric": "best_val_f1",
+    "tie_break_metric": "best_val_acc",
+    "sampling_method": "without_replacement_materialized_before_training",
+    "search_space_version": "refined_search_space",
+    "search_space_hash": "4049d09ff6138a7425160545e6ec444ceff5cf40b0a5c97c24b99aa7c5e8a546",
+    "parallel": true,
+    "gpu_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "max_workers": 6,
+    "resume": false
+  },
+  "models": {
+    "Transformer": {
+      "phase1_n_trials": 12
+    }
+  }
+}

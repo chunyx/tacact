@@ -1,0 +1,2 @@
+model,seed,selected_epoch,selection_metric,best_val_f1,best_val_acc,best_val_loss,test_accuracy,test_macro_f1,checkpoint_path
+LSTM,42,29,best_val_f1_max,0.8487179294564515,0.8491071428571428,0.9039038327813614,0.8596354166666667,0.858745143005434,/home/yaxin/tacact/outputs_main_10gpu_final_20260501_023752/parallel_workers/LSTM_seed42/subject_seed42/checkpoints/LSTM_seed42_best.pt

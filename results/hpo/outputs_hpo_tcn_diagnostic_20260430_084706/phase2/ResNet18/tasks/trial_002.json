@@ -1,0 +1,40 @@
+{
+  "task_id": "phase2_ResNet18_002",
+  "phase": 2,
+  "model_name": "ResNet18",
+  "trial_id": 2,
+  "seed": 244,
+  "config": {
+    "lr": 0.0003,
+    "batch_size": 16,
+    "weight_decay": 0.0003,
+    "best_val_macro_f1": 0.921175381572014,
+    "host": "ubuntu",
+    "gpu_local_id": 2,
+    "cuda_visible_devices": 2,
+    "pid": 92231,
+    "trial_id": 2,
+    "epochs_budget": 18,
+    "use_early_stopping": false
+  },
+  "result_json_path": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase2/ResNet18/trial_results/trial_002.json",
+  "history_csv_path": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase2/ResNet18/histories/trial_002_history.csv",
+  "data_cfg": {
+    "data_root": "/home/yaxin/datasets/TacAct-original",
+    "cache_dir": ".cache_tacact_n80_weighted",
+    "split_mode": "subject",
+    "clip_mode": "weighted_center",
+    "split_seed": 42,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "no_preload": false,
+    "parallel_mode": true,
+    "cache_trace": false,
+    "num_workers": 4,
+    "prefetch_factor": 2,
+    "parallel_loader_workers_cap": 2,
+    "label_smoothing": 0.05
+  },
+  "best_ckpt_path": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase2/ResNet18/checkpoints/trial_002_best.pt",
+  "progress_json_path": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase2/ResNet18/progress/trial_002.json"
+}

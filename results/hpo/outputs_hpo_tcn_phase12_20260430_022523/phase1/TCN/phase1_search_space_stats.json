@@ -1,0 +1,9 @@
+{
+  "model_name": "TCN",
+  "total_combinations": 48,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.25,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "9229f49c313834e16cace314a984aa062bf25d4da3e3284006d8a789dc056848"
+}

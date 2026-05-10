@@ -1,0 +1,15 @@
+{
+  "status": "running",
+  "gpu_id": "3",
+  "pid": 291819,
+  "queue_models": [],
+  "queue_total": 1,
+  "queue_completed": 0,
+  "current_model": "EfficientNet_B0",
+  "current_model_index": 1,
+  "current_epoch": 11,
+  "total_epochs": 30,
+  "latest_val_f1": 0.9154701984753227,
+  "latest_val_acc": 0.9151785714285714,
+  "last_update_ts": 1778061361.2492614
+}

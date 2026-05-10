@@ -1,0 +1,2 @@
+model,seed,selected_epoch,selection_metric,best_val_f1,best_val_acc,best_val_loss,test_accuracy,test_macro_f1,checkpoint_path
+LeNet_LSTM_MotionInput,42,18,best_val_f1_max,0.943065376561338,0.9428571428571428,0.5515100311665307,0.9265625,0.9235585750435216,/home/yaxin/tacact/outputs/targeted_lenet_lstm_motioninput_10seed_comparison/runs/motioninput_reg_seed42/subject_seed42/checkpoints/LeNet_LSTM_MotionInput_seed42_best.pt

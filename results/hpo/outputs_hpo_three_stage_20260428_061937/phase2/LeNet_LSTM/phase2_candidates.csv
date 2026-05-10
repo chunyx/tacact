@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+LeNet_LSTM,1,12,10,0.910653650353835,0.9116071428571428,"{""lr"": 0.0006, ""batch_size"": 16, ""weight_decay"": 1e-05, ""feature_dim"": 160, ""encoder_hidden_dim"": 192, ""hidden_size"": 192, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}"
+LeNet_LSTM,2,9,8,0.9075872063192764,0.9071428571428573,"{""lr"": 0.0003, ""batch_size"": 8, ""weight_decay"": 1e-05, ""feature_dim"": 128, ""encoder_hidden_dim"": 128, ""hidden_size"": 192, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}"
+LeNet_LSTM,3,3,10,0.9070983697061056,0.906845238095238,"{""lr"": 0.0006, ""batch_size"": 16, ""weight_decay"": 0.0001, ""feature_dim"": 96, ""encoder_hidden_dim"": 128, ""hidden_size"": 96, ""num_layers"": 1, ""dropout"": 0.2, ""use_last_only"": true, ""bidirectional"": false}"

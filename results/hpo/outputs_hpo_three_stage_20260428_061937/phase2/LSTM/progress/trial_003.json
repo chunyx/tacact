@@ -1,0 +1,14 @@
+{
+  "status": "done",
+  "phase": 2,
+  "model_name": "LSTM",
+  "trial_id": 3,
+  "seed": 245,
+  "gpu_local_id": 3,
+  "pid": 3159561,
+  "epoch": 25,
+  "total_epochs": 25,
+  "val_f1": 0.8608084544191618,
+  "val_acc": 0.8610119047619048,
+  "val_loss": 0.8576871910953676
+}

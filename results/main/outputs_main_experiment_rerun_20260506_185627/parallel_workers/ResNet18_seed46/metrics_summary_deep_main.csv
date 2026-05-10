@@ -1,0 +1,2 @@
+split_mode,model,category,accuracy_mean,accuracy_std,macro_f1_mean,macro_f1_std,macro_precision_mean,macro_precision_std,macro_recall_mean,macro_recall_std,training_seconds_mean,training_seconds_std,inference_ms_mean,inference_ms_std,params_m
+subject,ResNet18,cnn,0.9114583333333334,,0.9118958362224335,,0.9139518301888935,,0.9114583333333304,,1011.5376236848533,,0.29775467701256275,,11.42414

@@ -1,0 +1,9 @@
+{
+  "model_name": "EfficientNet_B0",
+  "total_combinations": 27,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.4444444444444444,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "ed01806c4927ed611285dc85fef6ec13c1a1d7ab4774496f1b9d3bb06e1d17c4"
+}

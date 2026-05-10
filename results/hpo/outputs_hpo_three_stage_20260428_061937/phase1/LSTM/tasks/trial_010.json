@@ -1,0 +1,38 @@
+{
+  "task_id": "phase1_LSTM_010",
+  "phase": 1,
+  "model_name": "LSTM",
+  "trial_id": 10,
+  "seed": 52,
+  "config": {
+    "input_proj_dim": 256,
+    "hidden_size": 256,
+    "num_layers": 1,
+    "dropout": 0.5,
+    "use_last_only": false,
+    "lr": 0.001,
+    "weight_decay": 1e-05,
+    "batch_size": 16,
+    "trial_id": 10,
+    "epochs_budget": 10,
+    "use_early_stopping": false
+  },
+  "result_json_path": "outputs_phase1_10gpu_20260428_061937/phase1/LSTM/trial_results/trial_010.json",
+  "history_csv_path": "outputs_phase1_10gpu_20260428_061937/phase1/LSTM/histories/trial_010_history.csv",
+  "data_cfg": {
+    "data_root": "/home/yaxin/datasets/TacAct-original",
+    "cache_dir": ".cache_tacact_n80_weighted",
+    "split_mode": "subject",
+    "clip_mode": "weighted_center",
+    "split_seed": 42,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "no_preload": false,
+    "parallel_mode": true,
+    "cache_trace": false,
+    "num_workers": 4,
+    "prefetch_factor": 2,
+    "parallel_loader_workers_cap": 2
+  },
+  "progress_json_path": "outputs_phase1_10gpu_20260428_061937/phase1/LSTM/progress/trial_010.json"
+}

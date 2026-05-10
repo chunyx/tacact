@@ -1,0 +1,2 @@
+model,seed,selected_epoch,selection_metric,best_val_f1,best_val_acc,best_val_loss,test_accuracy,test_macro_f1,checkpoint_path
+MobileNet_V2,48,25,best_val_f1_max,0.8908939104720311,0.8919642857142858,0.6406499781477237,0.9174479166666667,0.9161021311671553,/home/yaxin/tacact/outputs_main_experiment_rerun_20260506_185627/parallel_workers/MobileNet_V2_seed48/subject_seed48/checkpoints/MobileNet_V2_seed48_best.pt

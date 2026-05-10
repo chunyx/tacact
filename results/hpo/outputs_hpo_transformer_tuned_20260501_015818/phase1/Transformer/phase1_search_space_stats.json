@@ -1,0 +1,9 @@
+{
+  "model_name": "Transformer",
+  "total_combinations": 1944,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.006172839506172839,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "06897e4f80452bbf035328b3249fe4195f525a321b708e6b8b0d78225c07587f"
+}

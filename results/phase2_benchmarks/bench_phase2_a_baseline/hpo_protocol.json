@@ -1,0 +1,20 @@
+{
+  "created_at": "2026-04-28T15:15:56",
+  "phase1_trials": 12,
+  "phase1_epochs": 10,
+  "phase2_topk": 3,
+  "phase2_epochs": 5,
+  "final_seeds": 3,
+  "final_epochs": 30,
+  "sampling_method": "without_replacement_materialized_before_training",
+  "model_list": [
+    "EfficientNet_B0"
+  ],
+  "primary_metric": "best_val_f1",
+  "tie_break_metric": "best_val_acc",
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "960c32724d865651dfecd1a3d59393a8268a146bdb2f5991c3b333d665e481be",
+  "search_space_hash_by_model": {
+    "EfficientNet_B0": "4b1184dfd781c847060b8b6761c1c7a1311014e0cff5ce409734e8ece73ab6c2"
+  }
+}

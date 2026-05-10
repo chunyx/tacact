@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+Transformer,1,4,9,0.8233188750029249,0.8238095238095238,"{""lr"": 0.0003, ""batch_size"": 8, ""weight_decay"": 0.0001, ""d_model"": 256, ""nhead"": 8, ""num_layers"": 2, ""dim_feedforward"": 256, ""dropout"": 0.3, ""pooling"": ""mean"", ""norm_first"": false}"
+Transformer,2,5,6,0.7991796442754294,0.799702380952381,"{""lr"": 0.0003, ""batch_size"": 8, ""weight_decay"": 0.0001, ""d_model"": 128, ""nhead"": 4, ""num_layers"": 3, ""dim_feedforward"": 512, ""dropout"": 0.3, ""pooling"": ""mean"", ""norm_first"": true}"
+Transformer,3,6,8,0.774571665587597,0.775,"{""lr"": 0.0003, ""batch_size"": 8, ""weight_decay"": 1e-05, ""d_model"": 128, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 512, ""dropout"": 0.3, ""pooling"": ""mean"", ""norm_first"": true}"

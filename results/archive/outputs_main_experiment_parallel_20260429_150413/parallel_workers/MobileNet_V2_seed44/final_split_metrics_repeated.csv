@@ -1,0 +1,2 @@
+model,display_name,seed,selected_epoch,train_loss_at_selected,train_acc_at_selected,train_f1_at_selected,val_loss_at_selected,val_acc_at_selected,val_f1_at_selected,test_accuracy,test_macro_f1,test_macro_precision,test_macro_recall,params_m,train_time_sec,inference_ms
+MobileNet_V2,MobileNet_V2,44,14,0.013959690374987467,0.9956547619047619,0.9992257367824048,0.5347389440575192,0.9252976190476191,0.9256730462295842,0.93203125,0.9313260574327734,0.9338773188716023,0.932031249999997,2.26142,2078.603156596422,0.3523934574332088

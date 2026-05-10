@@ -1,0 +1,2 @@
+model,display_name,seed,selected_epoch,train_loss_at_selected,train_acc_at_selected,train_f1_at_selected,val_loss_at_selected,val_acc_at_selected,val_f1_at_selected,test_accuracy,test_macro_f1,test_macro_precision,test_macro_recall,params_m,train_time_sec,inference_ms
+ResNet18,ResNet18,44,8,0.03776561886781738,0.9876190476190476,0.9932684958508301,0.3144136053597971,0.9413690476190476,0.9413682703540824,0.91875,0.9167735063223241,0.9246268202380081,0.9187499999999971,11.42414,2301.315577307716,0.4877655766904354

@@ -1,0 +1,461 @@
+{
+  "model": "CNN_LSTM",
+  "sampling": "without_replacement",
+  "seed": 42,
+  "sampling_seed": 42,
+  "requested_trials": 12,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10",
+  "legal_combinations": 36,
+  "effective_trials": 12,
+  "sampled_trials": [
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 1,
+      "config": {
+        "lstm_hidden": 128,
+        "lr": 0.0006,
+        "weight_decay": 1e-05,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    },
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 2,
+      "config": {
+        "lstm_hidden": 192,
+        "lr": 0.0001,
+        "weight_decay": 1e-05,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    },
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 3,
+      "config": {
+        "lstm_hidden": 128,
+        "lr": 0.0003,
+        "weight_decay": 1e-05,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    },
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 4,
+      "config": {
+        "lstm_hidden": 256,
+        "lr": 0.0001,
+        "weight_decay": 0.0001,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    },
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 5,
+      "config": {
+        "lstm_hidden": 256,
+        "lr": 0.0006,
+        "weight_decay": 1e-05,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    },
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 6,
+      "config": {
+        "lstm_hidden": 192,
+        "lr": 0.0003,
+        "weight_decay": 0.0001,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    },
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 7,
+      "config": {
+        "lstm_hidden": 256,
+        "lr": 0.0003,
+        "weight_decay": 0.0001,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    },
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 8,
+      "config": {
+        "lstm_hidden": 256,
+        "lr": 0.0001,
+        "weight_decay": 1e-05,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    },
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 9,
+      "config": {
+        "lstm_hidden": 192,
+        "lr": 0.0006,
+        "weight_decay": 0.0001,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    },
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 10,
+      "config": {
+        "lstm_hidden": 256,
+        "lr": 0.0001,
+        "weight_decay": 0.0001,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    },
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 11,
+      "config": {
+        "lstm_hidden": 256,
+        "lr": 0.0003,
+        "weight_decay": 0.0001,
+        "batch_size": 16
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    },
+    {
+      "model": "CNN_LSTM",
+      "trial_id": 12,
+      "config": {
+        "lstm_hidden": 128,
+        "lr": 0.0006,
+        "weight_decay": 0.0001,
+        "batch_size": 8
+      },
+      "sampling_seed": 42,
+      "search_space_version": "refined_search_space",
+      "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+    }
+  ],
+  "configs": [
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    }
+  ],
+  "config_order": [
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0001,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 256,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0006,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0006,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 8
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 192,
+      "lr": 0.0003,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0001,
+      "weight_decay": 1e-05,
+      "batch_size": 16
+    },
+    {
+      "lstm_hidden": 128,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 16
+    }
+  ]
+}

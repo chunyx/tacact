@@ -1,0 +1,21 @@
+{
+  "model_name": "LeNet",
+  "mode": "target_success",
+  "requested_successful_trials": 12,
+  "target_successful_trials": 12,
+  "target_attempts": 12,
+  "total_combinations": 24,
+  "legal_combinations": 24,
+  "total_attempts": 12,
+  "successful_trials": 12,
+  "failed_trials": 0,
+  "failure_rate": 0.0,
+  "target_met": true,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.5,
+  "num_ok": 12,
+  "num_failed": 0,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "e11632a57f46d81c3ed33ad60477fd2fd3b92d9291b1bf50c4431407067566a9"
+}

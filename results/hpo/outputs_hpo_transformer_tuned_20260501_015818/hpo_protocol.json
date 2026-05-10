@@ -1,0 +1,20 @@
+{
+  "created_at": "2026-05-01T02:09:15",
+  "phase1_trials": 12,
+  "phase1_epochs": 10,
+  "phase2_topk": 3,
+  "phase2_epochs": 18,
+  "final_seeds": 3,
+  "final_epochs": 30,
+  "sampling_method": "without_replacement_materialized_before_training",
+  "model_list": [
+    "Transformer"
+  ],
+  "primary_metric": "best_val_f1",
+  "tie_break_metric": "best_val_acc",
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "4049d09ff6138a7425160545e6ec444ceff5cf40b0a5c97c24b99aa7c5e8a546",
+  "search_space_hash_by_model": {
+    "Transformer": "06897e4f80452bbf035328b3249fe4195f525a321b708e6b8b0d78225c07587f"
+  }
+}

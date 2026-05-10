@@ -1,0 +1,2 @@
+model,display_name,seed,lr,weight_decay,batch_size,epochs,optimizer,scheduler,model_kwargs_json,param_count,best_config_source
+CNN_LSTM,CNN_LSTM,43,0.0003,0.0001,8,30,AdamW,ReduceLROnPlateau,"{""lstm_hidden"": 256}",11961804.0,best_config_path

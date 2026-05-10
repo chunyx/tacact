@@ -1,0 +1,21 @@
+{
+  "model_name": "Transformer",
+  "mode": "target_success",
+  "requested_successful_trials": 12,
+  "target_successful_trials": 12,
+  "target_attempts": 12,
+  "total_combinations": 1944,
+  "legal_combinations": 1944,
+  "total_attempts": 12,
+  "successful_trials": 12,
+  "failed_trials": 0,
+  "failure_rate": 0.0,
+  "target_met": true,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.006172839506172839,
+  "num_ok": 12,
+  "num_failed": 0,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "06897e4f80452bbf035328b3249fe4195f525a321b708e6b8b0d78225c07587f"
+}

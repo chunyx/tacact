@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+Transformer,1,8,10,0.6731879627300991,0.674702380952381,"{""lr"": 0.0001, ""batch_size"": 16, ""weight_decay"": 0.0003, ""best_val_macro_f1"": 0.6731879627300991, ""d_model"": 96, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}"
+Transformer,2,1,10,0.6542923587276062,0.655952380952381,"{""lr"": 0.00015, ""batch_size"": 32, ""weight_decay"": 0.003, ""best_val_macro_f1"": 0.6542923587276062, ""d_model"": 64, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}"
+Transformer,3,2,10,0.6133310728095083,0.6169642857142857,"{""lr"": 0.00015, ""batch_size"": 16, ""weight_decay"": 0.003, ""best_val_macro_f1"": 0.6133310728095083, ""d_model"": 64, ""nhead"": 2, ""num_layers"": 1, ""dim_feedforward"": 64, ""dropout"": 0.3, ""pooling"": ""mean"", ""norm_first"": true}"

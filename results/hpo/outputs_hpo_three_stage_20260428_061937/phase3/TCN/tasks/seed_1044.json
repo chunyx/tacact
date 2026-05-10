@@ -1,0 +1,38 @@
+{
+  "task_id": "phase3_TCN_1044",
+  "phase": 3,
+  "model_name": "TCN",
+  "trial_id": 3,
+  "seed": 1044,
+  "config": {
+    "lr": 0.0002,
+    "batch_size": 4,
+    "weight_decay": 0.0001,
+    "num_channels": 384,
+    "dropout": 0.0,
+    "host": "ubuntu",
+    "gpu_local_id": 5,
+    "cuda_visible_devices": 5,
+    "pid": 3176130,
+    "trial_id": 3,
+    "epochs_budget": 30,
+    "use_early_stopping": false
+  },
+  "result_json_path": "/home/yaxin/tacact/outputs_phase1_10gpu_20260428_061937/phase3/TCN/trial_results/seed_1044.json",
+  "history_csv_path": "/home/yaxin/tacact/outputs_phase1_10gpu_20260428_061937/phase3/TCN/histories/seed_1044_history.csv",
+  "data_cfg": {
+    "data_root": "/home/yaxin/datasets/TacAct-original",
+    "cache_dir": ".cache_tacact_n80_weighted",
+    "split_mode": "subject",
+    "clip_mode": "weighted_center",
+    "split_seed": 42,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "no_preload": false,
+    "parallel_mode": true,
+    "cache_trace": false,
+    "num_workers": 2,
+    "prefetch_factor": 2,
+    "parallel_loader_workers_cap": 1
+  }
+}

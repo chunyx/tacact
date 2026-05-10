@@ -1,0 +1,26 @@
+{
+  "model_name": "EfficientNet_B0",
+  "random_keep_seed": 42,
+  "kept_trial_ids": [
+    1,
+    2,
+    3,
+    4,
+    7,
+    9,
+    10,
+    12,
+    13,
+    14,
+    15,
+    17
+  ],
+  "removed_trial_ids": [
+    5,
+    6,
+    8,
+    11,
+    16
+  ],
+  "kept_count": 12
+}

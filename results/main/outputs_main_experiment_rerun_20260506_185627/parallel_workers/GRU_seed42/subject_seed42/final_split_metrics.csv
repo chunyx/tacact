@@ -1,0 +1,2 @@
+model,display_name,seed,selected_epoch,train_loss_at_selected,train_acc_at_selected,train_f1_at_selected,val_loss_at_selected,val_acc_at_selected,val_f1_at_selected,test_accuracy,test_macro_f1,test_macro_precision,test_macro_recall,params_m,train_time_sec,inference_ms
+GRU,GRU baseline,42,20,0.0023415052181198484,0.9996428571428572,0.9998809523652669,0.8536027722809064,0.8464285714285714,0.8462094413193535,0.84375,0.8427148034042018,0.847312433074388,0.8437499999999973,0.513292,919.5144679509103,0.011911787441931665

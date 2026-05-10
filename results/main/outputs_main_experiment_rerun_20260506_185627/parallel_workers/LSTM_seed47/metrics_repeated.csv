@@ -1,0 +1,2 @@
+split_mode,seed,model,category,accuracy,macro_f1,macro_precision,macro_recall,training_seconds,inference_ms,params,params_m
+subject,47.0,LSTM,temporal,0.86171875,0.8615318325458325,0.8662000766251189,0.8617187499999971,605.8521124217659,0.033267762046307325,595724.0,0.595724

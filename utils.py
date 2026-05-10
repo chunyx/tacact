@@ -263,13 +263,14 @@ def train_torch_model(
     lr_override=None,
     weight_decay_override=None,
     gl_alpha: float = 2.0,
+    label_smoothing: float = 0.0,
     progress_callback: Optional[Callable[[Dict[str, float]], None]] = None,
     overfit_single_batch_debug: bool = False,
     overfit_debug_lr: Optional[float] = None,
 ) -> Dict[str, List[float]]:
     """Train a torch model for fixed epochs (early stopping disabled)."""
     _ = patience  # kept for backward-compatible signature; not used in stopping logic
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss(label_smoothing=float(label_smoothing))
     model_name = model.__class__.__name__
     lr, weight_decay = _resolve_training_hyperparams(model_name, lr_override, weight_decay_override)
 

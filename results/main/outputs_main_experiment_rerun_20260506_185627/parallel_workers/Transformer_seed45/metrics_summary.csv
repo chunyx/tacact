@@ -1,0 +1,2 @@
+split_mode,model,category,accuracy_mean,accuracy_std,macro_f1_mean,macro_f1_std,macro_precision_mean,macro_precision_std,macro_recall_mean,macro_recall_std,training_seconds_mean,training_seconds_std,inference_ms_mean,inference_ms_std,params_m
+subject,Transformer,attention,0.7471354166666667,,0.7462090818442303,,0.7519755701470121,,0.7471354166666643,,869.8956233654171,,0.039174495032057166,,0.259052

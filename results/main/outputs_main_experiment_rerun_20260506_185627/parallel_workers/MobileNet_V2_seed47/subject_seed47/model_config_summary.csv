@@ -1,0 +1,2 @@
+model,display_name,seed,lr,weight_decay,batch_size,epochs,optimizer,scheduler,model_kwargs_json,param_count,best_config_source
+MobileNet_V2,MobileNet_V2,47,0.0006,0.0003,16,25,AdamW,ReduceLROnPlateau,{},2261420.0,best_config_path

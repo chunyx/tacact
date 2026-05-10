@@ -1,0 +1,2 @@
+model,seed,best_config_path,hpo_trial_id,hpo_best_val_f1,hpo_best_val_acc,main_best_val_f1,main_test_macro_f1,config_json
+EfficientNet_B0,43,/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/final_best_model_configs_with_tuned_transformer.json,2,0.9285051563401368,0.9291666666666668,0.9356165468917746,0.9003445855561446,"{""lr"": 0.0003, ""batch_size"": 8, ""weight_decay"": 0.001}"

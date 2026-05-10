@@ -1,0 +1,2 @@
+model,display_name,seed,lr,weight_decay,batch_size,epochs,optimizer,scheduler,model_kwargs_json,param_count,best_config_source
+TCN,TCN,42,0.0001,0.003,16,25,AdamW,ReduceLROnPlateau,"{""num_channels"": 128, ""dropout"": 0.3}",2083724.0,best_config_path

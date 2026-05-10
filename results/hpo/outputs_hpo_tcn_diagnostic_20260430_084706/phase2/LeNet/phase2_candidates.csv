@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+LeNet,1,17,10,0.8516657445408949,0.8520833333333333,"{""lr"": 0.0003, ""batch_size"": 32, ""weight_decay"": 0.0001, ""best_val_macro_f1"": 0.8516657445408949}"
+LeNet,2,3,10,0.8396818709947095,0.8395833333333333,"{""lr"": 0.0003, ""batch_size"": 16, ""weight_decay"": 5e-05, ""best_val_macro_f1"": 0.8396818709947095}"
+LeNet,3,5,9,0.8383313393633077,0.8386904761904762,"{""lr"": 0.0002, ""batch_size"": 16, ""weight_decay"": 0.0005, ""best_val_macro_f1"": 0.8383313393633077}"

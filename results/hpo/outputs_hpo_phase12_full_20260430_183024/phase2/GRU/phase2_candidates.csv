@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+GRU,1,5,10,0.8469997394189633,0.8476190476190476,"{""lr"": 0.0006, ""batch_size"": 32, ""weight_decay"": 0.0003, ""best_val_macro_f1"": 0.8469997394189633, ""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}"
+GRU,2,1,10,0.841649045397778,0.8413690476190476,"{""lr"": 0.0006, ""batch_size"": 16, ""weight_decay"": 0.0003, ""best_val_macro_f1"": 0.841649045397778, ""input_proj_dim"": 256, ""hidden_size"": 192, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false}"
+GRU,3,11,9,0.8088602139912496,0.8086309523809524,"{""lr"": 0.0003, ""batch_size"": 64, ""weight_decay"": 0.0003, ""best_val_macro_f1"": 0.8088602139912496, ""input_proj_dim"": 128, ""hidden_size"": 192, ""num_layers"": 2, ""dropout"": 0.5, ""use_last_only"": false}"

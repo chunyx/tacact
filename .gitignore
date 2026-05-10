@@ -35,6 +35,7 @@ events.out.tfevents.*
 
 # Local benchmark cache / exports
 .cache_tacact_n80_weighted/
+.cache_tacact_raw_curve/
 tacact_results/
 
 # Python tooling cache

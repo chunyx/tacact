@@ -1,0 +1,2 @@
+model,display_name,seed,selected_epoch,train_loss_at_selected,train_acc_at_selected,train_f1_at_selected,val_loss_at_selected,val_acc_at_selected,val_f1_at_selected,test_accuracy,test_macro_f1,test_macro_precision,test_macro_recall,params_m,train_time_sec,inference_ms
+EfficientNet_B0,EfficientNet_B0,50,21,0.004074119010141918,0.9988095238095238,0.9998809523652669,0.39087744171030153,0.9303571428571429,0.9306424217512052,0.9166666666666666,0.9157285036165478,0.919070200542402,0.9166666666666637,4.045096,1207.552481552586,0.26981970586348325

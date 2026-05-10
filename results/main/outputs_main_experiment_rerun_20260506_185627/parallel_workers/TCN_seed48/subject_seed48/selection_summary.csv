@@ -1,0 +1,2 @@
+model,seed,selected_epoch,selection_metric,best_val_f1,best_val_acc,best_val_loss,test_accuracy,test_macro_f1,checkpoint_path
+TCN,48,23,best_val_f1_max,0.770943577567767,0.7735119047619048,1.7186099087407818,0.7932291666666667,0.7910270670615319,/home/yaxin/tacact/outputs_main_experiment_rerun_20260506_185627/parallel_workers/TCN_seed48/subject_seed48/checkpoints/TCN_seed48_best.pt

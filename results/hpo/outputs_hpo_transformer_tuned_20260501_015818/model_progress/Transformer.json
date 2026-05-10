@@ -1,0 +1,7 @@
+{
+  "model_name": "Transformer",
+  "status": "running",
+  "started_at": "2026-05-01T02:09:15",
+  "phase": "phase2",
+  "pending_trials": 3
+}

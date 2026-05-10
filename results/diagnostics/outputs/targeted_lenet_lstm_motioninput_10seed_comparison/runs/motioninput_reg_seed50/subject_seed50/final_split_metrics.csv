@@ -1,0 +1,2 @@
+model,display_name,seed,selected_epoch,train_loss_at_selected,train_acc_at_selected,train_f1_at_selected,val_loss_at_selected,val_acc_at_selected,val_f1_at_selected,test_accuracy,test_macro_f1,test_macro_precision,test_macro_recall,params_m,train_time_sec,inference_ms
+LeNet_LSTM_MotionInput,LeNet_LSTM_MotionInput,50,13,0.31402258041359127,0.9970238095238095,0.998928400387373,0.5597939428119433,0.9306547619047619,0.930051055946996,0.946875,0.9469572555438592,0.947417484581553,0.9468749999999971,0.803948,1691.1663175616413,0.4681327030993998

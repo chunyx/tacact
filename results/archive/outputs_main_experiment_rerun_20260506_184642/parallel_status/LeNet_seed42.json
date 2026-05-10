@@ -1,0 +1,15 @@
+{
+  "status": "running",
+  "gpu_id": "0",
+  "pid": 291428,
+  "queue_models": [],
+  "queue_total": 1,
+  "queue_completed": 0,
+  "current_model": "LeNet",
+  "current_model_index": 1,
+  "current_epoch": 19,
+  "total_epochs": 30,
+  "latest_val_f1": 0.8392763271403799,
+  "latest_val_acc": 0.8386904761904762,
+  "last_update_ts": 1778061353.3030736
+}

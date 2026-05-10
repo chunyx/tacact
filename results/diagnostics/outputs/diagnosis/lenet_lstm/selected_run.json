@@ -1,0 +1,8 @@
+{
+  "selected_run_dir": "/home/yaxin/tacact/outputs_main_experiment_parallel_20260429_150413/parallel_workers/LeNet_LSTM_seed43/subject_seed43",
+  "selection_rule": "highest test_macro_f1, then highest test_accuracy, then latest modified time",
+  "selected_test_macro_f1": 0.918365439263423,
+  "selected_test_accuracy": 0.9182291666666668,
+  "selected_metrics_path": "/home/yaxin/tacact/outputs_main_experiment_parallel_20260429_150413/parallel_workers/LeNet_LSTM_seed43/subject_seed43/metrics.csv",
+  "note": "Selected the best completed LeNet_LSTM run among all discovered outputs."
+}

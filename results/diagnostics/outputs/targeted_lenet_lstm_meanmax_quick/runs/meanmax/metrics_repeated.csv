@@ -1,0 +1,2 @@
+split_mode,seed,model,category,accuracy,macro_f1,macro_precision,macro_recall,training_seconds,inference_ms,params,params_m
+subject,43.0,LeNet_LSTM_MeanMax,temporal,0.9083333333333333,0.9087774024613124,0.9120330169056938,0.9083333333333304,1253.8170687463135,0.421163160353899,805852.0,0.805852

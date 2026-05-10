@@ -1,0 +1,26 @@
+{
+  "model_name": "LeNet_LSTM",
+  "random_keep_seed": 42,
+  "kept_trial_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    9,
+    10,
+    11,
+    12,
+    13,
+    17
+  ],
+  "removed_trial_ids": [
+    7,
+    8,
+    14,
+    15,
+    16
+  ],
+  "kept_count": 12
+}

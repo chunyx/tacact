@@ -1,0 +1,14 @@
+{
+  "status": "done",
+  "phase": 1,
+  "model_name": "LeNet_LSTM",
+  "trial_id": 2,
+  "seed": 44,
+  "gpu_local_id": 0,
+  "pid": 299579,
+  "epoch": 10,
+  "total_epochs": 10,
+  "val_f1": 0.8847123410148989,
+  "val_acc": 0.8857142857142857,
+  "val_loss": 0.6394846041997274
+}

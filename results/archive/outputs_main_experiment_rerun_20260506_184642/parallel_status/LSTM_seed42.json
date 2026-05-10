@@ -1,0 +1,15 @@
+{
+  "status": "running",
+  "gpu_id": "4",
+  "pid": 292019,
+  "queue_models": [],
+  "queue_total": 1,
+  "queue_completed": 0,
+  "current_model": "LSTM",
+  "current_model_index": 1,
+  "current_epoch": 22,
+  "total_epochs": 30,
+  "latest_val_f1": 0.8449283472220555,
+  "latest_val_acc": 0.8455357142857143,
+  "last_update_ts": 1778061347.644927
+}

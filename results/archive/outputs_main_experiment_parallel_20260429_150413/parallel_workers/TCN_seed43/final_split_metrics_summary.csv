@@ -1,0 +1,2 @@
+model,display_name,train_acc_mean,train_acc_std,train_f1_mean,train_f1_std,val_acc_mean,val_acc_std,val_f1_mean,val_f1_std,test_acc_mean,test_acc_std,test_macro_f1_mean,test_macro_f1_std,params_m,train_time_sec_mean,train_time_sec_std,inference_ms_mean,inference_ms_std
+TCN,TCN baseline,1.0,,0.9999999999994992,,0.8672619047619048,,0.8684837348893516,,0.8544270833333333,,0.8551997365380349,,7.28142,2242.6300851255655,,0.2726790960878134,

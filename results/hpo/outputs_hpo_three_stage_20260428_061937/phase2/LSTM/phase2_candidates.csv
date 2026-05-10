@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+LSTM,1,7,9,0.8581828324151252,0.8574404761904761,"{""lr"": 0.0006, ""batch_size"": 8, ""weight_decay"": 0.0001, ""input_proj_dim"": 256, ""hidden_size"": 256, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}"
+LSTM,2,1,10,0.8552594529869816,0.8550595238095238,"{""lr"": 0.0003, ""batch_size"": 8, ""weight_decay"": 1e-05, ""input_proj_dim"": 512, ""hidden_size"": 256, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}"
+LSTM,3,2,9,0.8425710712656587,0.8422619047619048,"{""lr"": 0.0006, ""batch_size"": 8, ""weight_decay"": 0.0001, ""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.5, ""use_last_only"": false}"

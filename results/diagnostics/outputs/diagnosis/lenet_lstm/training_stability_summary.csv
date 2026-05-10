@@ -1,0 +1,2 @@
+best_val_f1_epoch,best_val_loss_epoch,best_val_f1,best_val_loss,last_train_loss,last_val_loss,val_loss_increases_while_train_loss_decreases,val_f1_post_best_std,clear_overfitting_pattern,optimization_looks_unstable
+19,10,0.9227681089583802,0.302871860824269,0.0026654402273041,0.5152937995262662,True,0.0015438680232333834,True,False

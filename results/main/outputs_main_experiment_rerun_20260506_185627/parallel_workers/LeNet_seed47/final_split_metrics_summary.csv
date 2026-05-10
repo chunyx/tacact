@@ -1,0 +1,2 @@
+model,display_name,train_acc_mean,train_acc_std,train_f1_mean,train_f1_std,val_acc_mean,val_acc_std,val_f1_mean,val_f1_std,test_acc_mean,test_acc_std,test_macro_f1_mean,test_macro_f1_std,params_m,train_time_sec_mean,train_time_sec_std,inference_ms_mean,inference_ms_std
+LeNet,LeNet-style CNN,0.9994642857142857,,0.9994644339622752,,0.844047619047619,,0.8442233353117246,,0.8565104166666667,,0.8563190119589769,,0.073726,686.7203603684902,,0.013772101374343038,

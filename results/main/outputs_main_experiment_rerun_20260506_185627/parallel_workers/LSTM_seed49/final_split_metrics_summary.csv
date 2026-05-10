@@ -1,0 +1,2 @@
+model,display_name,train_acc_mean,train_acc_std,train_f1_mean,train_f1_std,val_acc_mean,val_acc_std,val_f1_mean,val_f1_std,test_acc_mean,test_acc_std,test_macro_f1_mean,test_macro_f1_std,params_m,train_time_sec_mean,train_time_sec_std,inference_ms_mean,inference_ms_std
+LSTM,LSTM baseline,0.9994642857142857,,0.9996428358382801,,0.8735119047619048,,0.8733079758339813,,0.82734375,,0.8275703117666953,,0.595724,585.0328452587128,,0.03719005617313087,

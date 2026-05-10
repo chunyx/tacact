@@ -1,0 +1,54 @@
+{
+  "deleted": [
+    "outputs_main_5gpu_epoch30_20260428_185555",
+    "outputs_main_parallel_5gpu_20260428_190328",
+    "outputs_main_smoke_20260428_185042",
+    "outputs_main_smoke_20260428_185136",
+    "outputs_phase1_8gpu_clean_20260430_182439",
+    "outputs_phase1_8gpu_ordered_20260430_182823",
+    "outputs_tcn_diag_20260430_084528",
+    "outputs_transformer_only_6gpu_20260501_013508"
+  ],
+  "renamed": [
+    {
+      "old": "outputs_main_10gpu_final_20260501_023752",
+      "new": "outputs_main_experiment_final_20260501_023752"
+    },
+    {
+      "old": "outputs_main_parallel_5gpu_20260429_150413",
+      "new": "outputs_main_experiment_parallel_20260429_150413"
+    },
+    {
+      "old": "outputs_paper_main_with_lenetlstm",
+      "new": "outputs_main_paper_bundle_20260421_005345"
+    },
+    {
+      "old": "outputs_phase1_10gpu_20260428_061937",
+      "new": "outputs_hpo_three_stage_20260428_061937"
+    },
+    {
+      "old": "outputs_phase1_8gpu_ordered_fixed_20260430_183024",
+      "new": "outputs_hpo_phase12_full_20260430_183024"
+    },
+    {
+      "old": "outputs_tcn_3gpu_phase12_20260430_022523",
+      "new": "outputs_hpo_tcn_phase12_20260430_022523"
+    },
+    {
+      "old": "outputs_tcn_diag_20260430_084706",
+      "new": "outputs_hpo_tcn_diagnostic_20260430_084706"
+    },
+    {
+      "old": "outputs_transformer_only_6gpu_20260501_012648",
+      "new": "outputs_hpo_transformer_phase12_20260501_012648"
+    },
+    {
+      "old": "outputs_transformer_single_batch_debug_20260501_123419",
+      "new": "outputs_debug_transformer_single_batch_20260501_123419"
+    },
+    {
+      "old": "outputs_transformer_tuned_6gpu_20260501_015818",
+      "new": "outputs_hpo_transformer_tuned_20260501_015818"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "status": "running",
+  "gpu_id": "2",
+  "pid": 291753,
+  "queue_models": [],
+  "queue_total": 1,
+  "queue_completed": 0,
+  "current_model": "MobileNet_V2",
+  "current_model_index": 1,
+  "current_epoch": 8,
+  "total_epochs": 30,
+  "latest_val_f1": 0.9045640327270724,
+  "latest_val_acc": 0.9038690476190476,
+  "last_update_ts": 1778061332.4109728
+}

@@ -1,0 +1,2 @@
+split_mode,seed,model,category,accuracy,macro_f1,macro_precision,macro_recall,training_seconds,inference_ms,params,params_m
+subject,45.0,Transformer,attention,0.7471354166666667,0.7462090818442303,0.7519755701470121,0.7471354166666643,869.8956233654171,0.039174495032057166,259052.0,0.259052

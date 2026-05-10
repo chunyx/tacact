@@ -1,0 +1,2 @@
+split_mode,model,category,accuracy_mean,accuracy_std,macro_f1_mean,macro_f1_std,macro_precision_mean,macro_precision_std,macro_recall_mean,macro_recall_std,training_seconds_mean,training_seconds_std,inference_ms_mean,inference_ms_std,params_m
+subject,LeNet,cnn,0.8723958333333334,,0.8713907206507137,,0.8752437757050201,,0.8723958333333305,,980.8964006621391,,0.06681771483272314,,0.073726

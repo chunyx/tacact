@@ -1,0 +1,2 @@
+model,display_name,seed,selected_epoch,train_loss_at_selected,train_acc_at_selected,train_f1_at_selected,val_loss_at_selected,val_acc_at_selected,val_f1_at_selected,test_accuracy,test_macro_f1,test_macro_precision,test_macro_recall,params_m,train_time_sec,inference_ms
+LeNet_LSTM,LeNet-LSTM baseline,48,16,0.020802751990892134,0.995297619047619,0.9974985831591959,0.7357117359204928,0.8672619047619048,0.8656828345314737,0.8765625,0.8767105027448033,0.8817167740343956,0.8765624999999972,0.331708,623.9824059046805,0.17154575907625258

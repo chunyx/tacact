@@ -1,0 +1,2 @@
+model,test_accuracy,test_macro_f1,test_macro_precision,test_macro_recall,inference_ms,params,params_m,best_epoch,best_val_loss,best_val_acc,best_val_f1,training_seconds
+LeNet_LSTM,0.9182291666666668,0.918365439263423,0.9194354085224434,0.9182291666666637,0.4176887683570385,803548.0,0.803548,19.0,0.4546849240439358,0.9223214285714286,0.9227681089583802,1920.8995310608295

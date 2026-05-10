@@ -1,0 +1,2 @@
+model,display_name,seed,lr,weight_decay,batch_size,epochs,optimizer,scheduler,model_kwargs_json,param_count,best_config_source,label_smoothing
+LeNet_LSTM_MotionInput,LeNet_LSTM_MotionInput,44,0.0003,0.0003,8,25,AdamW,ReduceLROnPlateau,"{""feature_dim"": 128, ""encoder_hidden_dim"": 128, ""hidden_size"": 192, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}",803948.0,best_config_path,0.05

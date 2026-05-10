@@ -1,0 +1,14 @@
+{
+  "status": "done",
+  "phase": 1,
+  "model_name": "TCN",
+  "trial_id": 9,
+  "seed": 51,
+  "gpu_local_id": 2,
+  "pid": 669104,
+  "epoch": 10,
+  "total_epochs": 10,
+  "val_f1": 0.8341233366229498,
+  "val_acc": 0.8342261904761905,
+  "val_loss": 0.9613692851323257
+}

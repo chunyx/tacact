@@ -1,0 +1,12 @@
+{
+  "model_name": "EfficientNet_B0",
+  "status": "done",
+  "finished_at": "2026-04-28T15:27:23",
+  "phase": "phase2",
+  "paths": {
+    "phase1": "/home/yaxin/tacact/bench_phase2_a_baseline/phase1/EfficientNet_B0/phase1_results.csv",
+    "phase2": "/home/yaxin/tacact/bench_phase2_a_baseline/phase2/EfficientNet_B0/phase2_results.csv",
+    "phase3": "/home/yaxin/tacact/bench_phase2_a_baseline/phase3/EfficientNet_B0/final_results.csv",
+    "phase3_summary": "/home/yaxin/tacact/bench_phase2_a_baseline/phase3/EfficientNet_B0/final_results_summary.csv"
+  }
+}

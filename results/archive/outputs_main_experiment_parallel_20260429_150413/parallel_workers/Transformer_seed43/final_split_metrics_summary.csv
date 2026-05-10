@@ -1,0 +1,2 @@
+model,display_name,train_acc_mean,train_acc_std,train_f1_mean,train_f1_std,val_acc_mean,val_acc_std,val_f1_mean,val_f1_std,test_acc_mean,test_acc_std,test_macro_f1_mean,test_macro_f1_std,params_m,train_time_sec_mean,train_time_sec_std,inference_ms_mean,inference_ms_std
+Transformer,Transformer baseline,0.9950595238095238,,0.9984521020021823,,0.8244047619047619,,0.8264031764027931,,0.7846354166666667,,0.7834357416921541,,1.080076,1973.9338664226234,,0.2738812123425305,

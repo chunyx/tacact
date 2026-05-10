@@ -1,0 +1,13 @@
+group,metric,active_length_mean,active_length_std,active_length_median,active_length_q1,active_length_q3,max_abs_delta_mean,max_abs_delta_std,max_abs_delta_median,max_abs_delta_q1,max_abs_delta_q3,mean_abs_delta_mean,mean_abs_delta_std,mean_abs_delta_median,mean_abs_delta_q1,mean_abs_delta_q3,active_area_mean_mean,active_area_mean_std,active_area_mean_median,active_area_mean_q1,active_area_mean_q3,active_area_max_mean,active_area_max_std,active_area_max_median,active_area_max_q1,active_area_max_q3,motion_energy_mean,motion_energy_std,motion_energy_median,motion_energy_q1,motion_energy_q3
+correct,active_length,77.48411798071469,9.720025854448714,80.0,80.0,80.0,,,,,,,,,,,,,,,,,,,,,,,,,
+correct,max_abs_delta,,,,,,166.42349091870366,85.47601555527183,154.65711975097656,111.19001197814941,202.0,,,,,,,,,,,,,,,,,,,,
+correct,mean_abs_delta,,,,,,,,,,,1.2826239337033878,1.1129455698127613,0.9672949314117432,0.5109099894762039,1.7064771950244904,,,,,,,,,,,,,,,
+correct,active_area_mean,,,,,,,,,,,,,,,,479.61491751254994,253.19486376306992,591.46875,242.1156234741211,691.8031311035156,,,,,,,,,,
+correct,active_area_max,,,,,,,,,,,,,,,,,,,,,671.5794100964265,272.0443492928713,792.0,556.0,856.0,,,,,
+correct,motion_energy,,,,,,,,,,,,,,,,,,,,,,,,,,0.3462936284736798,0.24952507861436235,0.3037640005350113,0.16852814331650734,0.45411838591098785
+wrong,active_length,69.03503184713375,19.16975911401684,80.0,60.25,80.0,,,,,,,,,,,,,,,,,,,,,,,,,
+wrong,max_abs_delta,,,,,,164.03796822250268,91.70106313946218,150.07650756835938,102.39045333862305,202.76599502563477,,,,,,,,,,,,,,,,,,,,
+wrong,mean_abs_delta,,,,,,,,,,,1.828514318255512,1.5761219355963172,1.3700031042099,0.490792952477932,2.7959246039390564,,,,,,,,,,,,,,,
+wrong,active_area_mean,,,,,,,,,,,,,,,,418.04888634355206,296.0727851829995,496.56874084472656,81.7125015258789,727.4125213623047,,,,,,,,,,
+wrong,active_area_max,,,,,,,,,,,,,,,,,,,,,581.4299363057324,350.9549799580009,757.0,172.75,899.0,,,,,
+wrong,motion_energy,,,,,,,,,,,,,,,,,,,,,,,,,,0.3006641004578608,0.21085288014579048,0.28846146166324615,0.09144362062215805,0.49345821887254715

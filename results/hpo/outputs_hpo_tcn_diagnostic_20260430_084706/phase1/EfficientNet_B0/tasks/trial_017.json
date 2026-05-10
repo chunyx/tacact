@@ -1,0 +1,35 @@
+{
+  "task_id": "phase1_EfficientNet_B0_017",
+  "phase": 1,
+  "model_name": "EfficientNet_B0",
+  "trial_id": 17,
+  "seed": 59,
+  "config": {
+    "lr": 0.0001,
+    "weight_decay": 0.0001,
+    "batch_size": 32,
+    "trial_id": 17,
+    "epochs_budget": 10,
+    "use_early_stopping": false
+  },
+  "result_json_path": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase1/EfficientNet_B0/trial_results/trial_017.json",
+  "history_csv_path": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase1/EfficientNet_B0/histories/trial_017_history.csv",
+  "data_cfg": {
+    "data_root": "/home/yaxin/datasets/TacAct-original",
+    "cache_dir": ".cache_tacact_n80_weighted",
+    "split_mode": "subject",
+    "clip_mode": "weighted_center",
+    "split_seed": 42,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "no_preload": false,
+    "parallel_mode": true,
+    "cache_trace": false,
+    "num_workers": 4,
+    "prefetch_factor": 2,
+    "parallel_loader_workers_cap": 2,
+    "label_smoothing": 0.05
+  },
+  "best_ckpt_path": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase1/EfficientNet_B0/checkpoints/trial_017_best.pt",
+  "progress_json_path": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase1/EfficientNet_B0/progress/trial_017.json"
+}

@@ -1,0 +1,14 @@
+{
+  "status": "done",
+  "phase": 1,
+  "model_name": "CNN_LSTM",
+  "trial_id": 14,
+  "seed": 56,
+  "gpu_local_id": 1,
+  "pid": 113327,
+  "epoch": 10,
+  "total_epochs": 10,
+  "val_f1": 0.8778803379092133,
+  "val_acc": 0.8782738095238095,
+  "val_loss": 0.6419948597749074
+}

@@ -1,0 +1,9 @@
+{
+  "model_name": "LeNet",
+  "total_combinations": 48,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.25,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "a263e1a6861042a62d04a5d71cbf932d01572e34c778709decf6f3760e16af1a"
+}

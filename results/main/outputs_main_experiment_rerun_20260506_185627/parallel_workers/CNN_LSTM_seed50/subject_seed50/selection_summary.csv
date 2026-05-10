@@ -1,0 +1,2 @@
+model,seed,selected_epoch,selection_metric,best_val_f1,best_val_acc,best_val_loss,test_accuracy,test_macro_f1,checkpoint_path
+CNN_LSTM,50,11,best_val_f1_max,0.9213109640166679,0.9217261904761904,0.31487491140391544,0.89609375,0.8968722241450976,/home/yaxin/tacact/outputs_main_experiment_rerun_20260506_185627/parallel_workers/CNN_LSTM_seed50/subject_seed50/checkpoints/CNN_LSTM_seed50_best.pt

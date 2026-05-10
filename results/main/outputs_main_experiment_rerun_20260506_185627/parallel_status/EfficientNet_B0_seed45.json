@@ -1,0 +1,15 @@
+{
+  "status": "done",
+  "gpu_id": "8",
+  "pid": 1492339,
+  "queue_models": [],
+  "queue_total": 0,
+  "queue_completed": 0,
+  "current_model": null,
+  "current_model_index": 0,
+  "current_epoch": 25,
+  "total_epochs": 25,
+  "latest_val_f1": null,
+  "latest_val_acc": null,
+  "last_update_ts": 1778065715.0347028
+}

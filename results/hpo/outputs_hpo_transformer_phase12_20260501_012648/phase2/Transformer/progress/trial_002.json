@@ -1,0 +1,14 @@
+{
+  "status": "done",
+  "phase": 2,
+  "model_name": "Transformer",
+  "trial_id": 2,
+  "seed": 244,
+  "gpu_local_id": 1,
+  "pid": 446626,
+  "epoch": 18,
+  "total_epochs": 18,
+  "val_f1": 0.7521401490979422,
+  "val_acc": 0.7535714285714286,
+  "val_loss": 1.1437735189994176
+}

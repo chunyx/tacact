@@ -1,0 +1,2 @@
+model,display_name,train_acc_mean,train_acc_std,train_f1_mean,train_f1_std,val_acc_mean,val_acc_std,val_f1_mean,val_f1_std,test_acc_mean,test_acc_std,test_macro_f1_mean,test_macro_f1_std,params_m,train_time_sec_mean,train_time_sec_std,inference_ms_mean,inference_ms_std
+MobileNet_V2,MobileNet_V2,0.999702380952381,,0.9999999999994992,,0.9446428571428571,,0.9443841145156138,,0.8994791666666667,,0.8965805588152193,,2.26142,2134.56079890579,,0.36033709184266627,

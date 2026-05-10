@@ -1,0 +1,2 @@
+split_mode,model,category,accuracy_mean,accuracy_std,macro_f1_mean,macro_f1_std,macro_precision_mean,macro_precision_std,macro_recall_mean,macro_recall_std,training_seconds_mean,training_seconds_std,inference_ms_mean,inference_ms_std,params_m
+subject,LeNet_LSTM_MotionInput,temporal,0.9265625,,0.9235585750435216,,0.9370849333122478,,0.9265624999999971,,1671.591547653079,,0.45903067803010345,,0.803948

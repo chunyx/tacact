@@ -1,0 +1,21 @@
+{
+  "model_name": "CNN_LSTM",
+  "mode": "target_success",
+  "requested_successful_trials": 12,
+  "target_successful_trials": 12,
+  "target_attempts": 12,
+  "total_combinations": 36,
+  "legal_combinations": 36,
+  "total_attempts": 12,
+  "successful_trials": 12,
+  "failed_trials": 0,
+  "failure_rate": 0.0,
+  "target_met": true,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.3333333333333333,
+  "num_ok": 12,
+  "num_failed": 0,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10"
+}

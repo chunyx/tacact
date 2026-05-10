@@ -1,0 +1,13 @@
+case_type,sample_id,subject_id,true_label,pred_label,top1_confidence,path
+class_3_to_6_error,8436,26,3,6,0.9997242093086244,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_3_to_6_error/01_sample8436.png
+class_3_to_6_error,8401,26,3,6,0.9996914863586426,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_3_to_6_error/02_sample8401.png
+class_3_to_6_error,8435,26,3,6,0.9996281862258912,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_3_to_6_error/03_sample8435.png
+class_3_to_6_error,8414,26,3,6,0.9995988011360168,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_3_to_6_error/04_sample8414.png
+class_3_to_6_error,8427,26,3,6,0.998969793319702,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_3_to_6_error/05_sample8427.png
+class_3_to_6_error,8407,26,3,6,0.99871563911438,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_3_to_6_error/06_sample8407.png
+class_6_to_3_error,8558,26,6,3,0.9996790885925292,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_6_to_3_error/01_sample8558.png
+class_6_to_3_error,8546,26,6,3,0.9995930790901184,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_6_to_3_error/02_sample8546.png
+class_6_to_3_error,8542,26,6,3,0.9995742440223694,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_6_to_3_error/03_sample8542.png
+class_6_to_3_error,8544,26,6,3,0.9994596838951112,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_6_to_3_error/04_sample8544.png
+class_6_to_3_error,8548,26,6,3,0.9993088245391846,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_6_to_3_error/05_sample8548.png
+class_6_to_3_error,8550,26,6,3,0.9993056058883668,/home/yaxin/tacact/outputs/diagnosis/lenet_lstm/class3_class6_focused/examples/class_6_to_3_error/06_sample8550.png

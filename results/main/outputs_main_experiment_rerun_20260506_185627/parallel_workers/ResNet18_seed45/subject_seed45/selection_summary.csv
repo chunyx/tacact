@@ -1,0 +1,2 @@
+model,seed,selected_epoch,selection_metric,best_val_f1,best_val_acc,best_val_loss,test_accuracy,test_macro_f1,checkpoint_path
+ResNet18,45,23,best_val_f1_max,0.9213056985942777,0.9208333333333333,0.5363628269456594,0.9072916666666667,0.9078148242696642,/home/yaxin/tacact/outputs_main_experiment_rerun_20260506_185627/parallel_workers/ResNet18_seed45/subject_seed45/checkpoints/ResNet18_seed45_best.pt

@@ -1,0 +1,2 @@
+split_mode,model,category,accuracy_mean,accuracy_std,macro_f1_mean,macro_f1_std,macro_precision_mean,macro_precision_std,macro_recall_mean,macro_recall_std,training_seconds_mean,training_seconds_std,inference_ms_mean,inference_ms_std,params_m
+subject,GRU,temporal,0.79609375,,0.7943347032654535,,0.7999903705092577,,0.7960937499999975,,586.283922387287,,0.011890774476341903,,0.513292

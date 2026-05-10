@@ -1,0 +1,2 @@
+model,display_name,train_acc_mean,train_acc_std,train_f1_mean,train_f1_std,val_acc_mean,val_acc_std,val_f1_mean,val_f1_std,test_acc_mean,test_acc_std,test_macro_f1_mean,test_macro_f1_std,params_m,train_time_sec_mean,train_time_sec_std,inference_ms_mean,inference_ms_std
+EfficientNet_B0,EfficientNet_B0,0.9879761904761905,,0.9955943033533409,,0.9443452380952381,,0.9448058062387878,,0.90703125,,0.9060502301671055,,4.045096,2654.310290094465,,0.44327282812446356,

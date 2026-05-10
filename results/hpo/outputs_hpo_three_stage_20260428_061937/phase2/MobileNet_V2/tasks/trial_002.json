@@ -1,0 +1,37 @@
+{
+  "task_id": "phase2_MobileNet_V2_002",
+  "phase": 2,
+  "model_name": "MobileNet_V2",
+  "trial_id": 2,
+  "seed": 244,
+  "config": {
+    "lr": 0.0006,
+    "batch_size": 8,
+    "weight_decay": 0.001,
+    "host": "ubuntu",
+    "gpu_local_id": 8,
+    "cuda_visible_devices": 8,
+    "pid": 2886227,
+    "trial_id": 2,
+    "epochs_budget": 25,
+    "use_early_stopping": false
+  },
+  "result_json_path": "/home/yaxin/tacact/outputs_phase1_10gpu_20260428_061937/phase2/MobileNet_V2/trial_results/trial_002.json",
+  "history_csv_path": "/home/yaxin/tacact/outputs_phase1_10gpu_20260428_061937/phase2/MobileNet_V2/histories/trial_002_history.csv",
+  "data_cfg": {
+    "data_root": "/home/yaxin/datasets/TacAct-original",
+    "cache_dir": ".cache_tacact_n80_weighted",
+    "split_mode": "subject",
+    "clip_mode": "weighted_center",
+    "split_seed": 42,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "no_preload": false,
+    "parallel_mode": true,
+    "cache_trace": false,
+    "num_workers": 2,
+    "prefetch_factor": 2,
+    "parallel_loader_workers_cap": 1
+  },
+  "progress_json_path": "/home/yaxin/tacact/outputs_phase1_10gpu_20260428_061937/phase2/MobileNet_V2/progress/trial_002.json"
+}

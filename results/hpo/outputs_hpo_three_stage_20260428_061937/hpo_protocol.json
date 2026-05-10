@@ -1,0 +1,38 @@
+{
+  "created_at": "2026-04-28T18:59:15",
+  "phase1_trials": 12,
+  "phase1_epochs": 10,
+  "phase2_topk": 3,
+  "phase2_epochs": 25,
+  "final_seeds": 3,
+  "final_epochs": 30,
+  "sampling_method": "without_replacement_materialized_before_training",
+  "model_list": [
+    "LeNet",
+    "ResNet18",
+    "MobileNet_V2",
+    "EfficientNet_B0",
+    "LSTM",
+    "GRU",
+    "CNN_LSTM",
+    "LeNet_LSTM",
+    "TCN",
+    "Transformer"
+  ],
+  "primary_metric": "best_val_f1",
+  "tie_break_metric": "best_val_acc",
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "bb20bc64d0605e08fbca583edd4195bfdd7a008b06eca9e25cd9d95aba5078d6",
+  "search_space_hash_by_model": {
+    "LeNet": "e11632a57f46d81c3ed33ad60477fd2fd3b92d9291b1bf50c4431407067566a9",
+    "ResNet18": "aa3cddb12c2fcd5f6e868ca63b904263747153f5c0dcf7450fa17ce14a7eec23",
+    "MobileNet_V2": "0b957fb7902aeab86cb2782f438024c2b177cea0410937170ae60e7e37a62e98",
+    "EfficientNet_B0": "4b1184dfd781c847060b8b6761c1c7a1311014e0cff5ce409734e8ece73ab6c2",
+    "LSTM": "3725c4b48e3b171072bae55b5fb9e11c7db9ec1de05a4ef7ba1ee75a23088e33",
+    "GRU": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5",
+    "CNN_LSTM": "0130a2e7e5e16084231beaa6d3093915db58d8e62976272d5f549956c89f0b10",
+    "LeNet_LSTM": "ca97381ad7e6fb29f87e79f4d137de49708c10ae289c902306bbefa346a261c8",
+    "TCN": "c08600811f9f78c2a6e8f9d172e9ef374da1a437ace99a91eca34edcc652e9f5",
+    "Transformer": "93319bd862489b59d214b1536506be0cd5434aa8d588972160190064e17cfc39"
+  }
+}

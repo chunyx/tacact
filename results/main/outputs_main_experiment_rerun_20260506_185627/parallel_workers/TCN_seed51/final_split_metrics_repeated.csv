@@ -1,0 +1,2 @@
+model,display_name,seed,selected_epoch,train_loss_at_selected,train_acc_at_selected,train_f1_at_selected,val_loss_at_selected,val_acc_at_selected,val_f1_at_selected,test_accuracy,test_macro_f1,test_macro_precision,test_macro_recall,params_m,train_time_sec,inference_ms
+TCN,TCN baseline,51,18,0.004387249996264776,0.9989880952380953,0.9998809523652671,1.3232623326897115,0.8419642857142857,0.8400931139329552,0.8408854166666667,0.841150879980927,0.8438934064644893,0.8408854166666639,2.083724,945.8616441525519,0.1124164613429457

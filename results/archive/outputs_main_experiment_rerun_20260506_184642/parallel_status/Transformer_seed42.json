@@ -1,0 +1,15 @@
+{
+  "status": "running",
+  "gpu_id": "9",
+  "pid": 292937,
+  "queue_models": [],
+  "queue_total": 1,
+  "queue_completed": 0,
+  "current_model": "Transformer",
+  "current_model_index": 1,
+  "current_epoch": 15,
+  "total_epochs": 30,
+  "latest_val_f1": 0.6891586177681223,
+  "latest_val_acc": 0.6907738095238095,
+  "last_update_ts": 1778061349.822582
+}

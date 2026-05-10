@@ -1,0 +1,14 @@
+{
+  "status": "done",
+  "phase": 1,
+  "model_name": "GRU",
+  "trial_id": 1,
+  "seed": 43,
+  "gpu_local_id": 0,
+  "pid": 2945881,
+  "epoch": 10,
+  "total_epochs": 10,
+  "val_f1": 0.8746043138533387,
+  "val_acc": 0.8741071428571429,
+  "val_loss": 0.6184557072108159
+}

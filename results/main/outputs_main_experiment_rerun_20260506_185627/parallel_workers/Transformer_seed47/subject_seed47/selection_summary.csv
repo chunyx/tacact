@@ -1,0 +1,2 @@
+model,seed,selected_epoch,selection_metric,best_val_f1,best_val_acc,best_val_loss,test_accuracy,test_macro_f1,checkpoint_path
+Transformer,47,19,best_val_f1_max,0.7062713558983003,0.7083333333333334,2.2844394196133906,0.7583333333333333,0.7595947402415528,/home/yaxin/tacact/outputs_main_experiment_rerun_20260506_185627/parallel_workers/Transformer_seed47/subject_seed47/checkpoints/Transformer_seed47_best.pt

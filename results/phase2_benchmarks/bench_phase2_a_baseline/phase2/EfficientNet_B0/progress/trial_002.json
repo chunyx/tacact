@@ -1,0 +1,14 @@
+{
+  "status": "done",
+  "phase": 2,
+  "model_name": "EfficientNet_B0",
+  "trial_id": 2,
+  "seed": 244,
+  "gpu_local_id": 1,
+  "pid": 3155433,
+  "epoch": 5,
+  "total_epochs": 5,
+  "val_f1": 0.9018356275365456,
+  "val_acc": 0.9023809523809524,
+  "val_loss": 0.31163006219876477
+}

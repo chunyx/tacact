@@ -332,6 +332,88 @@ class LeNetLSTMClassifier(nn.Module):
         return self.head(self.dropout(pooled))
 
 
+class LeNetLSTMMeanMaxClassifier(LeNetLSTMClassifier):
+    """Post-hoc targeted variant: LeNet-style frame encoder + LSTM + mean-max temporal pooling."""
+
+    def __init__(
+        self,
+        num_classes: int = 12,
+        feature_dim: int = 128,
+        encoder_hidden_dim: int = 160,
+        hidden_size: int = 128,
+        num_layers: int = 1,
+        dropout: float = 0.3,
+        use_last_only: bool = False,
+        bidirectional: bool = False,
+    ) -> None:
+        super().__init__(
+            num_classes=num_classes,
+            feature_dim=feature_dim,
+            encoder_hidden_dim=encoder_hidden_dim,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout,
+            use_last_only=use_last_only,
+            bidirectional=bidirectional,
+        )
+        out_dim = hidden_size * (2 if bidirectional else 1)
+        self.head = nn.Linear(out_dim * 2, num_classes)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = _reshape_temporal_frames(x)
+        b, t, h, w = x.shape
+        frames = x.view(b * t, 1, h, w)
+        features = self.frame_encoder(frames).view(b, t, -1)
+        lstm_out, _ = self.lstm(features)
+        mean_pool = lstm_out.mean(dim=1)
+        max_pool = lstm_out.max(dim=1).values
+        pooled = torch.cat([mean_pool, max_pool], dim=1)
+        return self.head(self.dropout(pooled))
+
+
+class LeNetLSTMMotionInputClassifier(LeNetLSTMClassifier):
+    """Post-hoc targeted variant: LeNet-style frame encoder + explicit motion-input channel + LSTM."""
+
+    def __init__(
+        self,
+        num_classes: int = 12,
+        feature_dim: int = 128,
+        encoder_hidden_dim: int = 160,
+        hidden_size: int = 128,
+        num_layers: int = 1,
+        dropout: float = 0.3,
+        use_last_only: bool = False,
+        bidirectional: bool = False,
+    ) -> None:
+        super().__init__(
+            num_classes=num_classes,
+            feature_dim=feature_dim,
+            encoder_hidden_dim=encoder_hidden_dim,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout,
+            use_last_only=use_last_only,
+            bidirectional=bidirectional,
+        )
+        self.frame_encoder = LeNetFrameEncoder(
+            in_channels=2,
+            encoder_hidden_dim=encoder_hidden_dim,
+            feature_dim=feature_dim,
+            dropout=dropout,
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = _reshape_temporal_frames(x)
+        b, t, h, w = x.shape
+        motion = torch.zeros_like(x)
+        motion[:, 1:] = (x[:, 1:] - x[:, :-1]).abs()
+        frames_2ch = torch.stack([x, motion], dim=2)
+        features = self.frame_encoder(frames_2ch.view(b * t, 2, h, w)).view(b, t, -1)
+        lstm_out, _ = self.lstm(features)
+        pooled = _pool_temporal_features(lstm_out, self.use_last_only)
+        return self.head(self.dropout(pooled))
+
+
 class CNNLSTM(nn.Module):
     """Task-specific temporal baseline: per-frame CNN backbone + sequence LSTM."""
 
@@ -478,6 +560,44 @@ class ModelFactory:
             use_last_only = bool(kwargs.get("use_last_only", False))
             bidirectional = bool(kwargs.get("bidirectional", False))
             return LeNetLSTMClassifier(
+                num_classes=num_classes,
+                feature_dim=feature_dim,
+                encoder_hidden_dim=encoder_hidden_dim,
+                hidden_size=hidden_size,
+                num_layers=num_layers,
+                dropout=dropout,
+                use_last_only=use_last_only,
+                bidirectional=bidirectional,
+            ), "temporal"
+
+        if n in {"lenet_lstm_meanmax", "lenetlstm_meanmax"}:
+            feature_dim = int(kwargs.get("feature_dim", 128))
+            encoder_hidden_dim = int(kwargs.get("encoder_hidden_dim", 160))
+            hidden_size = int(kwargs.get("hidden_size", 128))
+            num_layers = int(kwargs.get("num_layers", 1))
+            dropout = float(kwargs.get("dropout", 0.3))
+            use_last_only = bool(kwargs.get("use_last_only", False))
+            bidirectional = bool(kwargs.get("bidirectional", False))
+            return LeNetLSTMMeanMaxClassifier(
+                num_classes=num_classes,
+                feature_dim=feature_dim,
+                encoder_hidden_dim=encoder_hidden_dim,
+                hidden_size=hidden_size,
+                num_layers=num_layers,
+                dropout=dropout,
+                use_last_only=use_last_only,
+                bidirectional=bidirectional,
+            ), "temporal"
+
+        if n in {"lenet_lstm_motioninput", "lenetlstm_motioninput", "lenet_lstm_motion"}:
+            feature_dim = int(kwargs.get("feature_dim", 128))
+            encoder_hidden_dim = int(kwargs.get("encoder_hidden_dim", 160))
+            hidden_size = int(kwargs.get("hidden_size", 128))
+            num_layers = int(kwargs.get("num_layers", 1))
+            dropout = float(kwargs.get("dropout", 0.3))
+            use_last_only = bool(kwargs.get("use_last_only", False))
+            bidirectional = bool(kwargs.get("bidirectional", False))
+            return LeNetLSTMMotionInputClassifier(
                 num_classes=num_classes,
                 feature_dim=feature_dim,
                 encoder_hidden_dim=encoder_hidden_dim,

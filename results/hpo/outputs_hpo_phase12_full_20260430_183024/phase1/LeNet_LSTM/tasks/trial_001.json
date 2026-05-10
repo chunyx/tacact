@@ -1,0 +1,42 @@
+{
+  "task_id": "phase1_LeNet_LSTM_001",
+  "phase": 1,
+  "model_name": "LeNet_LSTM",
+  "trial_id": 1,
+  "seed": 43,
+  "config": {
+    "feature_dim": 64,
+    "encoder_hidden_dim": 96,
+    "hidden_size": 128,
+    "num_layers": 2,
+    "dropout": 0.5,
+    "use_last_only": false,
+    "bidirectional": false,
+    "lr": 0.0006,
+    "weight_decay": 0.001,
+    "batch_size": 16,
+    "trial_id": 1,
+    "epochs_budget": 10,
+    "use_early_stopping": false
+  },
+  "result_json_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/LeNet_LSTM/trial_results/trial_001.json",
+  "history_csv_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/LeNet_LSTM/histories/trial_001_history.csv",
+  "data_cfg": {
+    "data_root": "/home/yaxin/datasets/TacAct-original",
+    "cache_dir": ".cache_tacact_n80_weighted",
+    "split_mode": "subject",
+    "clip_mode": "weighted_center",
+    "split_seed": 42,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "no_preload": false,
+    "parallel_mode": true,
+    "cache_trace": false,
+    "num_workers": 4,
+    "prefetch_factor": 2,
+    "parallel_loader_workers_cap": 2,
+    "label_smoothing": 0.05
+  },
+  "best_ckpt_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/LeNet_LSTM/checkpoints/trial_001_best.pt",
+  "progress_json_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/LeNet_LSTM/progress/trial_001.json"
+}

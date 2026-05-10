@@ -1,0 +1,3 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+TCN,1,8,10,0.8405592688642401,0.8410714285714286,"{""lr"": 0.0001, ""batch_size"": 16, ""weight_decay"": 0.003, ""best_val_macro_f1"": 0.8405592688642401, ""num_channels"": 128, ""dropout"": 0.3}"
+TCN,2,3,10,0.830343841760021,0.8297619047619048,"{""lr"": 0.0001, ""batch_size"": 16, ""weight_decay"": 0.001, ""best_val_macro_f1"": 0.830343841760021, ""num_channels"": 128, ""dropout"": 0.3}"

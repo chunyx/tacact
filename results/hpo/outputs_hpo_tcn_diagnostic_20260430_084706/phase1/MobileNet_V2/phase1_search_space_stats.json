@@ -1,0 +1,9 @@
+{
+  "model_name": "MobileNet_V2",
+  "total_combinations": 27,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.4444444444444444,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "4bc35eaa6dfa17305a1e6ed6b7277039a13cc86bb3681e9e3d740c0118114f7d"
+}

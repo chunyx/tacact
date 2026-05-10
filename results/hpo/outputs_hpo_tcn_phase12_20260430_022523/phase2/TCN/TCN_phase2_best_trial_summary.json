@@ -1,0 +1,20 @@
+{
+  "selected_trial_id": 1,
+  "selected_from_phase1_trial_id": 6,
+  "best_epoch": 16,
+  "best_val_macro_f1": 0.847648637714031,
+  "best_val_acc": 0.8479166666666667,
+  "best_val_loss": 1.3097030441475832,
+  "train_loss_at_best_epoch": 0.0003775228985718,
+  "val_loss_at_best_epoch": 1.3097030441475832,
+  "last_train_loss": 0.0001115023380234,
+  "last_val_loss": 1.366832269234337,
+  "overfit_gap_loss": 0.05712922508675389,
+  "selected_hyperparameters": {
+    "lr": 0.0001,
+    "batch_size": 16,
+    "weight_decay": 0.005,
+    "num_channels": 256,
+    "dropout": 0.5
+  }
+}

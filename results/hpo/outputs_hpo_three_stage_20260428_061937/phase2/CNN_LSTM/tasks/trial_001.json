@@ -1,0 +1,38 @@
+{
+  "task_id": "phase2_CNN_LSTM_001",
+  "phase": 2,
+  "model_name": "CNN_LSTM",
+  "trial_id": 1,
+  "seed": 243,
+  "config": {
+    "lr": 0.0003,
+    "batch_size": 16,
+    "weight_decay": 0.0001,
+    "lstm_hidden": 256,
+    "host": "ubuntu",
+    "gpu_local_id": 0,
+    "cuda_visible_devices": 0,
+    "pid": 2972866,
+    "trial_id": 1,
+    "epochs_budget": 25,
+    "use_early_stopping": false
+  },
+  "result_json_path": "/home/yaxin/tacact/outputs_phase1_10gpu_20260428_061937/phase2/CNN_LSTM/trial_results/trial_001.json",
+  "history_csv_path": "/home/yaxin/tacact/outputs_phase1_10gpu_20260428_061937/phase2/CNN_LSTM/histories/trial_001_history.csv",
+  "data_cfg": {
+    "data_root": "/home/yaxin/datasets/TacAct-original",
+    "cache_dir": ".cache_tacact_n80_weighted",
+    "split_mode": "subject",
+    "clip_mode": "weighted_center",
+    "split_seed": 42,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "no_preload": false,
+    "parallel_mode": true,
+    "cache_trace": false,
+    "num_workers": 2,
+    "prefetch_factor": 2,
+    "parallel_loader_workers_cap": 1
+  },
+  "progress_json_path": "/home/yaxin/tacact/outputs_phase1_10gpu_20260428_061937/phase2/CNN_LSTM/progress/trial_001.json"
+}

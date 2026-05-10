@@ -1,0 +1,2 @@
+model,seed,best_config_path,hpo_trial_id,hpo_best_val_f1,hpo_best_val_acc,main_best_val_f1,main_test_macro_f1,config_json
+TCN,46,/home/yaxin/tacact/outputs_hpo_phase12_full_20260430_183024/final_best_model_configs_with_tuned_transformer.json,1,0.8491074551526211,0.8491071428571428,0.8518096929456274,0.8401117605311281,"{""lr"": 0.0001, ""batch_size"": 16, ""weight_decay"": 0.003, ""num_channels"": 128, ""dropout"": 0.3}"

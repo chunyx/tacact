@@ -1,0 +1,2 @@
+split_mode,seed,model,category,accuracy,macro_f1,macro_precision,macro_recall,training_seconds,inference_ms,params,params_m
+subject,42.0,MobileNet_V2,cnn,0.89296875,0.8896481495139733,0.9013971234868388,0.892968749999997,1658.242269570008,0.36776302149519324,2261420.0,2.26142

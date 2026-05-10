@@ -1,0 +1,9 @@
+{
+  "model_name": "GRU",
+  "total_combinations": 192,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.0625,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "880b9de3de086fd0f5941bf53fe2a85fd82974e080dbef82c0f27170b99bfba5"
+}

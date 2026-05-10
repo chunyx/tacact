@@ -1,0 +1,2 @@
+model,seed,best_config_path,hpo_trial_id,hpo_best_val_f1,hpo_best_val_acc,main_best_val_f1,main_test_macro_f1,config_json
+Transformer,44,/home/yaxin/tacact/outputs_phase1_10gpu_20260428_061937/best_model_configs.json,1,0.8244745349911118,0.8238095238095238,0.8487427746669987,0.8062701679450347,"{""lr"": 0.0003, ""batch_size"": 8, ""weight_decay"": 0.0001, ""d_model"": 256, ""nhead"": 8, ""num_layers"": 2, ""dim_feedforward"": 256, ""dropout"": 0.3, ""pooling"": ""mean"", ""norm_first"": false}"

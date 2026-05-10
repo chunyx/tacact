@@ -1,0 +1,2 @@
+model,category,accuracy,macro_f1,macro_precision,macro_recall,training_seconds,inference_ms,params,params_m,best_epoch,best_val_loss,best_val_acc,best_val_f1,latency_ms_bs1,throughput_sps_bs1,latency_ms_bs32,throughput_sps_bs32
+LeNet_LSTM,temporal,0.94140625,0.9413087781734548,0.942148821446139,0.941406249999997,4193.181873166934,0.4231883445754647,803548.0,0.803548,13.0,0.661844305906977,0.899702380952381,0.900161976133708,2.026115972548723,493.5551634500292,0.30723135743755847,3254.876091882123

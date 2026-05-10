@@ -1,0 +1,2 @@
+model,display_name,seed,lr,weight_decay,batch_size,epochs,optimizer,scheduler,model_kwargs_json,param_count,best_config_source
+Transformer,Transformer,44,0.0003,0.0001,8,30,AdamW,CosineAnnealingWarmRestarts,"{""d_model"": 256, ""nhead"": 8, ""num_layers"": 2, ""dim_feedforward"": 256, ""dropout"": 0.3, ""pooling"": ""mean"", ""norm_first"": false}",1080076.0,best_config_path

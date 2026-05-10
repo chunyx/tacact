@@ -1,0 +1,2 @@
+model,display_name,seed,lr,weight_decay,batch_size,epochs,optimizer,scheduler,model_kwargs_json,param_count,best_config_source
+LSTM,LSTM,42,0.0006,0.0003,32,30,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",595724.0,best_config_path

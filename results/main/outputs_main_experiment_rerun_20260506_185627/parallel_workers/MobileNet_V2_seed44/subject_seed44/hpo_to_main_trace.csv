@@ -1,0 +1,2 @@
+model,seed,best_config_path,hpo_trial_id,hpo_best_val_f1,hpo_best_val_acc,main_best_val_f1,main_test_macro_f1,config_json
+MobileNet_V2,44,/home/yaxin/tacact/outputs_hpo_phase12_full_20260430_183024/final_best_model_configs_with_tuned_transformer.json,3,0.927849598657493,0.9279761904761904,0.9267959640582727,0.9230946630032816,"{""lr"": 0.0006, ""batch_size"": 16, ""weight_decay"": 0.0003}"

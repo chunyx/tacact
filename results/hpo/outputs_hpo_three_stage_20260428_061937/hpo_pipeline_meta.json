@@ -1,0 +1,538 @@
+{
+  "meta": {
+    "seed": 42,
+    "phase1_epochs": 10,
+    "phase2_epochs": 25,
+    "phase3_epochs": 30,
+    "phase1_trials": 12,
+    "phase2_topk": 3,
+    "phase3_seeds": 3,
+    "selection_rule": "primary=best_val_f1, tie_breaker=best_val_acc",
+    "primary_metric": "best_val_f1",
+    "tie_break_metric": "best_val_acc",
+    "sampling_method": "without_replacement_materialized_before_training",
+    "search_space_version": "refined_search_space",
+    "search_space_hash": "bb20bc64d0605e08fbca583edd4195bfdd7a008b06eca9e25cd9d95aba5078d6",
+    "parallel": true,
+    "gpu_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "max_workers": 6,
+    "resume": true
+  },
+  "models": {
+    "LeNet": {
+      "phase1_top_configs": [
+        {
+          "lr": 0.0005,
+          "batch_size": 16,
+          "weight_decay": 1e-05,
+          "host": "ubuntu",
+          "gpu_local_id": 3,
+          "cuda_visible_devices": 3,
+          "pid": 2866905
+        },
+        {
+          "lr": 0.0005,
+          "batch_size": 32,
+          "weight_decay": 5e-05,
+          "host": "ubuntu",
+          "gpu_local_id": 0,
+          "cuda_visible_devices": 0,
+          "pid": 2854276
+        },
+        {
+          "lr": 0.0005,
+          "batch_size": 16,
+          "weight_decay": 0.0001,
+          "host": "ubuntu",
+          "gpu_local_id": 9,
+          "cuda_visible_devices": 9,
+          "pid": 2854663
+        }
+      ],
+      "best_config": {
+        "lr": 0.0005,
+        "batch_size": 16,
+        "weight_decay": 0.0001,
+        "host": "ubuntu",
+        "gpu_local_id": 2,
+        "cuda_visible_devices": "2",
+        "pid": 3096993
+      }
+    },
+    "ResNet18": {
+      "phase1_top_configs": [
+        {
+          "lr": 0.0007,
+          "batch_size": 8,
+          "weight_decay": 0.0003,
+          "host": "ubuntu",
+          "gpu_local_id": 8,
+          "cuda_visible_devices": 8,
+          "pid": 2870209
+        },
+        {
+          "lr": 0.0003,
+          "batch_size": 8,
+          "weight_decay": 0.0003,
+          "host": "ubuntu",
+          "gpu_local_id": 2,
+          "cuda_visible_devices": 2,
+          "pid": 2869950
+        },
+        {
+          "lr": 0.0003,
+          "batch_size": 16,
+          "weight_decay": 1e-05,
+          "host": "ubuntu",
+          "gpu_local_id": 3,
+          "cuda_visible_devices": 3,
+          "pid": 2881705
+        }
+      ],
+      "best_config": {
+        "lr": 0.0003,
+        "batch_size": 8,
+        "weight_decay": 0.0003,
+        "host": "ubuntu",
+        "gpu_local_id": 4,
+        "cuda_visible_devices": "4",
+        "pid": 3096995
+      }
+    },
+    "MobileNet_V2": {
+      "phase1_top_configs": [
+        {
+          "lr": 0.001,
+          "batch_size": 16,
+          "weight_decay": 1e-05,
+          "host": "ubuntu",
+          "gpu_local_id": 6,
+          "cuda_visible_devices": 6,
+          "pid": 2885973
+        },
+        {
+          "lr": 0.0006,
+          "batch_size": 8,
+          "weight_decay": 0.001,
+          "host": "ubuntu",
+          "gpu_local_id": 8,
+          "cuda_visible_devices": 8,
+          "pid": 2886227
+        },
+        {
+          "lr": 0.001,
+          "batch_size": 8,
+          "weight_decay": 1e-05,
+          "host": "ubuntu",
+          "gpu_local_id": 9,
+          "cuda_visible_devices": 9,
+          "pid": 2886228
+        }
+      ],
+      "best_config": {
+        "lr": 0.001,
+        "batch_size": 16,
+        "weight_decay": 1e-05,
+        "host": "ubuntu",
+        "gpu_local_id": 2,
+        "cuda_visible_devices": "2",
+        "pid": 3112974
+      }
+    },
+    "EfficientNet_B0": {
+      "phase1_top_configs": [
+        {
+          "lr": 0.0003,
+          "batch_size": 8,
+          "weight_decay": 0.0005,
+          "host": "ubuntu",
+          "gpu_local_id": 2,
+          "cuda_visible_devices": 2,
+          "pid": 2908948
+        },
+        {
+          "lr": 0.0007,
+          "batch_size": 16,
+          "weight_decay": 0.0001,
+          "host": "ubuntu",
+          "gpu_local_id": 3,
+          "cuda_visible_devices": 3,
+          "pid": 2908949
+        },
+        {
+          "lr": 0.0003,
+          "batch_size": 16,
+          "weight_decay": 1e-05,
+          "host": "ubuntu",
+          "gpu_local_id": 4,
+          "cuda_visible_devices": 4,
+          "pid": 2924900
+        }
+      ],
+      "best_config": {
+        "lr": 0.0007,
+        "batch_size": 16,
+        "weight_decay": 0.0001,
+        "host": "ubuntu",
+        "gpu_local_id": 3,
+        "cuda_visible_devices": "3",
+        "pid": 3120599
+      }
+    },
+    "LSTM": {
+      "phase1_top_configs": [
+        {
+          "lr": 0.0006,
+          "batch_size": 8,
+          "weight_decay": 0.0001,
+          "input_proj_dim": 256,
+          "hidden_size": 256,
+          "num_layers": 2,
+          "dropout": 0.3,
+          "use_last_only": false,
+          "host": "ubuntu",
+          "gpu_local_id": 6,
+          "cuda_visible_devices": 6,
+          "pid": 2931011
+        },
+        {
+          "lr": 0.0003,
+          "batch_size": 8,
+          "weight_decay": 1e-05,
+          "input_proj_dim": 512,
+          "hidden_size": 256,
+          "num_layers": 2,
+          "dropout": 0.3,
+          "use_last_only": false,
+          "host": "ubuntu",
+          "gpu_local_id": 0,
+          "cuda_visible_devices": 0,
+          "pid": 2930816
+        },
+        {
+          "lr": 0.0006,
+          "batch_size": 8,
+          "weight_decay": 0.0001,
+          "input_proj_dim": 256,
+          "hidden_size": 128,
+          "num_layers": 2,
+          "dropout": 0.5,
+          "use_last_only": false,
+          "host": "ubuntu",
+          "gpu_local_id": 1,
+          "cuda_visible_devices": 1,
+          "pid": 2930817
+        }
+      ],
+      "best_config": {
+        "lr": 0.0006,
+        "batch_size": 8,
+        "weight_decay": 0.0001,
+        "input_proj_dim": 256,
+        "hidden_size": 256,
+        "num_layers": 2,
+        "dropout": 0.3,
+        "use_last_only": false,
+        "host": "ubuntu",
+        "gpu_local_id": 2,
+        "cuda_visible_devices": "2",
+        "pid": 3146525
+      }
+    },
+    "GRU": {
+      "phase1_top_configs": [
+        {
+          "lr": 0.0003,
+          "batch_size": 8,
+          "weight_decay": 1e-05,
+          "input_proj_dim": 512,
+          "hidden_size": 256,
+          "num_layers": 2,
+          "dropout": 0.3,
+          "use_last_only": false,
+          "host": "ubuntu",
+          "gpu_local_id": 0,
+          "cuda_visible_devices": 0,
+          "pid": 2945881
+        },
+        {
+          "lr": 0.0006,
+          "batch_size": 8,
+          "weight_decay": 0.0001,
+          "input_proj_dim": 256,
+          "hidden_size": 256,
+          "num_layers": 2,
+          "dropout": 0.3,
+          "use_last_only": false,
+          "host": "ubuntu",
+          "gpu_local_id": 6,
+          "cuda_visible_devices": 6,
+          "pid": 2946013
+        },
+        {
+          "lr": 0.0003,
+          "batch_size": 16,
+          "weight_decay": 1e-05,
+          "input_proj_dim": 512,
+          "hidden_size": 256,
+          "num_layers": 2,
+          "dropout": 0.5,
+          "use_last_only": false,
+          "host": "ubuntu",
+          "gpu_local_id": 7,
+          "cuda_visible_devices": 7,
+          "pid": 2957391
+        }
+      ],
+      "best_config": {
+        "lr": 0.0006,
+        "batch_size": 8,
+        "weight_decay": 0.0001,
+        "input_proj_dim": 256,
+        "hidden_size": 256,
+        "num_layers": 2,
+        "dropout": 0.3,
+        "use_last_only": false,
+        "host": "ubuntu",
+        "gpu_local_id": 0,
+        "cuda_visible_devices": "0",
+        "pid": 3161053
+      }
+    },
+    "CNN_LSTM": {
+      "phase1_top_configs": [
+        {
+          "lr": 0.0003,
+          "batch_size": 16,
+          "weight_decay": 0.0001,
+          "lstm_hidden": 256,
+          "host": "ubuntu",
+          "gpu_local_id": 0,
+          "cuda_visible_devices": 0,
+          "pid": 2972866
+        },
+        {
+          "lr": 0.0003,
+          "batch_size": 8,
+          "weight_decay": 0.0001,
+          "lstm_hidden": 256,
+          "host": "ubuntu",
+          "gpu_local_id": 6,
+          "cuda_visible_devices": 6,
+          "pid": 2960816
+        },
+        {
+          "lr": 0.0003,
+          "batch_size": 16,
+          "weight_decay": 0.0001,
+          "lstm_hidden": 192,
+          "host": "ubuntu",
+          "gpu_local_id": 5,
+          "cuda_visible_devices": 5,
+          "pid": 2960700
+        }
+      ],
+      "best_config": {
+        "lr": 0.0003,
+        "batch_size": 8,
+        "weight_decay": 0.0001,
+        "lstm_hidden": 256,
+        "host": "ubuntu",
+        "gpu_local_id": 2,
+        "cuda_visible_devices": "2",
+        "pid": 3167110
+      }
+    },
+    "LeNet_LSTM": {
+      "phase1_top_configs": [
+        {
+          "lr": 0.0006,
+          "batch_size": 16,
+          "weight_decay": 1e-05,
+          "feature_dim": 160,
+          "encoder_hidden_dim": 192,
+          "hidden_size": 192,
+          "num_layers": 2,
+          "dropout": 0.3,
+          "use_last_only": false,
+          "bidirectional": false,
+          "host": "ubuntu",
+          "gpu_local_id": 2,
+          "cuda_visible_devices": 2,
+          "pid": 2989615
+        },
+        {
+          "lr": 0.0003,
+          "batch_size": 8,
+          "weight_decay": 1e-05,
+          "feature_dim": 128,
+          "encoder_hidden_dim": 128,
+          "hidden_size": 192,
+          "num_layers": 2,
+          "dropout": 0.3,
+          "use_last_only": false,
+          "bidirectional": false,
+          "host": "ubuntu",
+          "gpu_local_id": 8,
+          "cuda_visible_devices": 8,
+          "pid": 2979189
+        },
+        {
+          "lr": 0.0006,
+          "batch_size": 16,
+          "weight_decay": 0.0001,
+          "feature_dim": 96,
+          "encoder_hidden_dim": 128,
+          "hidden_size": 96,
+          "num_layers": 1,
+          "dropout": 0.2,
+          "use_last_only": true,
+          "bidirectional": false,
+          "host": "ubuntu",
+          "gpu_local_id": 2,
+          "cuda_visible_devices": 2,
+          "pid": 2978931
+        }
+      ],
+      "best_config": {
+        "lr": 0.0003,
+        "batch_size": 8,
+        "weight_decay": 1e-05,
+        "feature_dim": 128,
+        "encoder_hidden_dim": 128,
+        "hidden_size": 192,
+        "num_layers": 2,
+        "dropout": 0.3,
+        "use_last_only": false,
+        "bidirectional": false,
+        "host": "ubuntu",
+        "gpu_local_id": 1,
+        "cuda_visible_devices": "1",
+        "pid": 3170287
+      }
+    },
+    "TCN": {
+      "phase1_top_configs": [
+        {
+          "lr": 0.0001,
+          "batch_size": 4,
+          "weight_decay": 1e-05,
+          "num_channels": 384,
+          "dropout": 0.1,
+          "host": "ubuntu",
+          "gpu_local_id": 4,
+          "cuda_visible_devices": 4,
+          "pid": 3013554
+        },
+        {
+          "lr": 0.0002,
+          "batch_size": 4,
+          "weight_decay": 0.0001,
+          "num_channels": 384,
+          "dropout": 0.0,
+          "host": "ubuntu",
+          "gpu_local_id": 2,
+          "cuda_visible_devices": 2,
+          "pid": 2993733
+        },
+        {
+          "lr": 0.0001,
+          "batch_size": 8,
+          "weight_decay": 0.0001,
+          "num_channels": 256,
+          "dropout": 0.1,
+          "host": "ubuntu",
+          "gpu_local_id": 6,
+          "cuda_visible_devices": 6,
+          "pid": 2993863
+        }
+      ],
+      "best_config": {
+        "lr": 0.0002,
+        "batch_size": 4,
+        "weight_decay": 0.0001,
+        "num_channels": 384,
+        "dropout": 0.0,
+        "host": "ubuntu",
+        "gpu_local_id": 5,
+        "cuda_visible_devices": "5",
+        "pid": 3176130
+      }
+    },
+    "Transformer": {
+      "phase1_top_configs": [
+        {
+          "lr": 0.0003,
+          "batch_size": 8,
+          "weight_decay": 0.0001,
+          "d_model": 256,
+          "nhead": 8,
+          "num_layers": 2,
+          "dim_feedforward": 256,
+          "dropout": 0.3,
+          "pooling": "mean",
+          "norm_first": false,
+          "host": "ubuntu",
+          "gpu_local_id": 3,
+          "cuda_visible_devices": 3,
+          "pid": 3028875
+        },
+        {
+          "lr": 0.0003,
+          "batch_size": 8,
+          "weight_decay": 0.0001,
+          "d_model": 128,
+          "nhead": 4,
+          "num_layers": 3,
+          "dim_feedforward": 512,
+          "dropout": 0.3,
+          "pooling": "mean",
+          "norm_first": true,
+          "host": "ubuntu",
+          "gpu_local_id": 4,
+          "cuda_visible_devices": 4,
+          "pid": 3028876
+        },
+        {
+          "lr": 0.0003,
+          "batch_size": 8,
+          "weight_decay": 1e-05,
+          "d_model": 128,
+          "nhead": 2,
+          "num_layers": 2,
+          "dim_feedforward": 512,
+          "dropout": 0.3,
+          "pooling": "mean",
+          "norm_first": true,
+          "host": "ubuntu",
+          "gpu_local_id": 5,
+          "cuda_visible_devices": 5,
+          "pid": 3028877
+        }
+      ],
+      "best_config": {
+        "lr": 0.0003,
+        "batch_size": 8,
+        "weight_decay": 0.0001,
+        "d_model": 256,
+        "nhead": 8,
+        "num_layers": 2,
+        "dim_feedforward": 256,
+        "dropout": 0.3,
+        "pooling": "mean",
+        "norm_first": false,
+        "host": "ubuntu",
+        "gpu_local_id": 4,
+        "cuda_visible_devices": "4",
+        "pid": 3178204
+      }
+    }
+  }
+}

@@ -1,0 +1,2 @@
+model,display_name,train_acc_mean,train_acc_std,train_f1_mean,train_f1_std,val_acc_mean,val_acc_std,val_f1_mean,val_f1_std,test_acc_mean,test_acc_std,test_macro_f1_mean,test_macro_f1_std,params_m,train_time_sec_mean,train_time_sec_std,inference_ms_mean,inference_ms_std
+ResNet18,ResNet18,0.9876190476190476,,0.9932684958508301,,0.9413690476190476,,0.9413682703540824,,0.91875,,0.9167735063223241,,11.42414,2301.315577307716,,0.4877655766904354,

@@ -1,0 +1,2 @@
+split_mode,seed,model,category,accuracy,macro_f1,macro_precision,macro_recall,training_seconds,inference_ms,params,params_m
+subject,43.0,LeNet,cnn,0.871875,0.8708893885617055,0.874303066996311,0.8718749999999972,665.5386191327125,0.013486458919942379,73726.0,0.073726

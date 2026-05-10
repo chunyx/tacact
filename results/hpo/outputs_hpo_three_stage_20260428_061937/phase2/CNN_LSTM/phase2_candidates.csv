@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+CNN_LSTM,1,11,10,0.9306181905589652,0.930654761904762,"{""lr"": 0.0003, ""batch_size"": 16, ""weight_decay"": 0.0001, ""lstm_hidden"": 256}"
+CNN_LSTM,2,7,9,0.9281658490362096,0.9276785714285716,"{""lr"": 0.0003, ""batch_size"": 8, ""weight_decay"": 0.0001, ""lstm_hidden"": 256}"
+CNN_LSTM,3,6,6,0.9264056289113716,0.9267857142857144,"{""lr"": 0.0003, ""batch_size"": 16, ""weight_decay"": 0.0001, ""lstm_hidden"": 192}"

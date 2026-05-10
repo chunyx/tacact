@@ -1,0 +1,14 @@
+{
+  "status": "done",
+  "phase": 1,
+  "model_name": "MobileNet_V2",
+  "trial_id": 15,
+  "seed": 57,
+  "gpu_local_id": 2,
+  "pid": 116388,
+  "epoch": 10,
+  "total_epochs": 10,
+  "val_f1": 0.9157340005602986,
+  "val_acc": 0.9157738095238095,
+  "val_loss": 0.5425382213933128
+}

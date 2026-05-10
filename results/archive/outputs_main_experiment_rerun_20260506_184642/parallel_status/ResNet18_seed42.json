@@ -1,0 +1,15 @@
+{
+  "status": "running",
+  "gpu_id": "1",
+  "pid": 291432,
+  "queue_models": [],
+  "queue_total": 1,
+  "queue_completed": 0,
+  "current_model": "ResNet18",
+  "current_model_index": 1,
+  "current_epoch": 13,
+  "total_epochs": 30,
+  "latest_val_f1": 0.9196405323692155,
+  "latest_val_acc": 0.9196428571428571,
+  "last_update_ts": 1778061364.7811809
+}

@@ -1,0 +1,20 @@
+{
+  "created_at": "2026-04-30T06:33:57",
+  "phase1_trials": 12,
+  "phase1_epochs": 10,
+  "phase2_topk": 3,
+  "phase2_epochs": 18,
+  "final_seeds": 3,
+  "final_epochs": 30,
+  "sampling_method": "without_replacement_materialized_before_training",
+  "model_list": [
+    "TCN"
+  ],
+  "primary_metric": "best_val_f1",
+  "tie_break_metric": "best_val_acc",
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "8c5a5e05892e808344c4dfca0367ca8a6f62a1e4bbc2575585e54c2d6b58c245",
+  "search_space_hash_by_model": {
+    "TCN": "9229f49c313834e16cace314a984aa062bf25d4da3e3284006d8a789dc056848"
+  }
+}

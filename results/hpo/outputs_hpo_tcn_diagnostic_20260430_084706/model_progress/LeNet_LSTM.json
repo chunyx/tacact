@@ -1,0 +1,12 @@
+{
+  "model_name": "LeNet_LSTM",
+  "status": "done",
+  "finished_at": "2026-04-30T17:30:01",
+  "phase": "phase2",
+  "paths": {
+    "phase1": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase1/LeNet_LSTM/phase1_results.csv",
+    "phase2": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase2/LeNet_LSTM/phase2_results.csv",
+    "phase3": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase3/LeNet_LSTM/final_results.csv",
+    "phase3_summary": "/home/yaxin/tacact/outputs_tcn_diag_20260430_084706/phase3/LeNet_LSTM/final_results_summary.csv"
+  }
+}

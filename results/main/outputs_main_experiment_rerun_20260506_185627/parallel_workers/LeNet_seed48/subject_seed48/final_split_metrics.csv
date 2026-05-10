@@ -1,0 +1,2 @@
+model,display_name,seed,selected_epoch,train_loss_at_selected,train_acc_at_selected,train_f1_at_selected,val_loss_at_selected,val_acc_at_selected,val_f1_at_selected,test_accuracy,test_macro_f1,test_macro_precision,test_macro_recall,params_m,train_time_sec,inference_ms
+LeNet,LeNet-style CNN,48,20,0.01095553593266578,0.9990476190476191,0.9991666018049098,0.7094431784715978,0.8357142857142857,0.8330704997380313,0.859375,0.8585807878087692,0.8601057840549061,0.8593749999999972,0.073726,692.8178453147411,0.01341155730187893

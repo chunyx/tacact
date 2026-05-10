@@ -1,0 +1,26 @@
+{
+  "selected_trial_id": 1,
+  "selected_from_phase1_trial_id": 3,
+  "best_epoch": 13,
+  "best_f1_epoch": 13,
+  "best_val_loss_epoch": 2,
+  "best_val_macro_f1": 0.8484153919443046,
+  "best_val_acc": 0.8485119047619047,
+  "best_val_loss": 1.1661271565068754,
+  "val_loss_at_best_f1_epoch": 1.1661271565068754,
+  "lowest_val_loss": 0.7061309343400699,
+  "train_loss_at_best_epoch": 0.0083929642893019,
+  "val_loss_at_best_epoch": 1.1661271565068754,
+  "train_loss_at_best_f1_epoch": 0.0083929642893019,
+  "train_loss_at_best_val_loss_epoch": 0.5462351552219618,
+  "last_train_loss": 0.004548935301247,
+  "last_val_loss": 1.2837013504281385,
+  "overfit_gap_loss": 0.5775704160880686,
+  "selected_hyperparameters": {
+    "lr": 0.0001,
+    "batch_size": 16,
+    "weight_decay": 0.001,
+    "num_channels": 128,
+    "dropout": 0.3
+  }
+}

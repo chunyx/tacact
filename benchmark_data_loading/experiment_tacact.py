@@ -142,6 +142,27 @@ def _scheduler_name_for_model(model_name: str) -> str:
     return "CosineAnnealingWarmRestarts" if "transformer" in str(model_name).lower() else "ReduceLROnPlateau"
 
 
+def _resolve_deep_config_entry(best_config_map: Dict[str, Any], model_name: str) -> tuple[Dict[str, Any], Dict[str, Any]]:
+    deep_map = best_config_map.get("deep", {})
+    lookup_keys = [model_name, model_name.lower()]
+    alias_map = {
+        "LeNet_LSTM_MeanMax": ["LeNet_LSTM", "lenet_lstm", "lenetlstm"],
+        "lenet_lstm_meanmax": ["LeNet_LSTM", "lenet_lstm", "lenetlstm"],
+        "lenetlstm_meanmax": ["LeNet_LSTM", "lenet_lstm", "lenetlstm"],
+        "LeNet_LSTM_MotionInput": ["LeNet_LSTM", "lenet_lstm", "lenetlstm"],
+        "lenet_lstm_motioninput": ["LeNet_LSTM", "lenet_lstm", "lenetlstm"],
+        "lenetlstm_motioninput": ["LeNet_LSTM", "lenet_lstm", "lenetlstm"],
+        "lenet_lstm_motion": ["LeNet_LSTM", "lenet_lstm", "lenetlstm"],
+    }
+    lookup_keys.extend(alias_map.get(model_name, []))
+    for key in lookup_keys:
+        entry = deep_map.get(key, {})
+        if entry:
+            params = entry.get("params", {})
+            return params if isinstance(params, dict) else {}, entry if isinstance(entry, dict) else {}
+    return {}, {}
+
+
 def _class_names(n_classes: int = 12) -> List[str]:
     return [f"class_{i}" for i in range(n_classes)]
 
@@ -745,6 +766,9 @@ def _run_parallel_main_experiment(args: argparse.Namespace, deep_models: List[st
                 cmd.append("--disable_persistent_workers")
             if args.best_config_path is not None:
                 cmd.extend(["--best_config_path", str(args.best_config_path)])
+            cmd.extend(["--label_smoothing", str(float(args.label_smoothing))])
+            if args.weight_decay_override is not None:
+                cmd.extend(["--weight_decay_override", str(float(args.weight_decay_override))])
             if args.skip_cache_warmup:
                 cmd.append("--skip_cache_warmup")
             if args.overfit_single_batch_debug:
@@ -835,6 +859,10 @@ def main() -> None:
     parser.add_argument("--merge_metrics_csvs", type=str, default="")
     parser.add_argument("--best_config_path", type=Path, default=None,
                         help="可选：读取自动搜索生成的 best_model_configs.json")
+    parser.add_argument("--label_smoothing", type=float, default=0.0,
+                        help="Optional CrossEntropyLoss label smoothing. Default 0.0 preserves baseline behavior.")
+    parser.add_argument("--weight_decay_override", type=float, default=None,
+                        help="Optional global optimizer weight_decay override for targeted comparisons.")
     parser.add_argument("--skip_cache_warmup", action="store_true",
                         help="跳过缓存预热(确信 .npy 已存在时使用)")
     parser.add_argument("--no_preload", action="store_true",
@@ -1019,6 +1047,8 @@ def main() -> None:
             "gpu_ids": str(args.gpu_ids),
             "max_workers": int(args.max_workers),
             "best_config_path": str(args.best_config_path) if args.best_config_path is not None else "",
+            "label_smoothing": float(args.label_smoothing),
+            "weight_decay_override": float(args.weight_decay_override) if args.weight_decay_override is not None else None,
             "overfit_single_batch_debug": bool(args.overfit_single_batch_debug),
             "overfit_debug_lr": float(args.overfit_debug_lr),
             "overfit_debug_epochs": int(args.overfit_debug_epochs),
@@ -1114,6 +1144,8 @@ def main() -> None:
             "scheduler_default": "ReduceLROnPlateau",
             "scheduler_transformer": "CosineAnnealingWarmRestarts",
             "best_config_path": str(args.best_config_path) if args.best_config_path is not None else "",
+            "label_smoothing": float(args.label_smoothing),
+            "weight_decay_override": float(args.weight_decay_override) if args.weight_decay_override is not None else None,
             "model_kwargs": best_config_map.get("deep", {}),
             "runtime": _runtime_info(),
         }
@@ -1345,12 +1377,7 @@ def main() -> None:
                     "last_update_ts": time.time(),
                 },
             )
-            deep_cfg = best_config_map["deep"].get(model_name, {}).get("params", {})
-            if not deep_cfg:
-                deep_cfg = best_config_map["deep"].get(model_name.lower(), {}).get("params", {})
-            deep_entry = best_config_map["deep"].get(model_name, {})
-            if not deep_entry:
-                deep_entry = best_config_map["deep"].get(model_name.lower(), {})
+            deep_cfg, deep_entry = _resolve_deep_config_entry(best_config_map, model_name)
             if "batch_size" in deep_cfg and deep_cfg.get("batch_size") is not None:
                 try:
                     model_batch_size = int(deep_cfg.get("batch_size"))
@@ -1382,7 +1409,10 @@ def main() -> None:
             train_kwargs = {
                 "lr_override": deep_cfg.get("lr"),
                 "weight_decay_override": deep_cfg.get("weight_decay"),
+                "label_smoothing": float(args.label_smoothing),
             }
+            if args.weight_decay_override is not None:
+                train_kwargs["weight_decay_override"] = float(args.weight_decay_override)
             model, cat = ModelFactory.build_torch(model_name, **model_kwargs)
             if args.overfit_single_batch_debug:
                 print(f"[Single-Batch Debug] Running single-batch overfit test for {model_name}")
@@ -1600,7 +1630,7 @@ def main() -> None:
                     "display_name": model_name,
                     "seed": int(run_seed),
                     "lr": float(deep_cfg.get("lr", np.nan)) if deep_cfg else np.nan,
-                    "weight_decay": float(deep_cfg.get("weight_decay", np.nan)) if deep_cfg else np.nan,
+                    "weight_decay": float(args.weight_decay_override) if args.weight_decay_override is not None else (float(deep_cfg.get("weight_decay", np.nan)) if deep_cfg else np.nan),
                     "batch_size": int(model_batch_size),
                     "epochs": int(args.epochs),
                     "optimizer": "AdamW",
@@ -1608,6 +1638,7 @@ def main() -> None:
                     "model_kwargs_json": json.dumps(model_kwargs, ensure_ascii=False),
                     "param_count": float(params),
                     "best_config_source": "best_config_path" if args.best_config_path is not None else "default",
+                    "label_smoothing": float(args.label_smoothing),
                 }
             )
             hpo_trace_rows.append(
@@ -1620,7 +1651,14 @@ def main() -> None:
                     "hpo_best_val_acc": deep_entry.get("best_val_acc", np.nan),
                     "main_best_val_f1": float(best_val_f1),
                     "main_test_macro_f1": float(np.nanmean(f1_cls)),
-                    "config_json": json.dumps(deep_cfg, ensure_ascii=False),
+                    "config_json": json.dumps(
+                        {
+                            **(deep_cfg if isinstance(deep_cfg, dict) else {}),
+                            "label_smoothing": float(args.label_smoothing),
+                            "weight_decay_override": float(args.weight_decay_override) if args.weight_decay_override is not None else None,
+                        },
+                        ensure_ascii=False,
+                    ),
                 }
             )
             print(f"{model_name}: acc={results[model_name]['accuracy'] * 100:.2f}%")

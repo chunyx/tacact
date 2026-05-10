@@ -1,0 +1,2 @@
+model,display_name,seed,selected_epoch,train_loss_at_selected,train_acc_at_selected,train_f1_at_selected,val_loss_at_selected,val_acc_at_selected,val_f1_at_selected,test_accuracy,test_macro_f1,test_macro_precision,test_macro_recall,params_m,train_time_sec,inference_ms
+LSTM,LSTM baseline,49,25,0.00467200918566613,0.9994642857142857,0.9996428358382801,0.715362707824291,0.8735119047619048,0.8733079758339813,0.82734375,0.8275703117666953,0.8292635602953925,0.8273437499999973,0.595724,585.0328452587128,0.03719005617313087

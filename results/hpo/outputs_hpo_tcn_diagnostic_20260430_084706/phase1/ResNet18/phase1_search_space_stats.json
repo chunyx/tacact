@@ -1,0 +1,9 @@
+{
+  "model_name": "ResNet18",
+  "total_combinations": 27,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.4444444444444444,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "08fe87e8df69d7603812950c4eae5fe44a0ae762cba87f4633fbf597a8083c26"
+}

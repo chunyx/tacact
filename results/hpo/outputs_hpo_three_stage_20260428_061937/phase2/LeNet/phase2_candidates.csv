@@ -1,0 +1,4 @@
+model,rank,phase1_trial_id,best_epoch,best_val_f1,best_val_acc,config
+LeNet,1,12,10,0.8507523682385926,0.8505952380952381,"{""lr"": 0.0005, ""batch_size"": 16, ""weight_decay"": 1e-05}"
+LeNet,2,1,9,0.8444125251689028,0.8449404761904762,"{""lr"": 0.0005, ""batch_size"": 32, ""weight_decay"": 5e-05}"
+LeNet,3,10,10,0.8349829719264571,0.8345238095238096,"{""lr"": 0.0005, ""batch_size"": 16, ""weight_decay"": 0.0001}"

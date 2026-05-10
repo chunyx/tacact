@@ -1,0 +1,2 @@
+model,seed,selected_epoch,selection_metric,best_val_f1,best_val_acc,best_val_loss,test_accuracy,test_macro_f1,checkpoint_path
+GRU,44,17,best_val_f1_max,0.8984685887374253,0.8979166666666667,1.0232022310419655,0.8794270833333333,0.8781959966555736,/home/yaxin/tacact/outputs_main_parallel_5gpu_20260429_150413/parallel_workers/GRU_seed44/subject_seed44/checkpoints/GRU_seed44_best.pt

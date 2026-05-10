@@ -1,0 +1,35 @@
+{
+  "task_id": "phase1_MobileNet_V2_003",
+  "phase": 1,
+  "model_name": "MobileNet_V2",
+  "trial_id": 3,
+  "seed": 45,
+  "config": {
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "batch_size": 8,
+    "trial_id": 3,
+    "epochs_budget": 10,
+    "use_early_stopping": false
+  },
+  "result_json_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/MobileNet_V2/trial_results/trial_003.json",
+  "history_csv_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/MobileNet_V2/histories/trial_003_history.csv",
+  "data_cfg": {
+    "data_root": "/home/yaxin/datasets/TacAct-original",
+    "cache_dir": ".cache_tacact_n80_weighted",
+    "split_mode": "subject",
+    "clip_mode": "weighted_center",
+    "split_seed": 42,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "no_preload": false,
+    "parallel_mode": true,
+    "cache_trace": false,
+    "num_workers": 4,
+    "prefetch_factor": 2,
+    "parallel_loader_workers_cap": 2,
+    "label_smoothing": 0.05
+  },
+  "best_ckpt_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/MobileNet_V2/checkpoints/trial_003_best.pt",
+  "progress_json_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/MobileNet_V2/progress/trial_003.json"
+}

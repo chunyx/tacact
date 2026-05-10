@@ -1,0 +1,14 @@
+{
+  "status": "done",
+  "phase": 1,
+  "model_name": "ResNet18",
+  "trial_id": 20,
+  "seed": 62,
+  "gpu_local_id": 4,
+  "pid": 126657,
+  "epoch": 10,
+  "total_epochs": 10,
+  "val_f1": 0.9152262257363771,
+  "val_acc": 0.9154761904761904,
+  "val_loss": 0.5713597013836815
+}

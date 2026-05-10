@@ -1,0 +1,9 @@
+{
+  "model_name": "LeNet_LSTM",
+  "total_combinations": 8748,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.0013717421124828531,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "2abd9cca49e18622b7783fc435259f7f2fb0a229a9328661831be40721ee6cb5"
+}

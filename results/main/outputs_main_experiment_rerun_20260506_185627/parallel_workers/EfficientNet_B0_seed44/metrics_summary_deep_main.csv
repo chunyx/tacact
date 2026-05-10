@@ -1,0 +1,2 @@
+split_mode,model,category,accuracy_mean,accuracy_std,macro_f1_mean,macro_f1_std,macro_precision_mean,macro_precision_std,macro_recall_mean,macro_recall_std,training_seconds_mean,training_seconds_std,inference_ms_mean,inference_ms_std,params_m
+subject,EfficientNet_B0,cnn,0.92578125,,0.9257091370568519,,0.9261572578313605,,0.9257812499999972,,1289.9563687499613,,0.2792239043628797,,4.045096

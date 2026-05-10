@@ -1,0 +1,9 @@
+{
+  "model_name": "LSTM",
+  "total_combinations": 192,
+  "sampled_unique_configs": 12,
+  "coverage_ratio": 0.0625,
+  "sampling_seed": 42,
+  "search_space_version": "refined_search_space",
+  "search_space_hash": "3725c4b48e3b171072bae55b5fb9e11c7db9ec1de05a4ef7ba1ee75a23088e33"
+}

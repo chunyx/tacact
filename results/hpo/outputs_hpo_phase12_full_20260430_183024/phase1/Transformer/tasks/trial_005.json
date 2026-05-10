@@ -1,0 +1,42 @@
+{
+  "task_id": "phase1_Transformer_005",
+  "phase": 1,
+  "model_name": "Transformer",
+  "trial_id": 5,
+  "seed": 47,
+  "config": {
+    "d_model": 64,
+    "nhead": 4,
+    "num_layers": 2,
+    "dim_feedforward": 128,
+    "dropout": 0.3,
+    "pooling": "mean",
+    "norm_first": true,
+    "lr": 0.0002,
+    "weight_decay": 0.001,
+    "batch_size": 64,
+    "trial_id": 5,
+    "epochs_budget": 10,
+    "use_early_stopping": false
+  },
+  "result_json_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/Transformer/trial_results/trial_005.json",
+  "history_csv_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/Transformer/histories/trial_005_history.csv",
+  "data_cfg": {
+    "data_root": "/home/yaxin/datasets/TacAct-original",
+    "cache_dir": ".cache_tacact_n80_weighted",
+    "split_mode": "subject",
+    "clip_mode": "weighted_center",
+    "split_seed": 42,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "no_preload": false,
+    "parallel_mode": true,
+    "cache_trace": false,
+    "num_workers": 4,
+    "prefetch_factor": 2,
+    "parallel_loader_workers_cap": 2,
+    "label_smoothing": 0.05
+  },
+  "best_ckpt_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/Transformer/checkpoints/trial_005_best.pt",
+  "progress_json_path": "/home/yaxin/tacact/outputs_phase1_8gpu_ordered_fixed_20260430_183024/phase1/Transformer/progress/trial_005.json"
+}

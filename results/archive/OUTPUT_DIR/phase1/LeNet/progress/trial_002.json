@@ -1,0 +1,14 @@
+{
+  "phase": 1,
+  "model_name": "LeNet",
+  "trial_id": 2,
+  "seed": 44,
+  "gpu_local_id": 1,
+  "pid": 361757,
+  "epoch": 2,
+  "total_epochs": 10,
+  "val_f1": 0.6739952726308642,
+  "val_acc": 0.680952380952381,
+  "val_loss": 1.1414711361839658,
+  "status": "running"
+}

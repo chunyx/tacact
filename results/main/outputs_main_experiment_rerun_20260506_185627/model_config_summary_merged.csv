@@ -1,0 +1,101 @@
+model,display_name,seed,lr,weight_decay,batch_size,epochs,optimizer,scheduler,model_kwargs_json,param_count,best_config_source
+LeNet,LeNet,42,0.0005,0.0001,16,25,AdamW,ReduceLROnPlateau,{},73726.0,best_config_path
+ResNet18,ResNet18,42,0.0007,0.0001,16,25,AdamW,ReduceLROnPlateau,{},11424140.0,best_config_path
+MobileNet_V2,MobileNet_V2,42,0.0006,0.0003,16,25,AdamW,ReduceLROnPlateau,{},2261420.0,best_config_path
+EfficientNet_B0,EfficientNet_B0,42,0.0007,0.001,32,25,AdamW,ReduceLROnPlateau,{},4045096.0,best_config_path
+LSTM,LSTM,42,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",595724.0,best_config_path
+GRU,GRU,42,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",513292.0,best_config_path
+CNN_LSTM,CNN_LSTM,42,0.0003,0.0001,32,25,AdamW,ReduceLROnPlateau,"{""lstm_hidden"": 128, ""dropout"": 0.5}",11500492.0,best_config_path
+LeNet_LSTM,LeNet_LSTM,42,0.0006,0.0001,64,25,AdamW,ReduceLROnPlateau,"{""feature_dim"": 128, ""encoder_hidden_dim"": 96, ""hidden_size"": 128, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}",331708.0,best_config_path
+TCN,TCN,42,0.0001,0.003,16,25,AdamW,ReduceLROnPlateau,"{""num_channels"": 128, ""dropout"": 0.3}",2083724.0,best_config_path
+Transformer,Transformer,42,0.0001,0.0003,16,25,AdamW,CosineAnnealingWarmRestarts,"{""d_model"": 96, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}",259052.0,best_config_path
+LeNet,LeNet,43,0.0005,0.0001,16,25,AdamW,ReduceLROnPlateau,{},73726.0,best_config_path
+ResNet18,ResNet18,43,0.0007,0.0001,16,25,AdamW,ReduceLROnPlateau,{},11424140.0,best_config_path
+MobileNet_V2,MobileNet_V2,43,0.0006,0.0003,16,25,AdamW,ReduceLROnPlateau,{},2261420.0,best_config_path
+EfficientNet_B0,EfficientNet_B0,43,0.0007,0.001,32,25,AdamW,ReduceLROnPlateau,{},4045096.0,best_config_path
+LSTM,LSTM,43,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",595724.0,best_config_path
+GRU,GRU,43,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",513292.0,best_config_path
+CNN_LSTM,CNN_LSTM,43,0.0003,0.0001,32,25,AdamW,ReduceLROnPlateau,"{""lstm_hidden"": 128, ""dropout"": 0.5}",11500492.0,best_config_path
+LeNet_LSTM,LeNet_LSTM,43,0.0006,0.0001,64,25,AdamW,ReduceLROnPlateau,"{""feature_dim"": 128, ""encoder_hidden_dim"": 96, ""hidden_size"": 128, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}",331708.0,best_config_path
+TCN,TCN,43,0.0001,0.003,16,25,AdamW,ReduceLROnPlateau,"{""num_channels"": 128, ""dropout"": 0.3}",2083724.0,best_config_path
+Transformer,Transformer,43,0.0001,0.0003,16,25,AdamW,CosineAnnealingWarmRestarts,"{""d_model"": 96, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}",259052.0,best_config_path
+LeNet,LeNet,44,0.0005,0.0001,16,25,AdamW,ReduceLROnPlateau,{},73726.0,best_config_path
+ResNet18,ResNet18,44,0.0007,0.0001,16,25,AdamW,ReduceLROnPlateau,{},11424140.0,best_config_path
+MobileNet_V2,MobileNet_V2,44,0.0006,0.0003,16,25,AdamW,ReduceLROnPlateau,{},2261420.0,best_config_path
+EfficientNet_B0,EfficientNet_B0,44,0.0007,0.001,32,25,AdamW,ReduceLROnPlateau,{},4045096.0,best_config_path
+LSTM,LSTM,44,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",595724.0,best_config_path
+GRU,GRU,44,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",513292.0,best_config_path
+CNN_LSTM,CNN_LSTM,44,0.0003,0.0001,32,25,AdamW,ReduceLROnPlateau,"{""lstm_hidden"": 128, ""dropout"": 0.5}",11500492.0,best_config_path
+LeNet_LSTM,LeNet_LSTM,44,0.0006,0.0001,64,25,AdamW,ReduceLROnPlateau,"{""feature_dim"": 128, ""encoder_hidden_dim"": 96, ""hidden_size"": 128, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}",331708.0,best_config_path
+TCN,TCN,44,0.0001,0.003,16,25,AdamW,ReduceLROnPlateau,"{""num_channels"": 128, ""dropout"": 0.3}",2083724.0,best_config_path
+Transformer,Transformer,44,0.0001,0.0003,16,25,AdamW,CosineAnnealingWarmRestarts,"{""d_model"": 96, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}",259052.0,best_config_path
+LeNet,LeNet,45,0.0005,0.0001,16,25,AdamW,ReduceLROnPlateau,{},73726.0,best_config_path
+ResNet18,ResNet18,45,0.0007,0.0001,16,25,AdamW,ReduceLROnPlateau,{},11424140.0,best_config_path
+MobileNet_V2,MobileNet_V2,45,0.0006,0.0003,16,25,AdamW,ReduceLROnPlateau,{},2261420.0,best_config_path
+EfficientNet_B0,EfficientNet_B0,45,0.0007,0.001,32,25,AdamW,ReduceLROnPlateau,{},4045096.0,best_config_path
+LSTM,LSTM,45,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",595724.0,best_config_path
+GRU,GRU,45,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",513292.0,best_config_path
+CNN_LSTM,CNN_LSTM,45,0.0003,0.0001,32,25,AdamW,ReduceLROnPlateau,"{""lstm_hidden"": 128, ""dropout"": 0.5}",11500492.0,best_config_path
+LeNet_LSTM,LeNet_LSTM,45,0.0006,0.0001,64,25,AdamW,ReduceLROnPlateau,"{""feature_dim"": 128, ""encoder_hidden_dim"": 96, ""hidden_size"": 128, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}",331708.0,best_config_path
+TCN,TCN,45,0.0001,0.003,16,25,AdamW,ReduceLROnPlateau,"{""num_channels"": 128, ""dropout"": 0.3}",2083724.0,best_config_path
+Transformer,Transformer,45,0.0001,0.0003,16,25,AdamW,CosineAnnealingWarmRestarts,"{""d_model"": 96, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}",259052.0,best_config_path
+LeNet,LeNet,46,0.0005,0.0001,16,25,AdamW,ReduceLROnPlateau,{},73726.0,best_config_path
+ResNet18,ResNet18,46,0.0007,0.0001,16,25,AdamW,ReduceLROnPlateau,{},11424140.0,best_config_path
+MobileNet_V2,MobileNet_V2,46,0.0006,0.0003,16,25,AdamW,ReduceLROnPlateau,{},2261420.0,best_config_path
+EfficientNet_B0,EfficientNet_B0,46,0.0007,0.001,32,25,AdamW,ReduceLROnPlateau,{},4045096.0,best_config_path
+LSTM,LSTM,46,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",595724.0,best_config_path
+GRU,GRU,46,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",513292.0,best_config_path
+CNN_LSTM,CNN_LSTM,46,0.0003,0.0001,32,25,AdamW,ReduceLROnPlateau,"{""lstm_hidden"": 128, ""dropout"": 0.5}",11500492.0,best_config_path
+LeNet_LSTM,LeNet_LSTM,46,0.0006,0.0001,64,25,AdamW,ReduceLROnPlateau,"{""feature_dim"": 128, ""encoder_hidden_dim"": 96, ""hidden_size"": 128, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}",331708.0,best_config_path
+TCN,TCN,46,0.0001,0.003,16,25,AdamW,ReduceLROnPlateau,"{""num_channels"": 128, ""dropout"": 0.3}",2083724.0,best_config_path
+Transformer,Transformer,46,0.0001,0.0003,16,25,AdamW,CosineAnnealingWarmRestarts,"{""d_model"": 96, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}",259052.0,best_config_path
+LeNet,LeNet,47,0.0005,0.0001,16,25,AdamW,ReduceLROnPlateau,{},73726.0,best_config_path
+ResNet18,ResNet18,47,0.0007,0.0001,16,25,AdamW,ReduceLROnPlateau,{},11424140.0,best_config_path
+MobileNet_V2,MobileNet_V2,47,0.0006,0.0003,16,25,AdamW,ReduceLROnPlateau,{},2261420.0,best_config_path
+EfficientNet_B0,EfficientNet_B0,47,0.0007,0.001,32,25,AdamW,ReduceLROnPlateau,{},4045096.0,best_config_path
+LSTM,LSTM,47,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",595724.0,best_config_path
+GRU,GRU,47,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",513292.0,best_config_path
+CNN_LSTM,CNN_LSTM,47,0.0003,0.0001,32,25,AdamW,ReduceLROnPlateau,"{""lstm_hidden"": 128, ""dropout"": 0.5}",11500492.0,best_config_path
+LeNet_LSTM,LeNet_LSTM,47,0.0006,0.0001,64,25,AdamW,ReduceLROnPlateau,"{""feature_dim"": 128, ""encoder_hidden_dim"": 96, ""hidden_size"": 128, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}",331708.0,best_config_path
+TCN,TCN,47,0.0001,0.003,16,25,AdamW,ReduceLROnPlateau,"{""num_channels"": 128, ""dropout"": 0.3}",2083724.0,best_config_path
+Transformer,Transformer,47,0.0001,0.0003,16,25,AdamW,CosineAnnealingWarmRestarts,"{""d_model"": 96, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}",259052.0,best_config_path
+LeNet,LeNet,48,0.0005,0.0001,16,25,AdamW,ReduceLROnPlateau,{},73726.0,best_config_path
+ResNet18,ResNet18,48,0.0007,0.0001,16,25,AdamW,ReduceLROnPlateau,{},11424140.0,best_config_path
+MobileNet_V2,MobileNet_V2,48,0.0006,0.0003,16,25,AdamW,ReduceLROnPlateau,{},2261420.0,best_config_path
+EfficientNet_B0,EfficientNet_B0,48,0.0007,0.001,32,25,AdamW,ReduceLROnPlateau,{},4045096.0,best_config_path
+LSTM,LSTM,48,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",595724.0,best_config_path
+GRU,GRU,48,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",513292.0,best_config_path
+CNN_LSTM,CNN_LSTM,48,0.0003,0.0001,32,25,AdamW,ReduceLROnPlateau,"{""lstm_hidden"": 128, ""dropout"": 0.5}",11500492.0,best_config_path
+LeNet_LSTM,LeNet_LSTM,48,0.0006,0.0001,64,25,AdamW,ReduceLROnPlateau,"{""feature_dim"": 128, ""encoder_hidden_dim"": 96, ""hidden_size"": 128, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}",331708.0,best_config_path
+TCN,TCN,48,0.0001,0.003,16,25,AdamW,ReduceLROnPlateau,"{""num_channels"": 128, ""dropout"": 0.3}",2083724.0,best_config_path
+Transformer,Transformer,48,0.0001,0.0003,16,25,AdamW,CosineAnnealingWarmRestarts,"{""d_model"": 96, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}",259052.0,best_config_path
+LeNet,LeNet,49,0.0005,0.0001,16,25,AdamW,ReduceLROnPlateau,{},73726.0,best_config_path
+ResNet18,ResNet18,49,0.0007,0.0001,16,25,AdamW,ReduceLROnPlateau,{},11424140.0,best_config_path
+MobileNet_V2,MobileNet_V2,49,0.0006,0.0003,16,25,AdamW,ReduceLROnPlateau,{},2261420.0,best_config_path
+EfficientNet_B0,EfficientNet_B0,49,0.0007,0.001,32,25,AdamW,ReduceLROnPlateau,{},4045096.0,best_config_path
+LSTM,LSTM,49,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",595724.0,best_config_path
+GRU,GRU,49,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",513292.0,best_config_path
+CNN_LSTM,CNN_LSTM,49,0.0003,0.0001,32,25,AdamW,ReduceLROnPlateau,"{""lstm_hidden"": 128, ""dropout"": 0.5}",11500492.0,best_config_path
+LeNet_LSTM,LeNet_LSTM,49,0.0006,0.0001,64,25,AdamW,ReduceLROnPlateau,"{""feature_dim"": 128, ""encoder_hidden_dim"": 96, ""hidden_size"": 128, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}",331708.0,best_config_path
+TCN,TCN,49,0.0001,0.003,16,25,AdamW,ReduceLROnPlateau,"{""num_channels"": 128, ""dropout"": 0.3}",2083724.0,best_config_path
+Transformer,Transformer,49,0.0001,0.0003,16,25,AdamW,CosineAnnealingWarmRestarts,"{""d_model"": 96, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}",259052.0,best_config_path
+LeNet,LeNet,50,0.0005,0.0001,16,25,AdamW,ReduceLROnPlateau,{},73726.0,best_config_path
+ResNet18,ResNet18,50,0.0007,0.0001,16,25,AdamW,ReduceLROnPlateau,{},11424140.0,best_config_path
+MobileNet_V2,MobileNet_V2,50,0.0006,0.0003,16,25,AdamW,ReduceLROnPlateau,{},2261420.0,best_config_path
+EfficientNet_B0,EfficientNet_B0,50,0.0007,0.001,32,25,AdamW,ReduceLROnPlateau,{},4045096.0,best_config_path
+LSTM,LSTM,50,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",595724.0,best_config_path
+GRU,GRU,50,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",513292.0,best_config_path
+CNN_LSTM,CNN_LSTM,50,0.0003,0.0001,32,25,AdamW,ReduceLROnPlateau,"{""lstm_hidden"": 128, ""dropout"": 0.5}",11500492.0,best_config_path
+LeNet_LSTM,LeNet_LSTM,50,0.0006,0.0001,64,25,AdamW,ReduceLROnPlateau,"{""feature_dim"": 128, ""encoder_hidden_dim"": 96, ""hidden_size"": 128, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}",331708.0,best_config_path
+TCN,TCN,50,0.0001,0.003,16,25,AdamW,ReduceLROnPlateau,"{""num_channels"": 128, ""dropout"": 0.3}",2083724.0,best_config_path
+Transformer,Transformer,50,0.0001,0.0003,16,25,AdamW,CosineAnnealingWarmRestarts,"{""d_model"": 96, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}",259052.0,best_config_path
+LeNet,LeNet,51,0.0005,0.0001,16,25,AdamW,ReduceLROnPlateau,{},73726.0,best_config_path
+ResNet18,ResNet18,51,0.0007,0.0001,16,25,AdamW,ReduceLROnPlateau,{},11424140.0,best_config_path
+MobileNet_V2,MobileNet_V2,51,0.0006,0.0003,16,25,AdamW,ReduceLROnPlateau,{},2261420.0,best_config_path
+EfficientNet_B0,EfficientNet_B0,51,0.0007,0.001,32,25,AdamW,ReduceLROnPlateau,{},4045096.0,best_config_path
+LSTM,LSTM,51,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",595724.0,best_config_path
+GRU,GRU,51,0.0006,0.0003,32,25,AdamW,ReduceLROnPlateau,"{""input_proj_dim"": 256, ""hidden_size"": 128, ""num_layers"": 2, ""dropout"": 0.3, ""use_last_only"": false}",513292.0,best_config_path
+CNN_LSTM,CNN_LSTM,51,0.0003,0.0001,32,25,AdamW,ReduceLROnPlateau,"{""lstm_hidden"": 128, ""dropout"": 0.5}",11500492.0,best_config_path
+LeNet_LSTM,LeNet_LSTM,51,0.0006,0.0001,64,25,AdamW,ReduceLROnPlateau,"{""feature_dim"": 128, ""encoder_hidden_dim"": 96, ""hidden_size"": 128, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}",331708.0,best_config_path
+TCN,TCN,51,0.0001,0.003,16,25,AdamW,ReduceLROnPlateau,"{""num_channels"": 128, ""dropout"": 0.3}",2083724.0,best_config_path
+Transformer,Transformer,51,0.0001,0.0003,16,25,AdamW,CosineAnnealingWarmRestarts,"{""d_model"": 96, ""nhead"": 2, ""num_layers"": 2, ""dim_feedforward"": 192, ""dropout"": 0.2, ""pooling"": ""mean"", ""norm_first"": true}",259052.0,best_config_path

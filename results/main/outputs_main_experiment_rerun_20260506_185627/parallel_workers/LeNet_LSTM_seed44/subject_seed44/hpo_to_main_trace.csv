@@ -1,0 +1,2 @@
+model,seed,best_config_path,hpo_trial_id,hpo_best_val_f1,hpo_best_val_acc,main_best_val_f1,main_test_macro_f1,config_json
+LeNet_LSTM,44,/home/yaxin/tacact/outputs_hpo_phase12_full_20260430_183024/final_best_model_configs_with_tuned_transformer.json,1,0.9125238886919388,0.9125,0.9135892033404605,0.9047657306121505,"{""lr"": 0.0006, ""batch_size"": 64, ""weight_decay"": 0.0001, ""feature_dim"": 128, ""encoder_hidden_dim"": 96, ""hidden_size"": 128, ""num_layers"": 1, ""dropout"": 0.3, ""use_last_only"": false, ""bidirectional"": false}"

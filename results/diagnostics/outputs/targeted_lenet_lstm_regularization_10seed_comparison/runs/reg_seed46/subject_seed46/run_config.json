@@ -1,0 +1,177 @@
+{
+  "model_list": {
+    "traditional": [
+      "SVM",
+      "RandomForest",
+      "XGBoost"
+    ],
+    "deep": [
+      "LeNet_LSTM"
+    ]
+  },
+  "seed": 46,
+  "data_root": "/home/yaxin/datasets/TacAct-original",
+  "output_dir": "/home/yaxin/tacact/outputs/targeted_lenet_lstm_regularization_10seed_comparison/runs/reg_seed46/subject_seed46",
+  "split_mode": "subject",
+  "split_seed": 46,
+  "n_frames": 80,
+  "threshold_method": "mean_std",
+  "threshold_k": 3.0,
+  "background_frames": 5,
+  "clip_mode": "weighted_center",
+  "batch_size": 32,
+  "epochs": 25,
+  "optimizer": "AdamW",
+  "scheduler_default": "ReduceLROnPlateau",
+  "scheduler_transformer": "CosineAnnealingWarmRestarts",
+  "best_config_path": "/home/yaxin/tacact/outputs_hpo_three_stage_20260428_061937/best_model_configs.json",
+  "label_smoothing": 0.05,
+  "weight_decay_override": 0.0003,
+  "model_kwargs": {
+    "CNN_LSTM": {
+      "phase": 2,
+      "trial_id": 2,
+      "best_val_f1": 0.9297372054985886,
+      "best_val_acc": 0.9297619047619048,
+      "params": {
+        "lr": 0.0003,
+        "batch_size": 8,
+        "weight_decay": 0.0001,
+        "lstm_hidden": 256
+      }
+    },
+    "EfficientNet_B0": {
+      "phase": 2,
+      "trial_id": 2,
+      "best_val_f1": 0.9264074503991572,
+      "best_val_acc": 0.9264880952380952,
+      "params": {
+        "lr": 0.0007,
+        "batch_size": 16,
+        "weight_decay": 0.0001
+      }
+    },
+    "GRU": {
+      "phase": 2,
+      "trial_id": 2,
+      "best_val_f1": 0.877512152049944,
+      "best_val_acc": 0.8773809523809524,
+      "params": {
+        "lr": 0.0006,
+        "batch_size": 8,
+        "weight_decay": 0.0001,
+        "input_proj_dim": 256,
+        "hidden_size": 256,
+        "num_layers": 2,
+        "dropout": 0.3,
+        "use_last_only": false
+      }
+    },
+    "LSTM": {
+      "phase": 2,
+      "trial_id": 1,
+      "best_val_f1": 0.863477702218912,
+      "best_val_acc": 0.8633928571428572,
+      "params": {
+        "lr": 0.0006,
+        "batch_size": 8,
+        "weight_decay": 0.0001,
+        "input_proj_dim": 256,
+        "hidden_size": 256,
+        "num_layers": 2,
+        "dropout": 0.3,
+        "use_last_only": false
+      }
+    },
+    "LeNet": {
+      "phase": 2,
+      "trial_id": 3,
+      "best_val_f1": 0.8594770871346507,
+      "best_val_acc": 0.8592261904761904,
+      "params": {
+        "lr": 0.0005,
+        "batch_size": 16,
+        "weight_decay": 0.0001
+      }
+    },
+    "LeNet_LSTM": {
+      "phase": 2,
+      "trial_id": 2,
+      "best_val_f1": 0.9214116293588136,
+      "best_val_acc": 0.9214285714285714,
+      "params": {
+        "lr": 0.0003,
+        "batch_size": 8,
+        "weight_decay": 1e-05,
+        "feature_dim": 128,
+        "encoder_hidden_dim": 128,
+        "hidden_size": 192,
+        "num_layers": 2,
+        "dropout": 0.3,
+        "use_last_only": false,
+        "bidirectional": false
+      }
+    },
+    "MobileNet_V2": {
+      "phase": 2,
+      "trial_id": 1,
+      "best_val_f1": 0.933619410214004,
+      "best_val_acc": 0.9339285714285714,
+      "params": {
+        "lr": 0.001,
+        "batch_size": 16,
+        "weight_decay": 1e-05
+      }
+    },
+    "ResNet18": {
+      "phase": 2,
+      "trial_id": 2,
+      "best_val_f1": 0.9228683701287648,
+      "best_val_acc": 0.9232142857142858,
+      "params": {
+        "lr": 0.0003,
+        "batch_size": 8,
+        "weight_decay": 0.0003
+      }
+    },
+    "TCN": {
+      "phase": 2,
+      "trial_id": 2,
+      "best_val_f1": 0.8576824424842654,
+      "best_val_acc": 0.8580357142857142,
+      "params": {
+        "lr": 0.0002,
+        "batch_size": 4,
+        "weight_decay": 0.0001,
+        "num_channels": 384,
+        "dropout": 0.0
+      }
+    },
+    "Transformer": {
+      "phase": 2,
+      "trial_id": 1,
+      "best_val_f1": 0.8244745349911118,
+      "best_val_acc": 0.8238095238095238,
+      "params": {
+        "lr": 0.0003,
+        "batch_size": 8,
+        "weight_decay": 0.0001,
+        "d_model": 256,
+        "nhead": 8,
+        "num_layers": 2,
+        "dim_feedforward": 256,
+        "dropout": 0.3,
+        "pooling": "mean",
+        "norm_first": false
+      }
+    }
+  },
+  "runtime": {
+    "created_at": "2026-05-08T12:23:49",
+    "python_version": "3.9.25 (main, Nov  3 2025, 22:33:05)  [GCC 11.2.0]",
+    "torch_version": "2.5.1+cu121",
+    "platform": "Linux-5.15.0-161-generic-x86_64-with-glibc2.35",
+    "hostname": "ubuntu",
+    "git_commit": "57315e5b7dd072a3e7706c9aae7251c345935adc"
+  }
+}

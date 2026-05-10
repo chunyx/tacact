@@ -1,0 +1,2 @@
+model,display_name,seed,selected_epoch,train_loss_at_selected,train_acc_at_selected,train_f1_at_selected,val_loss_at_selected,val_acc_at_selected,val_f1_at_selected,test_accuracy,test_macro_f1,test_macro_precision,test_macro_recall,params_m,train_time_sec,inference_ms
+Transformer,Transformer baseline,49,22,0.0069814450045426685,0.9978571428571429,0.9991066920555117,1.814273926141525,0.7639880952380952,0.7623029252849859,0.70078125,0.70003786157596,0.7029981228796257,0.7007812499999977,0.259052,864.9649319369346,0.035391998244449496
